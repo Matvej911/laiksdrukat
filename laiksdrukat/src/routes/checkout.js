@@ -16,9 +16,19 @@ async function checkoutRoutes(fastify) {
     const cart = fastify.getCart(request)
     if (cart.length === 0) return reply.redirect('/grozs')
 
-    const { name, email, phone, address, city, zip, note } = request.body
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      address,
+      city,
+      zip,
+      note,
+      paymentMethod,
+    } = request.body
 
-    if (!name || !email) {
+    if (!firstName || !lastName || !email || !address || !city || !zip) {
       return reply.view('pages/checkout', {
         title: 'Checkout | Laiks Drukāt',
         cart,
@@ -29,6 +39,12 @@ async function checkoutRoutes(fastify) {
     }
 
     const total = fastify.cartTotal(request)
+    const name = `${String(firstName).trim()} ${String(lastName).trim()}`.trim()
+    const noteParts = [note]
+
+    if (paymentMethod) {
+      noteParts.unshift(`Maksājuma veids: ${paymentMethod}`)
+    }
 
     const order = await fastify.db.order.create({
       data: {
@@ -38,7 +54,7 @@ async function checkoutRoutes(fastify) {
         address: address || null,
         city: city || null,
         zip: zip || null,
-        note: note || null,
+        note: noteParts.filter(Boolean).join('\n') || null,
         total,
         items: {
           create: cart.map(item => ({

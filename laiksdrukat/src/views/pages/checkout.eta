@@ -1,6 +1,9 @@
-<%~ include('../partials/layout', { ...it, body: `
+<% layout('../partials/layout') %>
+<% const formData = it.formData || {} %>
+<% const totalVat = Number(it.total) * 0.21 %>
+<% const totalWithVat = Number(it.total) + totalVat %>
 
-<section class="section-sm">
+<section class="page-hero page-hero-compact">
   <div class="container">
     <div class="breadcrumb">
       <a href="/">Sākums</a>
@@ -9,92 +12,148 @@
       <span class="breadcrumb-sep">/</span>
       <span>Pasūtījums</span>
     </div>
-
-    <h1 style="font-size:32px;font-weight:800;margin-bottom:32px;">Noformēt pasūtījumu</h1>
-
-    <div style="display:grid;grid-template-columns:1fr 360px;gap:48px;align-items:start;">
-      <div>
-        <% if (it.error) { %>
-          <div class="form-error"><%= it.error %></div>
-        <% } %>
-
-        <form action="/checkout" method="POST">
-          <h3 style="font-size:16px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--gray-200);">Kontaktinformācija</h3>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Vārds, uzvārds <span class="required">*</span></label>
-              <input type="text" name="name" class="form-input" required value="<%= (it.formData && it.formData.name) || '' %>">
-            </div>
-            <div class="form-group">
-              <label class="form-label">E-pasts <span class="required">*</span></label>
-              <input type="email" name="email" class="form-input" required value="<%= (it.formData && it.formData.email) || '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Tālrunis</label>
-            <input type="tel" name="phone" class="form-input" value="<%= (it.formData && it.formData.phone) || '' %>">
-          </div>
-
-          <h3 style="font-size:16px;font-weight:700;margin:28px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--gray-200);">Piegādes adrese</h3>
-
-          <div class="form-group">
-            <label class="form-label">Adrese</label>
-            <input type="text" name="address" class="form-input" placeholder="Iela, mājas nr." value="<%= (it.formData && it.formData.address) || '' %>">
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Pilsēta</label>
-              <input type="text" name="city" class="form-input" value="<%= (it.formData && it.formData.city) || '' %>">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Pasta indekss</label>
-              <input type="text" name="zip" class="form-input" value="<%= (it.formData && it.formData.zip) || '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Piezīmes</label>
-            <textarea name="note" class="form-input form-textarea" placeholder="Papildu informācija..."></textarea>
-          </div>
-
-          <button type="submit" class="btn btn-primary" style="padding:14px 32px;font-size:16px;">
-            Apstiprināt pasūtījumu
-          </button>
-        </form>
-      </div>
-
-      <div class="cart-summary">
-        <h3 style="font-size:16px;font-weight:700;margin-bottom:20px;">Jūsu pasūtījums</h3>
-        <% for (const item of it.cart) { %>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:14px;">
-            <div>
-              <div style="font-weight:500;"><%= item.name %></div>
-              <div style="color:var(--gray-400);">x <%= item.quantity %></div>
-            </div>
-            <div style="font-weight:600;"><%= (item.price * item.quantity).toFixed(2) %> EUR</div>
-          </div>
-        <% } %>
-        <div style="border-top:1px solid var(--gray-200);margin:16px 0;"></div>
-        <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px;">
-          <span style="color:var(--gray-600);">Bez PVN</span>
-          <span><%= it.total.toFixed(2) %> EUR</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:12px;">
-          <span style="color:var(--gray-600);">PVN 21%</span>
-          <span><%= (it.total * 0.21).toFixed(2) %> EUR</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-weight:800;font-size:18px;">
-          <span>Kopā</span>
-          <span style="color:var(--accent);"><%= (it.total * 1.21).toFixed(2) %> EUR</span>
-        </div>
-        <div style="margin-top:20px;padding:12px;background:var(--gray-100);border-radius:var(--radius);font-size:13px;color:var(--gray-600);">
-          Maksajums tiek kartots pec pasutijuma apstiprsinasanas
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
-`}) %>
+<section class="section">
+  <div class="container checkout-layout">
+    <div class="checkout-form-card">
+      <div class="checkout-section-head">
+        <span class="eyebrow">Informācija</span>
+        <h1>Noformēt pasūtījumu</h1>
+        <p>Aizpildiet savus datus, un mēs sazināsimies ar jums par pasūtījuma apstiprināšanu.</p>
+      </div>
+
+      <% if (it.error) { %>
+        <div class="form-error"><%= it.error %></div>
+      <% } %>
+
+      <form action="/checkout" method="POST" class="checkout-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Vārds <span class="required">*</span></label>
+            <input type="text" name="firstName" class="form-input" required value="<%= formData.firstName || '' %>">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Uzvārds <span class="required">*</span></label>
+            <input type="text" name="lastName" class="form-input" required value="<%= formData.lastName || '' %>">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Valsts / Reģions <span class="required">*</span></label>
+          <select name="country" class="form-input">
+            <option value="Latvija" <%= (formData.country || 'Latvija') === 'Latvija' ? 'selected' : '' %>>Latvija</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Ielas nosaukums <span class="required">*</span></label>
+          <input type="text" name="address" class="form-input" required placeholder="Mājas numurs un ielas nosaukums" value="<%= formData.address || '' %>">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pilsēta <span class="required">*</span></label>
+          <input type="text" name="city" class="form-input" required value="<%= formData.city || '' %>">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pasta indekss <span class="required">*</span></label>
+          <input type="text" name="zip" class="form-input" required value="<%= formData.zip || '' %>">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tālrunis (nav obligāts)</label>
+          <input type="tel" name="phone" class="form-input" value="<%= formData.phone || '' %>">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Epasta adrese <span class="required">*</span></label>
+          <input type="email" name="email" class="form-input" required value="<%= formData.email || '' %>">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Papildu informācija</label>
+          <textarea name="note" class="form-input form-textarea" placeholder="Piezīmes par pasūtījumu, piegādi vai rekvizītiem."><%= formData.note || '' %></textarea>
+        </div>
+
+        <div class="checkout-payment-box">
+          <h3>Maksājuma veids</h3>
+          <label class="checkout-radio">
+            <input type="radio" name="paymentMethod" value="Tiešais bankas pārskaitījums" <%= !formData.paymentMethod || formData.paymentMethod === 'Tiešais bankas pārskaitījums' ? 'checked' : '' %>>
+            <span>
+              <strong>Tiešais bankas pārskaitījums</strong>
+              <small>Veiciet maksājumu uz mūsu bankas kontu pēc pasūtījuma apstiprināšanas.</small>
+            </span>
+          </label>
+          <label class="checkout-radio">
+            <input type="radio" name="paymentMethod" value="Skaidrā naudā pēc piegādes" <%= formData.paymentMethod === 'Skaidrā naudā pēc piegādes' ? 'checked' : '' %>>
+            <span>
+              <strong>Skaidrā naudā pēc piegādes</strong>
+              <small>Norēķins pie preces saņemšanas vai iepriekš saskaņojot ar mums.</small>
+            </span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full checkout-submit">Veikt pasūtījumu</button>
+      </form>
+    </div>
+
+    <aside class="checkout-summary-card">
+      <h2>Jūsu pasūtījums</h2>
+
+      <div class="checkout-summary-head">
+        <span>Produkts</span>
+        <span>Cena ar PVN</span>
+      </div>
+
+      <div class="checkout-item-list">
+        <% for (const item of it.cart) { %>
+          <article class="checkout-item">
+            <div class="checkout-item-main">
+              <% if (item.image) { %>
+                <img src="<%= item.image %>" alt="<%= item.name %>" class="checkout-item-image" loading="lazy">
+              <% } else { %>
+                <div class="checkout-item-image checkout-item-image-placeholder">LD</div>
+              <% } %>
+
+              <div class="checkout-item-copy">
+                <div class="checkout-item-name"><%= item.name %> × <%= item.quantity %></div>
+
+                <% if (item.options && Object.keys(item.options).length > 0) { %>
+                  <div class="checkout-item-options">
+                    <% for (const [key, value] of Object.entries(item.options)) { %>
+                      <% if (key !== 'Faila saite') { %>
+                        <div><strong><%= key %>:</strong> <%= value %></div>
+                      <% } %>
+                    <% } %>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="checkout-item-price">
+              <strong><%= (Number(item.price) * item.quantity * 1.21).toFixed(2) %> €</strong>
+              <span>(iesk. PVN)</span>
+            </div>
+          </article>
+        <% } %>
+      </div>
+
+      <div class="checkout-total-list">
+        <div>
+          <span>Bez PVN</span>
+          <strong><%= Number(it.total).toFixed(2) %> €</strong>
+        </div>
+        <div>
+          <span>PVN 21%</span>
+          <strong><%= totalVat.toFixed(2) %> €</strong>
+        </div>
+        <div class="checkout-total-row">
+          <span>Cena ar PVN</span>
+          <strong><%= totalWithVat.toFixed(2) %> €</strong>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>

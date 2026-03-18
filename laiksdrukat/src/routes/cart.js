@@ -65,6 +65,7 @@ async function cartRoutes(fastify) {
       quantity = 1,
       inkColor,
       deliveryMethod,
+      deliveryAddress,
       deliveryPrice = 0,
       stampText,
     } = fields
@@ -91,6 +92,10 @@ async function cartRoutes(fastify) {
       options['Preces saņemšana'] = extraPrice > 0
         ? `${deliveryMethod} + ${formatPrice(extraPrice)} €`
         : deliveryMethod
+    }
+
+    if (deliveryAddress && String(deliveryAddress).trim()) {
+      options.Adrese = String(deliveryAddress).trim()
     }
 
     if (stampText && String(stampText).trim()) {

@@ -84,3 +84,47 @@ if (nameInput && slugInput && !slugInput.value) {
       .replace(/^-|-$/g, '')
   })
 }
+
+document.querySelectorAll('[data-delivery-method]').forEach((select) => {
+  const form = select.closest('form')
+  const addressGroup = form?.querySelector('[data-delivery-address-group]')
+  const addressInput = form?.querySelector('[data-delivery-address-input]')
+
+  if (!addressGroup || !addressInput) {
+    return
+  }
+
+  const syncDeliveryAddress = () => {
+    const requiresAddress = select.value.toLowerCase().includes('pakom')
+    addressGroup.hidden = !requiresAddress
+    addressInput.required = requiresAddress
+
+    if (!requiresAddress) {
+      addressInput.value = ''
+    }
+  }
+
+  select.addEventListener('change', syncDeliveryAddress)
+  syncDeliveryAddress()
+})
+
+const messageInput = document.querySelector('[data-message-input]')
+const messageCount = document.querySelector('[data-message-count]')
+
+if (messageInput && messageCount) {
+  const syncMessageCount = () => {
+    messageCount.textContent = String(messageInput.value.length)
+  }
+
+  messageInput.addEventListener('input', syncMessageCount)
+  syncMessageCount()
+}
+
+const fileInput = document.querySelector('[data-file-input]')
+const fileLabel = document.querySelector('[data-file-label]')
+
+if (fileInput && fileLabel) {
+  fileInput.addEventListener('change', () => {
+    fileLabel.textContent = fileInput.files?.[0]?.name || 'Izvēlieties failu vai ievelciet to šeit'
+  })
+}

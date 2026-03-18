@@ -1,3 +1,5 @@
+const contactAddress = 'Asteru iela 16A, Jelgava, LV-3001'
+
 export const siteContent = {
   meta: {
     title: 'Laiks Drukāt',
@@ -10,9 +12,10 @@ export const siteContent = {
     registrationNumber: '41702000348',
   },
   contact: {
-    address: 'Asteru iela 16A, Jelgava, LV-3001',
+    address: contactAddress,
     shortAddress: 'Asteru iela 16A, Jelgava',
     mapUrl: 'https://maps.app.goo.gl/e8pYdkmmcthHGNEC7',
+    mapEmbedUrl: `https://www.google.com/maps?q=${encodeURIComponent(contactAddress)}&z=15&output=embed`,
     phones: [
       { label: '+371 29 109 703', href: 'tel:+37129109703' },
       { label: '+371 29 653 300', href: 'tel:+37129653300' },

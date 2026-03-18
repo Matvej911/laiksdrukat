@@ -1,34 +1,36 @@
-<%~ include('../partials/layout', { ...it, body: `
+<% layout('../partials/layout') %>
+
 <section class="section">
-  <div class="container" style="max-width:600px;text-align:center;">
-    <div style="font-size:72px;margin-bottom:24px;">✅</div>
-    <h1 style="font-size:36px;font-weight:800;margin-bottom:16px;">Paldies par pasutijumu!</h1>
-    <p style="font-size:17px;color:var(--gray-600);margin-bottom:12px;">
-      Jusu pasutijums ir pienemts. Mes ar jums sazinosimies tuvakajas laika.
-    </p>
-    <% if (it.order) { %>
-      <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:24px;margin:32px 0;text-align:left;">
-        <div style="font-size:13px;color:var(--gray-400);margin-bottom:4px;">Pasutijuma numurs</div>
-        <div style="font-size:22px;font-weight:800;margin-bottom:20px;">#<%= it.order.id %></div>
-        <% for (const item of it.order.items) { %>
-          <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;">
-            <span><%= item.name %> x<%= item.quantity %></span>
-            <span style="font-weight:600;"><%= (Number(item.price) * item.quantity).toFixed(2) %> EUR</span>
+  <div class="container thankyou-shell">
+    <div class="thankyou-card">
+      <span class="eyebrow">Pasūtījums saņemts</span>
+      <h1>Paldies par pasūtījumu!</h1>
+      <p>Mēs esam saņēmuši jūsu pieteikumu un drīzumā sazināsimies, lai apstiprinātu detaļas.</p>
+
+      <% if (it.order) { %>
+        <div class="thankyou-order-card">
+          <div class="thankyou-order-id">Pasūtījuma numurs: #<%= it.order.id %></div>
+
+          <div class="thankyou-order-items">
+            <% for (const item of it.order.items) { %>
+              <div class="thankyou-order-row">
+                <span><%= item.name %> × <%= item.quantity %></span>
+                <strong><%= (Number(item.price) * item.quantity * 1.21).toFixed(2) %> €</strong>
+              </div>
+            <% } %>
           </div>
-        <% } %>
-        <div style="border-top:1px solid var(--gray-200);margin-top:12px;padding-top:12px;display:flex;justify-content:space-between;font-weight:800;">
-          <span>Kopa ar PVN</span>
-          <span style="color:var(--accent);"><%= (Number(it.order.total) * 1.21).toFixed(2) %> EUR</span>
+
+          <div class="thankyou-order-total">
+            <span>Kopā ar PVN</span>
+            <strong><%= (Number(it.order.total) * 1.21).toFixed(2) %> €</strong>
+          </div>
         </div>
+      <% } %>
+
+      <div class="thankyou-actions">
+        <a href="/veikals" class="btn btn-primary">Atpakaļ uz veikalu</a>
+        <a href="/kontakti" class="btn btn-outline">Sazināties ar mums</a>
       </div>
-    <% } %>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <a href="/veikals" class="btn btn-primary">Turpinat iepirkties</a>
-      <a href="/kontakti" class="btn btn-outline">Sazinatieties ar mums</a>
     </div>
-    <p style="font-size:13px;color:var(--gray-400);margin-top:32px;">
-      Jautajumu gadijuma rakstiet uz <a href="mailto:dp@ml.lv" style="color:var(--accent);">dp@ml.lv</a>
-    </p>
   </div>
 </section>
-`}) %>

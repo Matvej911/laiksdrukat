@@ -1,4 +1,4 @@
-<%~ includeFile('admin/layout', { ...it, body: `
+<%~ include('layout', { ...it, body: `
 <div class="admin-page-header">
   <h1>Produkti</h1>
   <a href="/admin/products/new" class="btn btn-primary btn-sm">+ Jauns produkts</a>

@@ -43,7 +43,7 @@ async function checkoutRoutes(fastify) {
         items: {
           create: cart.map(item => ({
             productId: item.productId,
-            name: item.name,
+            name: item.displayName || item.name,
             price: item.price,
             quantity: item.quantity,
           })),

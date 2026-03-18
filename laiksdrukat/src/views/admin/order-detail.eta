@@ -1,4 +1,4 @@
-<%~ includeFile('admin/layout', { ...it, body: `
+<%~ include('layout', { ...it, body: `
 <div class="admin-page-header">
   <h1>Pasutijums #<%= it.order.id %></h1>
   <a href="/admin/orders" class="btn btn-outline btn-sm">Atpakal</a>

@@ -1,4 +1,4 @@
-<%~ includeFile('partials/layout', { ...it, body: `
+<% layout('../../partials/layout') %>
 
 <section class="page-hero page-hero-compact">
   <div class="container">
@@ -7,9 +7,9 @@
       <span class="breadcrumb-sep">/</span>
       <a href="/veikals">Veikals</a>
       <span class="breadcrumb-sep">/</span>
-      <a href="/veikals/kategorija/${it.product.category.slug}">${it.product.category.name}</a>
+      <a href="/veikals/kategorija/<%= it.product.category.slug %>"><%= it.product.category.name %></a>
       <span class="breadcrumb-sep">/</span>
-      <span>${it.product.name}</span>
+      <span><%= it.product.name %></span>
     </div>
   </div>
 </section>
@@ -18,29 +18,68 @@
   <div class="container product-layout">
     <div class="product-stage">
       <% if (it.product.image) { %>
-        <img src="${it.product.image}" alt="${it.product.name}" loading="lazy">
+        <img src="<%= it.product.image %>" alt="<%= it.product.name %>" loading="lazy">
       <% } else { %>
         <div class="product-stage-placeholder">LD</div>
       <% } %>
     </div>
 
     <div class="product-summary">
-      <div class="product-category">${it.product.category.name}</div>
-      <h1>${it.product.name}</h1>
-      <div class="product-price-large">${Number(it.product.price).toFixed(2)} €</div>
-      <p class="product-note">Cena norādīta bez PVN. Precīzu pielāgojumu vai maketa jautājumus saskaņojam saziņā.</p>
-
-      <% if (it.product.description) { %>
-        <p class="product-description">${it.product.description}</p>
-      <% } %>
+      <div class="product-category"><%= it.product.category.name %></div>
+      <h1><%= it.product.name %></h1>
+      <div class="product-price-large"><%= Number(it.product.price).toFixed(2) %> €</div>
+      <p class="product-note">+ PVN</p>
 
       <% if (it.product.stock > 0) { %>
-        <div class="stock-pill">Pieejams noliktavā: ${it.product.stock} gab.</div>
-        <form action="/grozs/add" method="POST" class="product-buy-form">
-          <input type="hidden" name="productId" value="${it.product.id}">
-          <input type="number" name="quantity" value="1" min="1" max="${it.product.stock}" class="qty-input">
-          <button type="submit" class="btn btn-primary">Pievienot grozam</button>
-        </form>
+        <div class="stock-pill">Pieejams noliktavā: <%= it.product.stock %> gab.</div>
+        <% if (it.isStampProduct) { %>
+          <form action="/grozs/add" method="POST" enctype="multipart/form-data" class="product-config-form">
+            <input type="hidden" name="productId" value="<%= it.product.id %>">
+
+            <div class="form-group">
+              <label class="form-label">Nospieduma tintes krāsa: <span class="required">*</span></label>
+              <select name="inkColor" class="form-input" required>
+                <option value="Melna">Melna</option>
+                <option value="Zila">Zila</option>
+                <option value="Sarkana">Sarkana</option>
+                <option value="Zaļa">Zaļa</option>
+                <option value="Violeta">Violeta</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Preces saņemšana: <span class="required">*</span></label>
+              <select name="deliveryMethod" class="form-input" required>
+                <option value="Birojā">Birojā</option>
+                <option value="Pakomāts + 3,00 €">Pakomāts + 3,00 €</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Teksts zīmogam</label>
+              <textarea name="stampText" class="form-input form-textarea" placeholder="Pievienot tekstu zīmogam (rakstat brīvā veidā) vai pievienojiet failu zemāk."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Faila augšupielāde</label>
+              <input type="file" name="stampFile" class="form-input" accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
+            </div>
+
+            <div class="product-buy-row">
+              <div class="form-group">
+                <label class="form-label"><%= it.product.name %> daudzums</label>
+                <input type="number" name="quantity" value="1" min="1" max="<%= it.product.stock %>" class="qty-input">
+              </div>
+              <button type="submit" class="btn btn-primary">Pievienot grozam</button>
+            </div>
+          </form>
+        <% } else { %>
+          <form action="/grozs/add" method="POST" class="product-buy-form">
+            <input type="hidden" name="productId" value="<%= it.product.id %>">
+            <input type="number" name="quantity" value="1" min="1" max="<%= it.product.stock %>" class="qty-input">
+            <button type="submit" class="btn btn-primary">Pievienot grozam</button>
+          </form>
+        <% } %>
       <% } else { %>
         <div class="note-card">
           <h3>Pieejamība pēc pieprasījuma</h3>
@@ -53,6 +92,23 @@
         <p>Ja nepieciešams pielāgots zīmoga teksts, makets vai cita modifikācija, rakstiet mums pirms pasūtījuma.</p>
         <a href="/kontakti" class="btn btn-outline">Atvērt kontaktus</a>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-muted">
+  <div class="container">
+    <div class="section-heading section-heading-left">
+      <span class="eyebrow">Produkta apraksts</span>
+      <h2>Apraksts un nospieduma paraugs</h2>
+    </div>
+
+    <div class="product-description-card">
+      <% if (it.product.description) { %>
+        <%~ it.product.description %>
+      <% } else { %>
+        <p>Šim produktam apraksts vēl tiks pievienots.</p>
+      <% } %>
     </div>
   </div>
 </section>
@@ -94,5 +150,3 @@
   </div>
 </section>
 <% } %>
-
-` }) %>

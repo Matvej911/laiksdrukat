@@ -1,4 +1,4 @@
-<%~ includeFile('partials/layout', { ...it, body: `
+<%~ include('layout', { ...it, body: `
 
 <section class="page-hero">
   <div class="container">

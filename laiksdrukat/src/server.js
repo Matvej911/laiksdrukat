@@ -2,6 +2,7 @@ import Fastify from 'fastify'
 import FastifyView from '@fastify/view'
 import FastifyStatic from '@fastify/static'
 import FastifyFormbody from '@fastify/formbody'
+import FastifyMultipart from '@fastify/multipart'
 import FastifyCookie from '@fastify/cookie'
 import FastifySession from '@fastify/session'
 import { Eta } from 'eta'
@@ -44,6 +45,12 @@ await fastify.register(FastifyStatic, {
 
 // Body parsing
 await fastify.register(FastifyFormbody)
+await fastify.register(FastifyMultipart, {
+  limits: {
+    files: 1,
+    fileSize: 10 * 1024 * 1024,
+  },
+})
 
 // Cookies + session
 await fastify.register(FastifyCookie)

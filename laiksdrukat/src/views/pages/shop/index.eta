@@ -1,4 +1,4 @@
-<%~ includeFile('partials/layout', { ...it, body: `
+<% layout('../../partials/layout') %>
 
 <section class="page-hero page-hero-compact">
   <div class="container">
@@ -11,7 +11,7 @@
     <div class="page-hero-copy">
       <span class="eyebrow">E-veikals</span>
       <h1>Zīmogi un zīmogu tintes</h1>
-      <p>${it.site.shop.intro}</p>
+      <p><%= it.site.shop.intro %></p>
     </div>
 
     <div class="category-grid category-grid-compact">
@@ -43,6 +43,34 @@
 
 <section class="section">
   <div class="container">
+    <form action="<%= it.activeCategory ? ('/veikals/kategorija/' + it.activeCategory) : '/veikals' %>" method="GET" class="shop-toolbar">
+      <div class="shop-toolbar-field">
+        <label for="q" class="shop-toolbar-label">Meklēt produktu</label>
+        <input id="q" type="search" name="q" value="<%= it.q || '' %>" class="form-input" placeholder="Piemēram, Colop 55 oval">
+      </div>
+
+      <div class="shop-toolbar-field">
+        <label for="sort" class="shop-toolbar-label">Kārtot</label>
+        <select id="sort" name="sort" class="form-input">
+          <option value="name-asc" <%= it.sort === 'name-asc' ? 'selected' : '' %>>Pēc nosaukuma</option>
+          <option value="price-asc" <%= it.sort === 'price-asc' ? 'selected' : '' %>>Cena: no zemākās</option>
+          <option value="price-desc" <%= it.sort === 'price-desc' ? 'selected' : '' %>>Cena: no augstākās</option>
+        </select>
+      </div>
+
+      <div class="shop-toolbar-actions">
+        <button type="submit" class="btn btn-primary">Meklēt</button>
+        <a href="<%= it.activeCategory ? ('/veikals/kategorija/' + it.activeCategory) : '/veikals' %>" class="btn btn-outline">Notīrīt</a>
+      </div>
+    </form>
+
+    <div class="shop-results-meta">
+      <strong><%= it.products.length %></strong> produkti
+      <% if (it.q) { %>
+        <span>Meklēšana: "<%= it.q %>"</span>
+      <% } %>
+    </div>
+
     <% if (it.products.length === 0) { %>
       <div class="empty-state">
         <h2>Šajā kategorijā pagaidām nav produktu</h2>
@@ -80,5 +108,3 @@
     <% } %>
   </div>
 </section>
-
-` }) %>

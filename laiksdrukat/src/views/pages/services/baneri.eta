@@ -1,4 +1,4 @@
-<%~ includeFile('partials/layout', { ...it, body: `
+<%~ include('../../partials/layout', { ...it, body: `
 <section class="section-sm">
   <div class="container" style="max-width:800px;">
     <div class="breadcrumb">

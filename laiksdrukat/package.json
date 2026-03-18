@@ -24,7 +24,8 @@
     "dotenv": "^16.4.5",
     "eta": "^3.5.0",
     "fastify": "^4.28.1",
-    "fastify-plugin": "^4.5.1"
+    "fastify-plugin": "^4.5.1",
+    "nodemailer": "^8.0.3"
   },
   "devDependencies": {
     "prisma": "^5.22.0"

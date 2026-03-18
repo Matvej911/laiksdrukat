@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto'
 import { extname, join } from 'path'
 
 import { serviceRouteEntries } from '../content/site.js'
+import { sendContactNotification } from '../lib/mailer.js'
 
 function sanitizeFilename(filename) {
   return filename.replace(/[^a-zA-Z0-9._-]/g, '-')
@@ -136,6 +137,16 @@ async function storefrontRoutes(fastify) {
       `${JSON.stringify(entry)}\n`,
       'utf8',
     )
+
+    try {
+      const result = await sendContactNotification(entry)
+
+      if (!result.sent) {
+        fastify.log.warn({ reason: result.reason }, 'Contact notification email was not sent')
+      }
+    } catch (error) {
+      fastify.log.error(error, 'Failed to send contact notification email')
+    }
 
     return reply.redirect('/kontakti?sent=1')
   })

@@ -2,6 +2,13 @@ import bcrypt from 'bcrypt'
 import { readFile } from 'fs/promises'
 import { join } from 'path'
 
+import {
+  addNotificationRecipient,
+  deleteNotificationRecipient,
+  getNotificationRecipients,
+} from '../../lib/notification-recipients.js'
+import { isMailConfigured } from '../../lib/mailer.js'
+
 async function readContactMessages() {
   try {
     const file = await readFile(
@@ -191,6 +198,40 @@ async function adminRoutes(fastify) {
       title: `Ziņa no ${message.name}`,
       message,
     })
+  })
+
+  // --- NOTIFICATION EMAILS ---
+
+  fastify.get('/notification-emails', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const recipients = await getNotificationRecipients()
+
+    return reply.view('admin/notification-emails', {
+      title: 'Admin | Paziņojumu e-pasti',
+      recipients,
+      mailConfigured: isMailConfigured(),
+      error: null,
+      success: request.query?.saved === '1',
+    })
+  })
+
+  fastify.post('/notification-emails', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    try {
+      await addNotificationRecipient(request.body.email)
+      return reply.redirect('/admin/notification-emails?saved=1')
+    } catch (error) {
+      return reply.view('admin/notification-emails', {
+        title: 'Admin | Paziņojumu e-pasti',
+        recipients: await getNotificationRecipients(),
+        mailConfigured: isMailConfigured(),
+        error: error.message || 'Neizdevās pievienot e-pasta adresi.',
+        success: false,
+      })
+    }
+  })
+
+  fastify.post('/notification-emails/delete', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    await deleteNotificationRecipient(request.body.email)
+    return reply.redirect('/admin/notification-emails?saved=1')
   })
 }
 

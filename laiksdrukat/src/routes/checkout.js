@@ -1,3 +1,8 @@
+import {
+  sendCustomerOrderConfirmation,
+  sendOwnerOrderNotification,
+} from '../lib/mailer.js'
+
 async function checkoutRoutes(fastify) {
   // Checkout form
   fastify.get('/', async (request, reply) => {
@@ -66,6 +71,28 @@ async function checkoutRoutes(fastify) {
         },
       },
     })
+
+    try {
+      const ownerResult = await sendOwnerOrderNotification({
+        order,
+        cart,
+      })
+
+      if (!ownerResult.sent) {
+        fastify.log.warn({ reason: ownerResult.reason, orderId: order.id }, 'Owner order notification email was not sent')
+      }
+
+      const customerResult = await sendCustomerOrderConfirmation({
+        order,
+        cart,
+      })
+
+      if (!customerResult.sent) {
+        fastify.log.warn({ reason: customerResult.reason, orderId: order.id }, 'Customer order confirmation email was not sent')
+      }
+    } catch (error) {
+      fastify.log.error(error, 'Failed to send order emails')
+    }
 
     fastify.clearCart(request)
 

@@ -99,3 +99,7 @@
     </table>
   </div>
 </div>
+
+<div style="margin-top:24px;display:flex;justify-content:flex-end;">
+  <a href="/admin/notification-emails" class="btn btn-outline btn-sm">Pārvaldīt paziņojumu e-pastus</a>
+</div>

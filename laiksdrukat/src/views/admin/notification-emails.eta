@@ -1,0 +1,66 @@
+<% layout('layout') %>
+
+<div class="admin-page-header">
+  <h1>Paziņojumu e-pasti</h1>
+</div>
+
+<div class="admin-detail-grid">
+  <div class="admin-card">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:18px;">Iekšējie saņēmēji</h3>
+
+    <% if (it.success) { %>
+      <div class="admin-success-banner">Izmaiņas saglabātas.</div>
+    <% } %>
+
+    <% if (it.error) { %>
+      <div class="form-error"><%= it.error %></div>
+    <% } %>
+
+    <form action="/admin/notification-emails" method="POST" class="admin-inline-form" style="margin-bottom:18px;">
+      <input type="email" name="email" class="form-input" placeholder="darbinieks@uznemums.lv" required>
+      <button type="submit" class="btn btn-primary btn-sm">Pievienot</button>
+    </form>
+
+    <div class="admin-warning-banner" style="margin-bottom:18px;">
+      Šie e-pasti saņem īpašnieka paziņojumus par jaunām kontaktformām un jauniem pasūtījumiem. Pircēja apstiprinājuma e-pasts tiek sūtīts atsevišķi uz klienta e-pasta adresi.
+    </div>
+
+    <div class="admin-list">
+      <% for (const recipient of it.recipients) { %>
+        <div class="admin-list-item">
+          <div>
+            <div class="admin-meta-value"><%= recipient.email %></div>
+            <div class="admin-meta-label">Pievienots <%= new Date(recipient.createdAt).toLocaleDateString('lv-LV') %></div>
+          </div>
+          <form action="/admin/notification-emails/delete" method="POST">
+            <input type="hidden" name="email" value="<%= recipient.email %>">
+            <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#991b1b;">Dzest</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:18px;">Sūtīšanas statuss</h3>
+    <div class="<%= it.mailConfigured ? 'admin-success-banner' : 'admin-warning-banner' %>">
+      <% if (it.mailConfigured) { %>
+        SMTP iestatījumi ir aizpildīti, un sistēma nosūtīs īpašnieka paziņojumus uz saņēmēju sarakstu, kā arī pircēja apstiprinājumu uz klienta e-pasta adresi.
+      <% } else { %>
+        SMTP vēl nav konfigurēts. Ziņas joprojām tiek saglabātas admin panelī, bet e-pasti netiks nosūtīti, līdz aizpildīsiet SMTP iestatījumus `.env` failā.
+      <% } %>
+    </div>
+
+    <div class="admin-file-box" style="margin-top:18px;">
+      <div class="admin-meta-label">Nepieciešamie .env lauki</div>
+      <div class="admin-code-list">
+        <div>SMTP_HOST</div>
+        <div>SMTP_PORT</div>
+        <div>SMTP_SECURE</div>
+        <div>SMTP_USER</div>
+        <div>SMTP_PASS</div>
+        <div>SMTP_FROM</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,9 @@
-<%~ include('layout', { ...it, body: `
+<% layout('layout') %>
+
 <div class="admin-page-header">
   <h1>Dashboard</h1>
 </div>
+
 <div class="admin-stats">
   <div class="stat-card">
     <div class="stat-value"><%= it.productCount %></div>
@@ -14,6 +16,10 @@
   <div class="stat-card stat-card-accent">
     <div class="stat-value"><%= it.pendingOrders %></div>
     <div class="stat-label">Gaida apstradi</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= it.messageCount %></div>
+    <div class="stat-label">Kontaktu zinas</div>
   </div>
 </div>
 
@@ -36,17 +42,60 @@
       </thead>
       <tbody>
         <% for (const o of it.recentOrders) { %>
-        <tr>
-          <td style="font-weight:700;">#<%= o.id %></td>
-          <td><%= o.name %></td>
-          <td style="font-weight:600;"><%= (Number(o.total) * 1.21).toFixed(2) %> EUR</td>
-          <td><span class="badge badge-<%= o.status.toLowerCase() %>"><%= o.status %></span></td>
-          <td style="color:var(--gray-400);font-size:13px;"><%= new Date(o.createdAt).toLocaleDateString('lv-LV') %></td>
-          <td><a href="/admin/orders/<%= o.id %>" class="btn btn-sm btn-outline">Skatit</a></td>
-        </tr>
+          <tr>
+            <td style="font-weight:700;">#<%= o.id %></td>
+            <td><%= o.name %></td>
+            <td style="font-weight:600;"><%= (Number(o.total) * 1.21).toFixed(2) %> EUR</td>
+            <td><span class="badge badge-<%= o.status.toLowerCase() %>"><%= o.status %></span></td>
+            <td style="color:var(--gray-400);font-size:13px;"><%= new Date(o.createdAt).toLocaleDateString('lv-LV') %></td>
+            <td><a href="/admin/orders/<%= o.id %>" class="btn btn-sm btn-outline">Skatit</a></td>
+          </tr>
         <% } %>
       </tbody>
     </table>
   </div>
 </div>
-`}) %>
+
+<div style="margin-top:40px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <h2 style="font-size:18px;font-weight:700;">Jaunakās ziņas</h2>
+    <a href="/admin/messages" class="btn btn-outline btn-sm">Visas zinas</a>
+  </div>
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Vards</th>
+          <th>E-pasts</th>
+          <th>Talrunis</th>
+          <th>Zina</th>
+          <th>Datums</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (it.recentMessages.length === 0) { %>
+          <tr>
+            <td colspan="6" style="color:var(--gray-400);">Vel nav saņemta neviena kontaktforma.</td>
+          </tr>
+        <% } %>
+        <% for (const message of it.recentMessages) { %>
+          <tr>
+            <td style="font-weight:700;"><%= message.name %></td>
+            <td><%= message.email %></td>
+            <td><%= message.phone || '-' %></td>
+            <td>
+              <% if (message.message.length > 60) { %>
+                <%= message.message.slice(0, 60) %>...
+              <% } else { %>
+                <%= message.message %>
+              <% } %>
+            </td>
+            <td style="color:var(--gray-400);font-size:13px;"><%= new Date(message.createdAt).toLocaleDateString('lv-LV') %></td>
+            <td><a href="/admin/messages/<%= message.id %>" class="btn btn-sm btn-outline">Skatit</a></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>

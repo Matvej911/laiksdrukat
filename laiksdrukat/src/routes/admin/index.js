@@ -1,4 +1,27 @@
 import bcrypt from 'bcrypt'
+import { readFile } from 'fs/promises'
+import { join } from 'path'
+
+async function readContactMessages() {
+  try {
+    const file = await readFile(
+      join(process.cwd(), 'data', 'contact-submissions', 'messages.jsonl'),
+      'utf8',
+    )
+
+    return file
+      .split(/\r?\n/)
+      .filter(Boolean)
+      .map((line) => JSON.parse(line))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return []
+    }
+
+    throw error
+  }
+}
 
 async function adminRoutes(fastify) {
   // Login page
@@ -33,7 +56,7 @@ async function adminRoutes(fastify) {
 
   // Dashboard
   fastify.get('/', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const [productCount, orderCount, pendingOrders, recentOrders] = await Promise.all([
+    const [productCount, orderCount, pendingOrders, recentOrders, contactMessages] = await Promise.all([
       fastify.db.product.count(),
       fastify.db.order.count(),
       fastify.db.order.count({ where: { status: 'PENDING' } }),
@@ -42,6 +65,7 @@ async function adminRoutes(fastify) {
         orderBy: { createdAt: 'desc' },
         include: { items: true },
       }),
+      readContactMessages(),
     ])
 
     return reply.view('admin/dashboard', {
@@ -50,6 +74,8 @@ async function adminRoutes(fastify) {
       orderCount,
       pendingOrders,
       recentOrders,
+      messageCount: contactMessages.length,
+      recentMessages: contactMessages.slice(0, 5),
     })
   })
 
@@ -140,6 +166,31 @@ async function adminRoutes(fastify) {
       data: { status: request.body.status },
     })
     return reply.redirect(`/admin/orders/${request.params.id}`)
+  })
+
+  // --- CONTACT MESSAGES ---
+
+  fastify.get('/messages', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const messages = await readContactMessages()
+
+    return reply.view('admin/messages', {
+      title: 'Admin | Ziņas',
+      messages,
+    })
+  })
+
+  fastify.get('/messages/:id', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const messages = await readContactMessages()
+    const message = messages.find((entry) => entry.id === request.params.id)
+
+    if (!message) {
+      return reply.code(404).send('Message not found')
+    }
+
+    return reply.view('admin/message-detail', {
+      title: `Ziņa no ${message.name}`,
+      message,
+    })
   })
 }
 

@@ -1,0 +1,48 @@
+<% layout('layout') %>
+
+<div class="admin-page-header">
+  <h1>Kontaktu zina</h1>
+  <a href="/admin/messages" class="btn btn-outline btn-sm">Atpakal</a>
+</div>
+
+<div class="admin-detail-grid">
+  <div class="admin-card">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:18px;">Iesniegtie dati</h3>
+    <div class="admin-meta-grid">
+      <div>
+        <div class="admin-meta-label">Vards</div>
+        <div class="admin-meta-value"><%= it.message.name %></div>
+      </div>
+      <div>
+        <div class="admin-meta-label">E-pasts</div>
+        <div class="admin-meta-value"><%= it.message.email %></div>
+      </div>
+      <div>
+        <div class="admin-meta-label">Talrunis</div>
+        <div class="admin-meta-value"><%= it.message.phone || '-' %></div>
+      </div>
+      <div>
+        <div class="admin-meta-label">Datums</div>
+        <div class="admin-meta-value"><%= new Date(it.message.createdAt).toLocaleString('lv-LV') %></div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;">
+      <div class="admin-meta-label">Zina</div>
+      <div class="admin-message-box"><%= it.message.message %></div>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:18px;">Pielikums</h3>
+    <% if (it.message.attachment) { %>
+      <div class="admin-file-box">
+        <div class="admin-meta-label">Fails</div>
+        <div class="admin-meta-value"><%= it.message.attachment.name %></div>
+        <a href="<%= it.message.attachment.url %>" target="_blank" rel="noreferrer" class="btn btn-primary btn-sm" style="margin-top:16px;">Atvērt failu</a>
+      </div>
+    <% } else { %>
+      <div class="admin-empty-copy">Šai ziņai nav pievienots fails.</div>
+    <% } %>
+  </div>
+</div>

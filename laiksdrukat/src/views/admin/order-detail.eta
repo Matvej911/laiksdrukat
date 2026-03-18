@@ -1,11 +1,13 @@
-<%~ include('layout', { ...it, body: `
+<% layout('layout') %>
+
 <div class="admin-page-header">
   <h1>Pasutijums #<%= it.order.id %></h1>
   <a href="/admin/orders" class="btn btn-outline btn-sm">Atpakal</a>
 </div>
-<div style="display:grid;grid-template-columns:1fr 320px;gap:32px;">
+
+<div class="admin-detail-grid">
   <div>
-    <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px;">
+    <div class="admin-card" style="margin-bottom:24px;">
       <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;">Preces</h3>
       <table class="admin-table">
         <thead>
@@ -13,12 +15,12 @@
         </thead>
         <tbody>
           <% for (const item of it.order.items) { %>
-          <tr>
-            <td><%= item.name %></td>
-            <td><%= Number(item.price).toFixed(2) %> EUR</td>
-            <td><%= item.quantity %></td>
-            <td style="font-weight:600;"><%= (Number(item.price) * item.quantity).toFixed(2) %> EUR</td>
-          </tr>
+            <tr>
+              <td><%= item.name %></td>
+              <td><%= Number(item.price).toFixed(2) %> EUR</td>
+              <td><%= item.quantity %></td>
+              <td style="font-weight:600;"><%= (Number(item.price) * item.quantity).toFixed(2) %> EUR</td>
+            </tr>
           <% } %>
         </tbody>
       </table>
@@ -27,43 +29,60 @@
         <span style="font-size:18px;font-weight:800;color:var(--accent);"><%= (Number(it.order.total) * 1.21).toFixed(2) %> EUR</span>
       </div>
     </div>
-    <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:24px;">
+
+    <div class="admin-card">
       <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;">Klienta informacija</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:14px;">
-        <div><div style="color:var(--gray-400);margin-bottom:4px;">Vards</div><div style="font-weight:500;"><%= it.order.name %></div></div>
-        <div><div style="color:var(--gray-400);margin-bottom:4px;">E-pasts</div><div style="font-weight:500;"><%= it.order.email %></div></div>
-        <% if (it.order.phone) { %><div><div style="color:var(--gray-400);margin-bottom:4px;">Talrunis</div><div style="font-weight:500;"><%= it.order.phone %></div></div><% } %>
-        <% if (it.order.address) { %><div><div style="color:var(--gray-400);margin-bottom:4px;">Adrese</div><div style="font-weight:500;"><%= it.order.address %>, <%= it.order.city %></div></div><% } %>
+      <div class="admin-meta-grid">
+        <div>
+          <div class="admin-meta-label">Vards</div>
+          <div class="admin-meta-value"><%= it.order.name %></div>
+        </div>
+        <div>
+          <div class="admin-meta-label">E-pasts</div>
+          <div class="admin-meta-value"><%= it.order.email %></div>
+        </div>
+        <div>
+          <div class="admin-meta-label">Talrunis</div>
+          <div class="admin-meta-value"><%= it.order.phone || '-' %></div>
+        </div>
+        <div>
+          <div class="admin-meta-label">Adrese</div>
+          <div class="admin-meta-value">
+            <%= it.order.address || '-' %>
+            <% if (it.order.city) { %>, <%= it.order.city %><% } %>
+            <% if (it.order.zip) { %>, <%= it.order.zip %><% } %>
+          </div>
+        </div>
       </div>
+
       <% if (it.order.note) { %>
-        <div style="margin-top:16px;padding:12px;background:var(--gray-50);border-radius:var(--radius);font-size:14px;">
-          <strong>Piezime:</strong> <%= it.order.note %>
+        <div style="margin-top:20px;">
+          <div class="admin-meta-label">Piezime</div>
+          <div class="admin-message-box"><%= it.order.note %></div>
         </div>
       <% } %>
     </div>
   </div>
-  <div>
-    <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:24px;">
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;">Statuss</h3>
-      <div style="margin-bottom:16px;">
-        <span class="badge badge-<%= it.order.status.toLowerCase() %>" style="font-size:14px;padding:6px 14px;">
-          <%= it.order.status %>
-        </span>
-      </div>
-      <form action="/admin/orders/<%= it.order.id %>/status" method="POST">
-        <select name="status" class="form-input" style="margin-bottom:12px;">
-          <option value="PENDING" <%= it.order.status === 'PENDING' ? 'selected' : '' %>>PENDING</option>
-          <option value="CONFIRMED" <%= it.order.status === 'CONFIRMED' ? 'selected' : '' %>>CONFIRMED</option>
-          <option value="SHIPPED" <%= it.order.status === 'SHIPPED' ? 'selected' : '' %>>SHIPPED</option>
-          <option value="DONE" <%= it.order.status === 'DONE' ? 'selected' : '' %>>DONE</option>
-          <option value="CANCELLED" <%= it.order.status === 'CANCELLED' ? 'selected' : '' %>>CANCELLED</option>
-        </select>
-        <button type="submit" class="btn btn-primary btn-full btn-sm">Mainit statusu</button>
-      </form>
-      <div style="margin-top:16px;font-size:13px;color:var(--gray-400);">
-        Izveidots: <%= new Date(it.order.createdAt).toLocaleString('lv-LV') %>
-      </div>
+
+  <div class="admin-card">
+    <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;">Statuss</h3>
+    <div style="margin-bottom:16px;">
+      <span class="badge badge-<%= it.order.status.toLowerCase() %>" style="font-size:14px;padding:6px 14px;">
+        <%= it.order.status %>
+      </span>
+    </div>
+    <form action="/admin/orders/<%= it.order.id %>/status" method="POST">
+      <select name="status" class="form-input" style="margin-bottom:12px;">
+        <option value="PENDING" <%= it.order.status === 'PENDING' ? 'selected' : '' %>>PENDING</option>
+        <option value="CONFIRMED" <%= it.order.status === 'CONFIRMED' ? 'selected' : '' %>>CONFIRMED</option>
+        <option value="SHIPPED" <%= it.order.status === 'SHIPPED' ? 'selected' : '' %>>SHIPPED</option>
+        <option value="DONE" <%= it.order.status === 'DONE' ? 'selected' : '' %>>DONE</option>
+        <option value="CANCELLED" <%= it.order.status === 'CANCELLED' ? 'selected' : '' %>>CANCELLED</option>
+      </select>
+      <button type="submit" class="btn btn-primary btn-full btn-sm">Mainit statusu</button>
+    </form>
+    <div style="margin-top:16px;font-size:13px;color:var(--gray-400);">
+      Izveidots: <%= new Date(it.order.createdAt).toLocaleString('lv-LV') %>
     </div>
   </div>
 </div>
-`}) %>

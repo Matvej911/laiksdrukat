@@ -1,0 +1,70 @@
+<%~ includeFile('partials/layout', { ...it, body: `
+
+<section class="page-hero page-hero-compact">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Sākums</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Kontakti</span>
+    </div>
+
+    <div class="page-hero-copy">
+      <span class="eyebrow">Kontakti</span>
+      <h1>Sazinieties ar Laiks Drukāt</h1>
+      <p>Jelgavas adrese, divi tālruņi, e-pasts un Facebook saziņai. Šeit jaunajā versijā koncentrējam visu būtisko informāciju vienā ātrā lapā.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container contact-layout">
+    <div class="contact-panel">
+      <span class="eyebrow">Tiešā saziņa</span>
+      <h2>Kontaktu informācija</h2>
+
+      <div class="contact-stack">
+        <div class="contact-row">
+          <span class="contact-label">Adrese</span>
+          <a href="${it.site.contact.mapUrl}" target="_blank" rel="noreferrer">${it.site.contact.address}</a>
+        </div>
+        <% for (const phone of it.site.contact.phones) { %>
+          <div class="contact-row">
+            <span class="contact-label">Tālrunis</span>
+            <a href="<%= phone.href %>"><%= phone.label %></a>
+          </div>
+        <% } %>
+        <div class="contact-row">
+          <span class="contact-label">E-pasts</span>
+          <a href="${it.site.contact.emailHref}">${it.site.contact.email}</a>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Facebook</span>
+          <a href="${it.site.contact.facebook.url}" target="_blank" rel="noreferrer">${it.site.contact.facebook.label}</a>
+        </div>
+      </div>
+
+      <div class="contact-actions">
+        <a href="${it.site.contact.emailHref}" class="btn btn-primary">Rakstīt e-pastu</a>
+        <a href="${it.site.contact.mapUrl}" class="btn btn-outline" target="_blank" rel="noreferrer">Atvērt kartē</a>
+      </div>
+    </div>
+
+    <div class="contact-panel contact-panel-accent">
+      <span class="eyebrow">Ātrākais ceļš uz piedāvājumu</span>
+      <h2>Ko atsūtīt, lai mēs varam atbildēt ātrāk</h2>
+      <ul class="info-list">
+        <li>Pakalpojuma veids, piemēram, zīmogi, auto aplīmēšana, banneri vai vizītkartes.</li>
+        <li>Izmērs, tirāža vai aptuvenais darba apjoms.</li>
+        <li>Faili, logo vai attēli, ja tie jau ir sagatavoti.</li>
+        <li>Termiņš un jebkuras īpašas prasības materiālam vai apdarei.</li>
+      </ul>
+
+      <div class="note-card">
+        <h3>Juridiskā informācija</h3>
+        <p>${it.site.company.legalName} · Reģ. Nr. ${it.site.company.registrationNumber}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+` }) %>

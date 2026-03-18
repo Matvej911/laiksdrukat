@@ -1,0 +1,30 @@
+<%~ includeFile('partials/layout', { ...it, body: `
+<section class="section-sm">
+  <div class="container" style="max-width:800px;">
+    <div class="breadcrumb">
+      <a href="/">Sakums</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Pakalpojumi</span>
+      <span class="breadcrumb-sep">/</span>
+      <span><%= it.title.split(' | ')[0] %></span>
+    </div>
+    <h1 style="font-size:36px;font-weight:800;margin-bottom:16px;"><%= it.title.split(' | ')[0] %></h1>
+    <p style="font-size:17px;color:var(--gray-600);margin-bottom:48px;line-height:1.7;">
+      Sazinieties ar mums, lai apspriestu jusu projektu. Piedavajam individualu pieeju katram klientam.
+    </p>
+    <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:32px;margin-bottom:40px;">
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:20px;">Interesejat par so pakalpojumu?</h3>
+      <p style="color:var(--gray-600);margin-bottom:24px;">Zvaniet vai rakstiet, un mes palidizsim atrast labako risinajumu.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="tel:+37129109703" class="btn btn-primary">Zvanit: +371 29 109 703</a>
+        <a href="/kontakti" class="btn btn-outline">Nosutit zinojumu</a>
+      </div>
+    </div>
+    <div style="padding:24px;border:1px solid var(--gray-200);border-radius:var(--radius-lg);">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">Skatiet musu darbus</h3>
+      <p style="font-size:14px;color:var(--gray-600);">Apmeklejiet sakumlapu, lai aplukotu musu portfolio.</p>
+      <a href="/#portfolio" style="font-size:14px;color:var(--accent);font-weight:500;">Skatit portfolio</a>
+    </div>
+  </div>
+</section>
+`}) %>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | Laiks Drukat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body style="background:var(--gray-50);display:flex;align-items:center;justify-content:center;min-height:100vh;">
+  <div style="width:100%;max-width:380px;padding:24px;">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="font-size:24px;font-weight:800;">Laiks <span style="color:var(--accent);">Drukat</span></div>
+      <div style="font-size:13px;color:var(--gray-400);margin-top:4px;">Admin panelis</div>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow);">
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:24px;">Ielogoties</h2>
+      <% if (it.error) { %>
+        <div class="form-error"><%= it.error %></div>
+      <% } %>
+      <form action="/admin/login" method="POST">
+        <div class="form-group">
+          <label class="form-label">Lietotajvards</label>
+          <input type="text" name="username" class="form-input" autofocus required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Parole</label>
+          <input type="password" name="password" class="form-input" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top:8px;">Ieiet</button>
+      </form>
+    </div>
+    <div style="text-align:center;margin-top:16px;">
+      <a href="/" style="font-size:13px;color:var(--gray-400);">← Atpakal uz vietni</a>
+    </div>
+  </div>
+</body>
+</html>

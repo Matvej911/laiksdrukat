@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= it.title || it.site.meta.title %></title>
+  <meta name="description" content="<%= it.description || it.site.meta.description %>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <%~ it.extraHead || '' %>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <a href="<%= it.site.contact.mapUrl %>" target="_blank" rel="noreferrer"><%= it.site.contact.shortAddress %></a>
+      <div class="topbar-links">
+        <a href="<%= it.site.contact.phones[0].href %>"><%= it.site.contact.phones[0].label %></a>
+        <a href="<%= it.site.contact.emailHref %>"><%= it.site.contact.email %></a>
+        <a href="<%= it.site.contact.facebook.url %>" target="_blank" rel="noreferrer"><%= it.site.contact.facebook.label %></a>
+      </div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="nav-logo-mark">LD</span>
+        <span>Laiks Drukāt</span>
+      </a>
+
+      <button class="hamburger" type="button" aria-expanded="false" aria-controls="nav-menu">
+        Izvēlne
+      </button>
+
+      <div class="nav-links" id="nav-menu">
+        <div class="dropdown">
+          <a href="/#pakalpojumi" class="nav-link">Pakalpojumi</a>
+          <div class="dropdown-menu">
+            <% for (const service of it.site.services) { %>
+              <a href="<%= service.path %>"><%= service.menuTitle %></a>
+            <% } %>
+          </div>
+        </div>
+        <a href="/veikals" class="nav-link">Veikals</a>
+        <a href="/kontakti" class="nav-link">Kontakti</a>
+        <a href="<%= it.site.contact.facebook.url %>" class="nav-link nav-link-muted" target="_blank" rel="noreferrer">Facebook</a>
+      </div>
+
+      <a href="/grozs" class="nav-cart" aria-label="Skatīt grozu">
+        <span>Grozs</span>
+        <% const cartCount = (it.cart || []).reduce((sum, item) => sum + item.quantity, 0) %>
+        <% if (cartCount > 0) { %>
+          <span class="nav-cart-count"><%= cartCount %></span>
+        <% } %>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <%~ it.body %>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="eyebrow">Laiks Drukāt</span>
+        <h3>Drukas un reklāmas darbi bez lieka WordPress smaguma.</h3>
+        <p>Fastify versijā saglabājam pakalpojumu saturu, veikalu un kontaktus, bet lapu padarām vienkāršāku un ātrāku.</p>
+      </div>
+
+      <div>
+        <h4>Pakalpojumi</h4>
+        <ul class="footer-links">
+          <% for (const service of it.site.services) { %>
+            <li><a href="<%= service.path %>"><%= service.menuTitle %></a></li>
+          <% } %>
+        </ul>
+      </div>
+
+      <div>
+        <h4>E-veikals</h4>
+        <ul class="footer-links">
+          <li><a href="/veikals">Visas preces</a></li>
+          <li><a href="/veikals/kategorija/zimogi">Zīmogi</a></li>
+          <li><a href="/veikals/kategorija/zimogu-tintes">Zīmogu tintes</a></li>
+          <li><a href="/grozs">Grozs</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Kontakti</h4>
+        <ul class="footer-links">
+          <li><a href="<%= it.site.contact.mapUrl %>" target="_blank" rel="noreferrer"><%= it.site.contact.address %></a></li>
+          <% for (const phone of it.site.contact.phones) { %>
+            <li><a href="<%= phone.href %>"><%= phone.label %></a></li>
+          <% } %>
+          <li><a href="<%= it.site.contact.emailHref %>"><%= it.site.contact.email %></a></li>
+          <li><a href="<%= it.site.contact.facebook.url %>" target="_blank" rel="noreferrer"><%= it.site.contact.facebook.label %></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© <%= it.currentYear %> <%= it.site.company.name %> · <%= it.site.company.legalName %> · Reģ. Nr. <%= it.site.company.registrationNumber %></p>
+      <p>Jelgava, Latvija</p>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

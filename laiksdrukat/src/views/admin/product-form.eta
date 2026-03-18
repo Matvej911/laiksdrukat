@@ -1,0 +1,48 @@
+<%~ includeFile('admin/layout', { ...it, body: `
+<div class="admin-page-header">
+  <h1><%= it.product ? 'Redigēt produktu' : 'Jauns produkts' %></h1>
+  <a href="/admin/products" class="btn btn-outline btn-sm">Atpakal</a>
+</div>
+<div style="max-width:640px;">
+  <% if (it.error) { %><div class="form-error"><%= it.error %></div><% } %>
+  <form action="/admin/products/<%= it.product ? it.product.id + '/edit' : 'new' %>" method="POST">
+    <div class="form-group">
+      <label class="form-label">Nosaukums <span class="required">*</span></label>
+      <input type="text" name="name" class="form-input" required value="<%= it.product ? it.product.name : '' %>">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Slug (URL) <span class="required">*</span></label>
+      <input type="text" name="slug" class="form-input" required value="<%= it.product ? it.product.slug : '' %>" placeholder="piem. printer-c30">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Apraksts</label>
+      <textarea name="description" class="form-input form-textarea"><%= it.product ? it.product.description || '' : '' %></textarea>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Cena (bez PVN) <span class="required">*</span></label>
+        <input type="number" name="price" class="form-input" step="0.01" min="0" required value="<%= it.product ? it.product.price : '' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Noliktava</label>
+        <input type="number" name="stock" class="form-input" min="0" value="<%= it.product ? it.product.stock : 0 %>">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kategorija <span class="required">*</span></label>
+      <select name="categoryId" class="form-input" required>
+        <% for (const cat of it.categories) { %>
+          <option value="<%= cat.id %>" <%= it.product && it.product.categoryId === cat.id ? 'selected' : '' %>>
+            <%= cat.name %>
+          </option>
+        <% } %>
+      </select>
+    </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+      <input type="checkbox" name="active" id="active" <%= !it.product || it.product.active ? 'checked' : '' %> style="width:16px;height:16px;">
+      <label for="active" style="font-size:14px;font-weight:500;cursor:pointer;">Aktīvs (redzams veikalā)</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Saglabat</button>
+  </form>
+</div>
+`}) %>

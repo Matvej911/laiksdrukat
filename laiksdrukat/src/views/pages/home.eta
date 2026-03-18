@@ -1,0 +1,179 @@
+<%~ includeFile('partials/layout', { ...it, body: `
+
+<section class="hero-section">
+  <div class="container hero-shell">
+    <div class="hero-copy">
+      <span class="eyebrow">${it.site.home.eyebrow}</span>
+      <h1>${it.site.home.title}</h1>
+      <p>${it.site.home.intro}</p>
+
+      <div class="hero-badges">
+        <% for (const item of it.site.home.highlights) { %>
+          <span class="chip"><%= item %></span>
+        <% } %>
+      </div>
+
+      <div class="hero-actions">
+        <a href="/kontakti" class="btn btn-primary">Sazināties ar mums</a>
+        <a href="/veikals" class="btn btn-outline">Skatīt veikalu</a>
+      </div>
+
+      <div class="stat-grid">
+        <% for (const stat of it.site.home.stats) { %>
+          <div class="stat-card">
+            <strong><%= stat.value %></strong>
+            <span><%= stat.label %></span>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-image-card">
+        <img src="${it.site.home.heroImage}" alt="${it.site.home.heroAlt}" loading="eager">
+      </div>
+      <div class="hero-side-card">
+        <span class="eyebrow">Kontakti</span>
+        <h3>Jelgava, Asteru iela 16A</h3>
+        <p>Ātra saziņa telefoniski, e-pastā un Facebook. Tas pats saturs, bet daudz vieglāka mājaslapa.</p>
+        <div class="hero-side-links">
+          <a href="${it.site.contact.phones[0].href}">${it.site.contact.phones[0].label}</a>
+          <a href="${it.site.contact.emailHref}">${it.site.contact.email}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pakalpojumi">
+  <div class="container">
+    <div class="section-heading">
+      <span class="eyebrow">Pakalpojumi</span>
+      <h2>Galvenās WordPress pakalpojumu lapas pārnestas uz ātrāku struktūru</h2>
+      <p>Saglabājam saprotamu navigāciju un katram pakalpojumam veidojam atsevišķu lapu ar skaidru kontaktu un portfolio piesaisti.</p>
+    </div>
+
+    <div class="service-grid">
+      <% for (const service of it.site.services) { %>
+        <a href="<%= service.path %>" class="service-card">
+          <div class="service-card-head">
+            <span class="service-index"><%= String(it.site.services.indexOf(service) + 1).padStart(2, '0') %></span>
+            <span class="service-link">Atvērt lapu</span>
+          </div>
+          <h3><%= service.title %></h3>
+          <p><%= service.teaser %></p>
+        </a>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<section class="section section-muted">
+  <div class="container">
+    <div class="section-heading section-heading-left">
+      <span class="eyebrow">E-veikals</span>
+      <h2>Zīmogi un zīmogu tintes kā atsevišķas kategorijas</h2>
+      <p>${it.site.shop.intro}</p>
+    </div>
+
+    <div class="category-grid">
+      <% for (const categoryInfo of it.site.shop.categories) { %>
+        <% const dbCategory = it.categories.find((category) => category.slug === categoryInfo.slug) %>
+        <a href="/veikals/kategorija/<%= categoryInfo.slug %>" class="category-card">
+          <span class="eyebrow">Kategorija</span>
+          <h3><%= categoryInfo.title %></h3>
+          <p><%= categoryInfo.description %></p>
+          <div class="category-meta">
+            <span><%= dbCategory ? dbCategory._count.products : 0 %> preces</span>
+            <span>Skatīt kategoriju</span>
+          </div>
+        </a>
+      <% } %>
+    </div>
+
+    <div class="products-grid">
+      <% for (const p of it.products) { %>
+        <article class="product-card">
+          <a href="/veikals/<%= p.slug %>">
+            <div class="product-img">
+              <% if (p.image) { %>
+                <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy">
+              <% } else { %>
+                <div class="product-img-placeholder">LD</div>
+              <% } %>
+            </div>
+            <div class="product-info">
+              <div class="product-category"><%= p.category.name %></div>
+              <div class="product-name"><%= p.name %></div>
+              <div class="product-price"><%= Number(p.price).toFixed(2) %> € <span class="product-price-vat">+ PVN</span></div>
+            </div>
+          </a>
+          <div class="product-actions">
+            <form action="/grozs/add" method="POST">
+              <input type="hidden" name="productId" value="<%= p.id %>">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="btn btn-dark btn-full btn-sm">Pievienot grozam</button>
+            </form>
+          </div>
+        </article>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="portfolio">
+  <div class="container">
+    <div class="section-heading">
+      <span class="eyebrow">Portfolio</span>
+      <h2>Lielais attēlu slīdnis svarīgākajiem darbiem</h2>
+      <p>Šeit redzami auto, banneri, drukas materiāli, uzlīmes un vides reklāmas darbi, lai jaunā versija saglabātu līdzīgu sajūtu kā esošā lapa.</p>
+    </div>
+
+    <div class="portfolio-slider" data-slider>
+      <div class="slider-window">
+        <div class="slider-track" data-slider-track>
+          <% for (const item of it.site.portfolio) { %>
+            <article class="portfolio-slide" data-slide>
+              <div class="portfolio-slide-image">
+                <img src="<%= item.image %>" alt="<%= item.alt %>" loading="lazy">
+              </div>
+              <div class="portfolio-slide-copy">
+                <span class="eyebrow"><%= item.title %></span>
+                <h3><%= item.alt %></h3>
+                <p><%= item.text %></p>
+              </div>
+            </article>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="slider-controls">
+        <button type="button" class="slider-arrow" data-slider-prev>Iepriekš</button>
+        <div class="slider-dots">
+          <% for (const item of it.site.portfolio) { %>
+            <button type="button" class="slider-dot <%= it.site.portfolio.indexOf(item) === 0 ? 'is-active' : '' %>" data-slider-dot="<%= it.site.portfolio.indexOf(item) %>" aria-label="Portfolio slaids <%= it.site.portfolio.indexOf(item) + 1 %>"></button>
+          <% } %>
+        </div>
+        <button type="button" class="slider-arrow" data-slider-next>Nākamais</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container contact-band">
+    <div>
+      <span class="eyebrow">Saziņa</span>
+      <h2>Informācija un pasūtījumi bez liekiem klikšķiem</h2>
+      <p>Zvaniet, rakstiet vai atsūtiet failus e-pastā. Ja vajag, Fastify versiju varam tālāk papildināt arī ar pilnu kontaktformu un produktu importu.</p>
+    </div>
+    <div class="contact-points">
+      <a href="${it.site.contact.phones[0].href}" class="contact-pill">${it.site.contact.phones[0].label}</a>
+      <a href="${it.site.contact.phones[1].href}" class="contact-pill">${it.site.contact.phones[1].label}</a>
+      <a href="${it.site.contact.emailHref}" class="contact-pill">${it.site.contact.email}</a>
+      <a href="/kontakti" class="btn btn-primary">Atvērt kontaktus</a>
+    </div>
+  </div>
+</section>
+
+` }) %>

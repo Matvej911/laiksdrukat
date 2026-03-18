@@ -1,0 +1,35 @@
+<%~ includeFile('admin/layout', { ...it, body: `
+<div class="admin-page-header">
+  <h1>Pasutijumi</h1>
+</div>
+<div class="admin-table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Klients</th>
+        <th>E-pasts</th>
+        <th>Preces</th>
+        <th>Summa ar PVN</th>
+        <th>Statuss</th>
+        <th>Datums</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (const o of it.orders) { %>
+      <tr>
+        <td style="font-weight:700;">#<%= o.id %></td>
+        <td><%= o.name %></td>
+        <td style="font-size:13px;color:var(--gray-600);"><%= o.email %></td>
+        <td style="font-size:13px;"><%= o.items.length %> preces</td>
+        <td style="font-weight:600;"><%= (Number(o.total) * 1.21).toFixed(2) %> EUR</td>
+        <td><span class="badge badge-<%= o.status.toLowerCase() %>"><%= o.status %></span></td>
+        <td style="font-size:13px;color:var(--gray-400);"><%= new Date(o.createdAt).toLocaleDateString('lv-LV') %></td>
+        <td><a href="/admin/orders/<%= o.id %>" class="btn btn-sm btn-outline">Skatit</a></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+`}) %>

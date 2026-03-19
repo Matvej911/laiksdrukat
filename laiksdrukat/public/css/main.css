@@ -669,16 +669,51 @@ p {
   gap: 22px;
 }
 
+.portfolio-showcase {
+  background: #4630a3;
+  color: #fff;
+  overflow: hidden;
+}
+
+.portfolio-showcase-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+
+.portfolio-showcase-copy {
+  padding-top: 8px;
+}
+
+.portfolio-showcase-copy h2 {
+  margin: 0 0 20px;
+  color: #ffd91a;
+  font-size: clamp(48px, 5vw, 64px);
+  line-height: 0.95;
+}
+
+.portfolio-showcase-copy p {
+  margin: 0;
+  max-width: 280px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 18px;
+}
+
+.portfolio-slider-gallery {
+  gap: 18px;
+}
+
 .slider-window {
   overflow: hidden;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(201, 91, 30, 0.12);
-  box-shadow: var(--shadow);
+  padding: 0 6px;
 }
 
 .slider-track {
   display: flex;
   transition: transform 0.45s ease;
+  gap: 12px;
 }
 
 .portfolio-slide {
@@ -696,6 +731,16 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.portfolio-slide-gallery {
+  min-width: calc((100% - 24px) / 3);
+  background: transparent;
+}
+
+.portfolio-slide-gallery .portfolio-slide-image {
+  min-height: 520px;
+  overflow: hidden;
 }
 
 .portfolio-slide-copy {
@@ -718,10 +763,10 @@ p {
 
 .slider-arrow {
   padding: 12px 18px;
-  border: 1px solid rgba(201, 91, 30, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
-  background: white;
-  color: var(--text);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
   cursor: pointer;
   font-size: 13px;
   font-weight: 800;
@@ -737,12 +782,12 @@ p {
   height: 12px;
   border: none;
   border-radius: 999px;
-  background: rgba(201, 91, 30, 0.22);
+  background: rgba(255, 255, 255, 0.28);
   cursor: pointer;
 }
 
 .slider-dot.is-active {
-  background: var(--accent);
+  background: #ffd91a;
 }
 
 .contact-band {
@@ -1748,8 +1793,13 @@ p {
   .hero-shell,
   .service-hero,
   .product-layout,
+  .portfolio-showcase-grid,
   .portfolio-slide {
     grid-template-columns: 1fr;
+  }
+
+  .portfolio-slide-gallery {
+    min-width: calc((100% - 12px) / 2);
   }
 
   .service-grid,
@@ -1853,8 +1903,25 @@ p {
   .product-summary,
   .contact-panel,
   .info-panel,
+  .portfolio-showcase-copy,
   .portfolio-slide-copy {
     padding: 28px;
+  }
+
+  .portfolio-showcase-copy h2 {
+    font-size: 42px;
+  }
+
+  .portfolio-showcase-copy p {
+    max-width: none;
+  }
+
+  .portfolio-slide-gallery {
+    min-width: 100%;
+  }
+
+  .portfolio-slide-gallery .portfolio-slide-image {
+    min-height: 380px;
   }
 
   .contact-row a {

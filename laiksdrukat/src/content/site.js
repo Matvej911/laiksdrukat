@@ -64,40 +64,28 @@ export const siteContent = {
   },
   portfolio: [
     {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2024/07/IMG_20240706_182833-scaled.jpg',
+      image: '/images/portfolio/IMG_20240706_182833-scaled.jpg',
       alt: 'Auto aplīmēšana ar pilnu reklāmas dizainu',
-      title: 'Auto aplīmēšana',
-      text: 'Pilnas un daļējas aplīmēšanas risinājumi uzņēmumu auto.',
     },
     {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/1756443787080-scaled.jpg',
+      image: '/images/portfolio/1000017096-scaled.jpg',
       alt: 'Āra reklāmas stends',
-      title: 'Āra reklāma',
-      text: 'Stendi, plāksnes un citi noturīgi risinājumi fasādēm un teritorijām.',
     },
     {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/uiig_pages-to-jpg-0001-scaled.jpg',
-      alt: 'Vizītkartes un drukas materiāli',
-      title: 'Vizītkartes un druka',
-      text: 'Vizītkartes, bukleti, brošūras, flajeri un prezentācijas materiāli.',
+      image: '/images/portfolio/1000017125-scaled.jpg',
+      alt: 'Reklāmas izkārtne veikalam',
     },
     {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/483989033_122109836724781710_5683284030057054303_n.jpg',
+      image: '/images/portfolio/1000017925.jpg',
       alt: 'Gaismas kaste un vides reklāma',
-      title: 'Vides reklāma',
-      text: 'Gaismas kastes, norādes un fasādes vizuālie elementi.',
     },
     {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/Uzlmes-jebkdam-mrim.png',
-      alt: 'Uzlīmes un etiķetes',
-      title: 'Uzlīmes',
-      text: 'Etiķetes, zīmola uzlīmes un lielformāta uzlīmes dažādiem pielietojumiem.',
+      image: '/images/portfolio/averbaneri-scaled.jpg',
+      alt: 'Banneri un lielformāta druka',
     },
     {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/IMG_1668-scaled.jpg',
+      image: '/images/portfolio/numuri-scaled.jpg',
       alt: 'Norāžu un informācijas plāksnes',
-      title: 'Informācijas plāksnes',
-      text: 'Norāžu sistēmas, kabinetu plāksnes un telpu marķējumi.',
     },
   ],
   services: [

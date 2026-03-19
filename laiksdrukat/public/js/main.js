@@ -23,7 +23,8 @@ document.querySelectorAll('[data-slider]').forEach((slider) => {
   let timer = null
 
   const render = () => {
-    track.style.transform = `translateX(-${index * 100}%)`
+    const offset = slides[index]?.offsetLeft ?? 0
+    track.style.transform = `translateX(-${offset}px)`
 
     dots.forEach((dot, dotIndex) => {
       dot.classList.toggle('is-active', dotIndex === index)
@@ -57,6 +58,7 @@ document.querySelectorAll('[data-slider]').forEach((slider) => {
 
   slider.addEventListener('mouseenter', stop)
   slider.addEventListener('mouseleave', start)
+  window.addEventListener('resize', render)
 
   render()
   start()

@@ -121,26 +121,20 @@
   </div>
 </section>
 
-<section class="section" id="portfolio">
-  <div class="container">
-    <div class="section-heading">
-      <span class="eyebrow">Portfolio</span>
-      <h2>Lielais attēlu slīdnis svarīgākajiem darbiem</h2>
-      <p>Šeit redzami auto, banneri, drukas materiāli, uzlīmes un vides reklāmas darbi, lai jaunā versija saglabātu līdzīgu sajūtu kā esošā lapa.</p>
+<section class="section portfolio-showcase" id="portfolio">
+  <div class="container portfolio-showcase-grid">
+    <div class="portfolio-showcase-copy">
+      <h2>Portfolio</h2>
+      <p>Apskatiet dažādus projektus, lai iegūtu priekšstatu par mūsu iespējām</p>
     </div>
 
-    <div class="portfolio-slider" data-slider>
+    <div class="portfolio-slider portfolio-slider-gallery" data-slider>
       <div class="slider-window">
         <div class="slider-track" data-slider-track>
           <% for (const item of it.site.portfolio) { %>
-            <article class="portfolio-slide" data-slide>
+            <article class="portfolio-slide portfolio-slide-gallery" data-slide>
               <div class="portfolio-slide-image">
                 <img src="<%= item.image %>" alt="<%= item.alt %>" loading="lazy">
-              </div>
-              <div class="portfolio-slide-copy">
-                <span class="eyebrow"><%= item.title %></span>
-                <h3><%= item.alt %></h3>
-                <p><%= item.text %></p>
               </div>
             </article>
           <% } %>

@@ -38,7 +38,7 @@ document.querySelectorAll('[data-slider]').forEach((slider) => {
 
   const render = () => {
     if (mode === 'carousel') {
-      const visibleSlides = getVisibleSlides()
+      const visibleSlides = Math.min(getVisibleSlides(), slides.length)
       const slideWidth = 100 / visibleSlides
 
       slides.forEach((slide) => {
@@ -80,6 +80,7 @@ document.querySelectorAll('[data-slider]').forEach((slider) => {
       return
     }
 
+    stop()
     timer = window.setInterval(() => {
       goTo(index + 1)
     }, 5000)

@@ -1617,6 +1617,41 @@ p {
   margin-top: 28px;
 }
 
+.not-found-shell {
+  max-width: 860px;
+}
+
+.not-found-card {
+  padding: 48px;
+  border: 1px solid rgba(201, 91, 30, 0.12);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at top right, rgba(201, 91, 30, 0.12), transparent 34%),
+    rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.not-found-card h1 {
+  margin-bottom: 16px;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  letter-spacing: -0.05em;
+}
+
+.not-found-card p {
+  max-width: 46ch;
+  margin: 0 auto;
+  font-size: 17px;
+}
+
+.not-found-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -1853,7 +1888,8 @@ p {
 
   .checkout-form-card,
   .checkout-summary-card,
-  .thankyou-card {
+  .thankyou-card,
+  .not-found-card {
     padding: 26px;
   }
 

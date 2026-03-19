@@ -1,0 +1,15 @@
+<%~ include('../partials/layout', { ...it, body: `
+<section class="section">
+  <div class="container not-found-shell">
+    <div class="not-found-card">
+      <span class="eyebrow">404</span>
+      <h1>Lapa nav atrasta</h1>
+      <p>Iespējams, adrese ir ievadīta nepareizi vai arī šī lapa vairs nepastāv. Dodieties atpakaļ uz sākumu vai atveriet veikalu.</p>
+      <div class="not-found-actions">
+        <a href="/" class="btn btn-primary">Uz sākumlapu</a>
+        <a href="/veikals" class="btn btn-outline">Atvērt veikalu</a>
+      </div>
+    </div>
+  </div>
+</section>
+` }) %>

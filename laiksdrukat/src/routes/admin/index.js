@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
-import { readFile } from 'fs/promises'
-import { join } from 'path'
+import { mkdir, readFile, writeFile } from 'fs/promises'
+import { randomUUID } from 'crypto'
+import { extname, join } from 'path'
 
 import {
   addNotificationRecipient,
@@ -8,6 +9,67 @@ import {
   getNotificationRecipients,
 } from '../../lib/notification-recipients.js'
 import { isMailConfigured } from '../../lib/mailer.js'
+
+function sanitizeFilename(filename) {
+  return filename.replace(/[^a-zA-Z0-9._-]/g, '-')
+}
+
+function normalizeOptionalText(value) {
+  const normalized = String(value || '').trim()
+  return normalized || null
+}
+
+async function collectProductForm(request) {
+  if (!request.isMultipart || !request.isMultipart()) {
+    return { fields: request.body || {}, uploads: {} }
+  }
+
+  const fields = {}
+  const uploads = {}
+  const uploadDir = join(process.cwd(), 'public', 'images', 'products', 'admin')
+  await mkdir(uploadDir, { recursive: true })
+
+  for await (const part of request.parts()) {
+    if (part.type === 'file') {
+      if (!part.filename) continue
+
+      const buffer = await part.toBuffer()
+      if (buffer.length === 0) continue
+
+      const ext = extname(part.filename) || '.bin'
+      const safeName = sanitizeFilename(part.filename)
+      const filename = `${Date.now()}-${randomUUID()}-${safeName}${safeName.endsWith(ext) ? '' : ext}`
+      await writeFile(join(uploadDir, filename), buffer)
+      uploads[part.fieldname] = `/images/products/admin/${filename}`
+    } else {
+      fields[part.fieldname] = part.value
+    }
+  }
+
+  return { fields, uploads }
+}
+
+function buildProductPayload(fields, uploads, existingProduct = null) {
+  const parsedPrice = Number.parseFloat(fields.price)
+  const parsedStock = Number.parseInt(fields.stock, 10)
+  const parsedCategoryId = Number.parseInt(fields.categoryId, 10)
+
+  return {
+    name: String(fields.name || '').trim(),
+    slug: String(fields.slug || '').trim(),
+    description: normalizeOptionalText(fields.description),
+    price: Number.isFinite(parsedPrice) ? parsedPrice : 0,
+    stock: Number.isFinite(parsedStock) ? parsedStock : 0,
+    categoryId: Number.isFinite(parsedCategoryId) ? parsedCategoryId : null,
+    active: fields.active === 'on' || fields.active === 'true' || fields.active === true,
+    image: uploads.imageUpload || normalizeOptionalText(fields.image) || existingProduct?.image || null,
+    imprintImage:
+      uploads.imprintImageUpload ||
+      normalizeOptionalText(fields.imprintImage) ||
+      existingProduct?.imprintImage ||
+      null,
+  }
+}
 
 async function readContactMessages() {
   try {
@@ -102,23 +164,21 @@ async function adminRoutes(fastify) {
   })
 
   fastify.post('/products/new', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const { name, slug, description, price, stock, categoryId, active } = request.body
+    const { fields, uploads } = await collectProductForm(request)
+    const payload = buildProductPayload(fields, uploads)
+
     try {
       await fastify.db.product.create({
-        data: {
-          name, slug, description,
-          price: parseFloat(price),
-          stock: parseInt(stock),
-          categoryId: parseInt(categoryId),
-          active: active === 'on',
-        },
+        data: payload,
       })
       return reply.redirect('/admin/products')
     } catch (err) {
       const categories = await fastify.db.category.findMany()
       return reply.view('admin/product-form', {
-        title: 'Jauns produkts', product: null, categories,
-        error: 'Kļūda saglabājot produktu. Pārbaudiet vai slug ir unikāls.'
+        title: 'Jauns produkts',
+        product: fields,
+        categories,
+        error: 'Kļūda saglabājot produktu. Pārbaudiet vai slug ir unikāls.',
       })
     }
   })
@@ -130,16 +190,38 @@ async function adminRoutes(fastify) {
   })
 
   fastify.post('/products/:id/edit', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const { name, slug, description, price, stock, categoryId, active } = request.body
+    const productId = Number(request.params.id)
+    const existingProduct = await fastify.db.product.findUnique({ where: { id: productId } })
+    const { fields, uploads } = await collectProductForm(request)
+    const payload = buildProductPayload(fields, uploads, existingProduct)
+
+    try {
+      await fastify.db.product.update({
+        where: { id: productId },
+        data: payload,
+      })
+      return reply.redirect('/admin/products')
+    } catch (err) {
+      const categories = await fastify.db.category.findMany()
+      return reply.view('admin/product-form', {
+        title: 'Rediģēt produktu',
+        product: {
+          ...existingProduct,
+          ...fields,
+          image: uploads.imageUpload || fields.image || existingProduct?.image,
+          imprintImage: uploads.imprintImageUpload || fields.imprintImage || existingProduct?.imprintImage,
+          active: fields.active === 'on',
+        },
+        categories,
+        error: 'Kļūda saglabājot produktu. Pārbaudiet vai slug ir unikāls.',
+      })
+    }
+  })
+
+  fastify.post('/products/:id/visibility', { preHandler: fastify.requireAdmin }, async (request, reply) => {
     await fastify.db.product.update({
       where: { id: Number(request.params.id) },
-      data: {
-        name, slug, description,
-        price: parseFloat(price),
-        stock: parseInt(stock),
-        categoryId: parseInt(categoryId),
-        active: active === 'on',
-      },
+      data: { active: request.body.active === 'true' },
     })
     return reply.redirect('/admin/products')
   })

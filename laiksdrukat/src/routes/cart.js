@@ -50,10 +50,12 @@ async function collectCartForm(request) {
 async function cartRoutes(fastify) {
   // View cart
   fastify.get('/', async (request, reply) => {
+    const cart = await fastify.getValidatedCart(request)
+
     return reply.view('pages/cart', {
       title: 'Grozs | Laiks Drukāt',
-      cart: fastify.getCart(request),
-      total: fastify.cartTotal(request),
+      cart,
+      total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
     })
   })
 
@@ -66,7 +68,6 @@ async function cartRoutes(fastify) {
       inkColor,
       deliveryMethod,
       deliveryAddress,
-      deliveryPrice = 0,
       stampText,
     } = fields
 
@@ -78,10 +79,16 @@ async function cartRoutes(fastify) {
       return reply.code(404).send('Product not found')
     }
 
+    if (product.stock <= 0) {
+      return reply.code(400).send('Product is out of stock')
+    }
+
     const derivedDeliveryPrice = deliveryMethod && String(deliveryMethod).toLowerCase().includes('pakom')
       ? 3
       : 0
-    const extraPrice = Number(deliveryPrice || derivedDeliveryPrice || 0)
+    const extraPrice = Number(derivedDeliveryPrice || 0)
+    const parsedQuantity = Number.parseInt(quantity, 10)
+    const safeQuantity = Math.max(1, Math.min(Number.isFinite(parsedQuantity) ? parsedQuantity : 1, product.stock))
     const options = {}
 
     if (inkColor) {
@@ -114,7 +121,7 @@ async function cartRoutes(fastify) {
           .join('; ')}`
       : product.name
 
-    fastify.addToCart(request, product, Number(quantity), {
+    fastify.addToCart(request, product, safeQuantity, {
       options,
       extraPrice,
       displayName,

@@ -1,24 +1,48 @@
+import { randomUUID } from 'node:crypto'
 import {
   sendCustomerOrderConfirmation,
   sendOwnerOrderNotification,
 } from '../lib/mailer.js'
 
+const CHECKOUT_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000
+const CHECKOUT_RATE_LIMIT_MAX = 5
+const checkoutAttempts = new Map()
+
+function getCheckoutRateLimitState(ip) {
+  const now = Date.now()
+  const attempts = (checkoutAttempts.get(ip) || []).filter((timestamp) => now - timestamp < CHECKOUT_RATE_LIMIT_WINDOW_MS)
+  checkoutAttempts.set(ip, attempts)
+
+  return {
+    attempts,
+    remaining: Math.max(0, CHECKOUT_RATE_LIMIT_MAX - attempts.length),
+    limited: attempts.length >= CHECKOUT_RATE_LIMIT_MAX,
+  }
+}
+
+function recordCheckoutAttempt(ip) {
+  const now = Date.now()
+  const attempts = (checkoutAttempts.get(ip) || []).filter((timestamp) => now - timestamp < CHECKOUT_RATE_LIMIT_WINDOW_MS)
+  attempts.push(now)
+  checkoutAttempts.set(ip, attempts)
+}
+
 async function checkoutRoutes(fastify) {
   // Checkout form
   fastify.get('/', async (request, reply) => {
-    const cart = fastify.getCart(request)
+    const cart = await fastify.getValidatedCart(request)
     if (cart.length === 0) return reply.redirect('/grozs')
 
     return reply.view('pages/checkout', {
       title: 'Checkout | Laiks Drukāt',
       cart,
-      total: fastify.cartTotal(request),
+      total: await fastify.validatedCartTotal(request),
     })
   })
 
   // Place order
   fastify.post('/', async (request, reply) => {
-    const cart = fastify.getCart(request)
+    const cart = await fastify.getValidatedCart(request)
     if (cart.length === 0) return reply.redirect('/grozs')
 
     const {
@@ -37,13 +61,24 @@ async function checkoutRoutes(fastify) {
       return reply.view('pages/checkout', {
         title: 'Checkout | Laiks Drukāt',
         cart,
-        total: fastify.cartTotal(request),
+        total: await fastify.validatedCartTotal(request),
         error: 'Lūdzu aizpildiet visus obligātos laukus.',
         formData: request.body,
       })
     }
 
-    const total = fastify.cartTotal(request)
+    const rateLimit = getCheckoutRateLimitState(request.ip)
+    if (rateLimit.limited) {
+      return reply.view('pages/checkout', {
+        title: 'Checkout | Laiks Drukāt',
+        cart,
+        total: await fastify.validatedCartTotal(request),
+        error: 'Pārāk daudz pasūtījumu no šīs IP adreses. Lūdzu mēģiniet vēlreiz pēc stundas.',
+        formData: request.body,
+      })
+    }
+
+    const total = await fastify.validatedCartTotal(request)
     const name = `${String(firstName).trim()} ${String(lastName).trim()}`.trim()
     const noteParts = [note]
 
@@ -53,6 +88,7 @@ async function checkoutRoutes(fastify) {
 
     const order = await fastify.db.order.create({
       data: {
+        publicId: randomUUID(),
         name,
         email,
         phone: phone || null,
@@ -71,6 +107,7 @@ async function checkoutRoutes(fastify) {
         },
       },
     })
+    recordCheckoutAttempt(request.ip)
 
     try {
       const ownerResult = await sendOwnerOrderNotification({
@@ -96,19 +133,44 @@ async function checkoutRoutes(fastify) {
 
     fastify.clearCart(request)
 
-    return reply.redirect(`/checkout/paldies?order=${order.id}`)
+    return reply.redirect(`/checkout/paldies/${order.publicId}`)
+  })
+
+  // Legacy thank you redirect
+  fastify.get('/paldies', async (request, reply) => {
+    const { order: orderId } = request.query
+    if (!orderId) {
+      return reply.redirect('/veikals')
+    }
+
+    const numericId = Number.parseInt(orderId, 10)
+    const order = await fastify.db.order.findFirst({
+      where: {
+        OR: [
+          { publicId: String(orderId) },
+          ...(Number.isFinite(numericId) ? [{ id: numericId }] : []),
+        ],
+      },
+      select: { publicId: true },
+    })
+
+    if (!order) {
+      return reply.redirect('/veikals')
+    }
+
+    return reply.redirect(`/checkout/paldies/${order.publicId}`)
   })
 
   // Thank you page
-  fastify.get('/paldies', async (request, reply) => {
-    const { order: orderId } = request.query
+  fastify.get('/paldies/:publicId', async (request, reply) => {
+    const order = await fastify.db.order.findUnique({
+      where: { publicId: request.params.publicId },
+      include: { items: true },
+    })
 
-    const order = orderId
-      ? await fastify.db.order.findUnique({
-          where: { id: Number(orderId) },
-          include: { items: true },
-        })
-      : null
+    if (!order) {
+      return reply.redirect('/veikals')
+    }
 
     return reply.view('pages/thankyou', {
       title: 'Paldies! | Laiks Drukāt',

@@ -78,12 +78,15 @@ async function storefrontRoutes(fastify) {
 
   // Contact page
   fastify.get('/kontakti', async (request, reply) => {
+    const success = request.session.contactFormSent === true
+    delete request.session.contactFormSent
+
     return reply.view('pages/kontakti', {
       title: 'Kontakti | Laiks Drukāt',
       description:
         'Laiks Drukāt kontakti Jelgavā: adrese, tālruņi, e-pasts un Facebook saziņai.',
       cart: fastify.getCart(request),
-      success: request.query?.sent === '1',
+      success,
     })
   })
 
@@ -148,7 +151,8 @@ async function storefrontRoutes(fastify) {
       fastify.log.error(error, 'Failed to send contact notification email')
     }
 
-    return reply.redirect('/kontakti?sent=1')
+    request.session.contactFormSent = true
+    return reply.redirect('/kontakti')
   })
 
   for (const route of serviceRouteEntries) {

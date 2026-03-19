@@ -9,6 +9,17 @@ function sanitizeFilename(filename) {
   return filename.replace(/[^a-zA-Z0-9._-]/g, '-')
 }
 
+function shuffle(items) {
+  const copy = [...items]
+
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1))
+    ;[copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]]
+  }
+
+  return copy
+}
+
 async function collectContactForm(request) {
   if (!request.isMultipart || !request.isMultipart()) {
     return { fields: request.body || {}, uploadedFile: null }
@@ -49,7 +60,7 @@ async function collectContactForm(request) {
 async function storefrontRoutes(fastify) {
   // Homepage
   fastify.get('/', async (request, reply) => {
-    const [products, categories] = await Promise.all([
+    const [products, categories, stampProducts] = await Promise.all([
       fastify.db.product.findMany({
         where: { active: true },
         take: 6,
@@ -64,13 +75,24 @@ async function storefrontRoutes(fastify) {
         },
         orderBy: { name: 'asc' },
       }),
+      fastify.db.product.findMany({
+        where: {
+          active: true,
+          stock: { gt: 0 },
+          category: { slug: 'zimogi' },
+        },
+        include: { category: true },
+      }),
     ])
+
+    const featuredStampProducts = shuffle(stampProducts).slice(0, 12)
 
     return reply.view('pages/home', {
       title: 'Laiks Drukāt | Poligrāfijas un reklāmas pakalpojumi',
       description:
         'Drukas, reklāmas un zīmogu pakalpojumi Jelgavā ar ātrāku Fastify bāzētu mājaslapu.',
       products,
+      featuredStampProducts,
       categories,
       cart: fastify.getCart(request),
     })

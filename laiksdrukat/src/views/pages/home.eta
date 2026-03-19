@@ -160,6 +160,50 @@
   </div>
 </section>
 
+<% if (it.featuredStampProducts && it.featuredStampProducts.length) { %>
+  <section class="section section-shop-slider">
+    <div class="container">
+      <div class="section-heading section-heading-left">
+        <span class="eyebrow">E-veikals</span>
+        <h2>Apskatīt mūsu e-veikalu</h2>
+        <p>Populārākie zīmogi ātrai izvēlei. Atveriet produktu, lai apskatītu detaļas un pasūtītu sev piemērotāko variantu.</p>
+      </div>
+
+      <div class="shop-slider" data-slider data-slider-mode="carousel" data-slider-visible="4">
+        <div class="slider-window shop-slider-window">
+          <div class="slider-track shop-slider-track" data-slider-track>
+            <% for (const stamp of it.featuredStampProducts) { %>
+              <article class="shop-slide" data-slide>
+                <a href="/veikals/<%= stamp.slug %>" class="shop-slide-link" aria-label="Atvērt produktu <%= stamp.name %>">
+                  <div class="shop-slide-image">
+                    <% if (stamp.image) { %>
+                      <img src="<%= stamp.image %>" alt="<%= stamp.name %>" loading="lazy">
+                    <% } else { %>
+                      <div class="product-img-placeholder">LD</div>
+                    <% } %>
+                  </div>
+
+                  <div class="shop-slide-copy">
+                    <div class="product-category"><%= stamp.category.name %></div>
+                    <h3><%= stamp.name %></h3>
+                    <div class="shop-slide-price"><%= Number(stamp.price).toFixed(2) %> € <span class="product-price-vat">+ PVN</span></div>
+                  </div>
+                </a>
+              </article>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="slider-controls shop-slider-controls">
+          <button type="button" class="slider-arrow" data-slider-prev aria-label="Iepriekšējie zīmogi">Iepriekš</button>
+          <a href="/veikals/kategorija/zimogi" class="btn btn-outline btn-sm">Skatīt visus zīmogus</a>
+          <button type="button" class="slider-arrow" data-slider-next aria-label="Nākamie zīmogi">Nākamais</button>
+        </div>
+      </div>
+    </div>
+  </section>
+<% } %>
+
 <section class="section section-dark">
   <div class="container contact-band">
     <div>

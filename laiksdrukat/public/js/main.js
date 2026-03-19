@@ -14,6 +14,8 @@ document.querySelectorAll('[data-slider]').forEach((slider) => {
   const dots = Array.from(slider.querySelectorAll('[data-slider-dot]'))
   const prev = slider.querySelector('[data-slider-prev]')
   const next = slider.querySelector('[data-slider-next]')
+  const mode = slider.dataset.sliderMode || 'single'
+  const desktopVisible = Number(slider.dataset.sliderVisible || '1')
 
   if (!track || slides.length <= 1) {
     return
@@ -22,8 +24,31 @@ document.querySelectorAll('[data-slider]').forEach((slider) => {
   let index = 0
   let timer = null
 
+  const getVisibleSlides = () => {
+    if (mode !== 'carousel') {
+      return 1
+    }
+
+    if (window.innerWidth <= 680) return 1
+    if (window.innerWidth <= 1080) return Math.min(2, desktopVisible)
+    return desktopVisible
+  }
+
+  const getMaxIndex = () => Math.max(0, slides.length - getVisibleSlides())
+
   const render = () => {
-    track.style.transform = `translateX(-${index * 100}%)`
+    if (mode === 'carousel') {
+      const visibleSlides = getVisibleSlides()
+      const slideWidth = 100 / visibleSlides
+
+      slides.forEach((slide) => {
+        slide.style.minWidth = `${slideWidth}%`
+      })
+
+      track.style.transform = `translateX(-${index * slideWidth}%)`
+    } else {
+      track.style.transform = `translateX(-${index * 100}%)`
+    }
 
     dots.forEach((dot, dotIndex) => {
       dot.classList.toggle('is-active', dotIndex === index)
@@ -31,11 +56,30 @@ document.querySelectorAll('[data-slider]').forEach((slider) => {
   }
 
   const goTo = (nextIndex) => {
-    index = (nextIndex + slides.length) % slides.length
+    if (mode === 'carousel') {
+      const maxIndex = getMaxIndex()
+
+      if (maxIndex <= 0) {
+        index = 0
+      } else if (nextIndex < 0) {
+        index = maxIndex
+      } else if (nextIndex > maxIndex) {
+        index = 0
+      } else {
+        index = nextIndex
+      }
+    } else {
+      index = (nextIndex + slides.length) % slides.length
+    }
+
     render()
   }
 
   const start = () => {
+    if (mode === 'carousel' && getMaxIndex() <= 0) {
+      return
+    }
+
     timer = window.setInterval(() => {
       goTo(index + 1)
     }, 5000)
@@ -57,6 +101,10 @@ document.querySelectorAll('[data-slider]').forEach((slider) => {
 
   slider.addEventListener('mouseenter', stop)
   slider.addEventListener('mouseleave', start)
+  window.addEventListener('resize', () => {
+    index = Math.min(index, getMaxIndex())
+    render()
+  })
 
   render()
   start()

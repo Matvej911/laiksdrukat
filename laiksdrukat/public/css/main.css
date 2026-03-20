@@ -343,14 +343,18 @@ p {
 }
 
 .hero-section {
-  padding: 56px 0 88px;
+  background: linear-gradient(135deg, #5f4bd8, #3b2ca3);
+  color: white;
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .hero-shell {
-  display: grid;
-  grid-template-columns: 1.08fr 0.92fr;
-  gap: 36px;
-  align-items: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
 }
 
 .hero-copy,
@@ -368,25 +372,30 @@ p {
 }
 
 .hero-copy {
-  padding: 48px;
-  background:
-    radial-gradient(circle at top right, rgba(201, 91, 30, 0.16), transparent 36%),
-    linear-gradient(180deg, rgba(255, 250, 244, 0.95), rgba(255, 255, 255, 0.92));
-  border: 1px solid rgba(201, 91, 30, 0.12);
-  box-shadow: var(--shadow);
+  max-width: 500px;
 }
 
 .hero-copy h1 {
-  max-width: 12ch;
-  margin-bottom: 18px;
-  font-size: clamp(2.6rem, 6vw, 4.9rem);
-  letter-spacing: -0.05em;
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: white;
 }
 
 .hero-copy p {
-  max-width: 60ch;
+  font-size: 20px;
+  color: #ffd84d;
   margin-bottom: 30px;
-  font-size: 17px;
+}
+
+.btn-yellow {
+  background: #ffd400;
+  color: black;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .hero-badges,
@@ -399,6 +408,9 @@ p {
   gap: 12px;
 }
 
+.hero-img {
+  max-width: 350px;
+}
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

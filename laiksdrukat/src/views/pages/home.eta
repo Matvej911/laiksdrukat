@@ -2,46 +2,26 @@
 
 <section class="hero-section">
   <div class="container hero-shell">
+    
     <div class="hero-copy">
-      <span class="eyebrow"><%= it.site.home.eyebrow %></span>
       <h1><%= it.site.home.title %></h1>
       <p><%= it.site.home.intro %></p>
 
-      <div class="hero-badges">
-        <% for (const item of it.site.home.highlights) { %>
-          <span class="chip"><%= item %></span>
-        <% } %>
-      </div>
-
       <div class="hero-actions">
-        <a href="/kontakti" class="btn btn-primary">Sazināties ar mums</a>
-        <a href="/veikals" class="btn btn-outline">Skatīt veikalu</a>
-      </div>
-
-      <div class="stat-grid">
-        <% for (const stat of it.site.home.stats) { %>
-          <div class="stat-card">
-            <strong><%= stat.value %></strong>
-            <span><%= stat.label %></span>
-          </div>
-        <% } %>
+        <a href="/kontakti" class="btn btn-yellow">
+          Sazināties ar mums
+        </a>
       </div>
     </div>
 
     <div class="hero-visual">
-      <div class="hero-image-card">
-        <img src="<%= it.site.home.heroImage %>" alt="<%= it.site.home.heroAlt %>" loading="eager">
-      </div>
-      <div class="hero-side-card">
-        <span class="eyebrow">Kontakti</span>
-        <h3>Jelgava, Asteru iela 16A</h3>
-        <p>Ātra saziņa telefoniski, e-pastā un Facebook. Tas pats saturs, bet daudz vieglāka mājaslapa.</p>
-        <div class="hero-side-links">
-          <a href="<%= it.site.contact.phones[0].href %>"><%= it.site.contact.phones[0].label %></a>
-          <a href="<%= it.site.contact.emailHref %>"><%= it.site.contact.email %></a>
-        </div>
-      </div>
+      <img 
+        src="<%= it.site.home.heroImage %>" 
+        alt="<%= it.site.home.heroAlt %>" 
+        class="hero-img"
+      >
     </div>
+
   </div>
 </section>
 
@@ -49,8 +29,7 @@
   <div class="container">
     <div class="section-heading">
       <span class="eyebrow">Pakalpojumi</span>
-      <h2>Galvenās WordPress pakalpojumu lapas pārnestas uz ātrāku struktūru</h2>
-      <p>Saglabājam saprotamu navigāciju un katram pakalpojumam veidojam atsevišķu lapu ar skaidru kontaktu un portfolio piesaisti.</p>
+      <h2>Piedāvājam arī:</h2>
     </div>
 
     <div class="service-grid">

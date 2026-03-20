@@ -1,11 +1,21 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
-import { access, readFile } from 'fs/promises'
+import { access, readFile, readdir } from 'fs/promises'
 import { constants } from 'fs'
-import { join } from 'path'
+import { basename, join } from 'path'
 
 const prisma = new PrismaClient()
 const CSV_PATH = join(process.cwd(), 'export-products.csv')
+const LOCAL_IMAGE_DIRECTORIES = {
+  zimogi: {
+    filesystemPath: join(process.cwd(), 'public', 'images', 'products', 'zimogi'),
+    publicPrefix: '/images/products/zimogi',
+  },
+  'zimogu-tintes': {
+    filesystemPath: join(process.cwd(), 'public', 'images', 'products', 'tintes'),
+    publicPrefix: '/images/products/tintes',
+  },
+}
 
 function parseCsv(text) {
   const rows = []
@@ -118,11 +128,84 @@ function normalizeDescription(value) {
   return text || null
 }
 
+function stripWordPressSizeSuffix(filename) {
+  return filename.replace(/-\d+x\d+(?=\.[a-z0-9]+$)/i, '')
+}
+
 function extractImage(value) {
   return String(value || '')
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean)[0] || null
+}
+
+async function buildLocalImageIndex() {
+  const index = {}
+
+  for (const [categorySlug, config] of Object.entries(LOCAL_IMAGE_DIRECTORIES)) {
+    const categoryIndex = new Map()
+
+    try {
+      const entries = await readdir(config.filesystemPath, { withFileTypes: true })
+
+      for (const entry of entries) {
+        if (!entry.isFile()) continue
+
+        categoryIndex.set(
+          entry.name.toLowerCase(),
+          `${config.publicPrefix}/${entry.name}`,
+        )
+      }
+    } catch (error) {
+      if (error.code !== 'ENOENT') {
+        throw error
+      }
+    }
+
+    index[categorySlug] = categoryIndex
+  }
+
+  return index
+}
+
+function imageBasenameCandidates(value) {
+  if (!value) return []
+
+  const rawBasename = basename(String(value || '').split('?')[0]).trim()
+  if (!rawBasename) return []
+
+  const lowered = rawBasename.toLowerCase()
+  const stripped = stripWordPressSizeSuffix(lowered)
+
+  return Array.from(new Set([lowered, stripped]))
+}
+
+function findLocalImage(localImageIndex, categorySlug, value) {
+  const categoryIndex = localImageIndex[categorySlug]
+  if (!categoryIndex) return null
+
+  for (const candidate of imageBasenameCandidates(value)) {
+    const match = categoryIndex.get(candidate)
+    if (match) return match
+  }
+
+  return null
+}
+
+function replaceDescriptionImages(description, localImageIndex, categorySlug) {
+  if (!description) return null
+
+  return description.replace(
+    /https?:\/\/[^\s"'<>]+?\.(?:png|jpe?g|webp|gif|svg)/gi,
+    (url) => findLocalImage(localImageIndex, categorySlug, url) || url,
+  )
+}
+
+function extractFirstLocalImageFromDescription(description) {
+  if (!description) return null
+
+  const match = description.match(/\/images\/products\/(?:zimogi|tintes)\/[^\s"'<>]+?\.(?:png|jpe?g|webp|gif|svg)/i)
+  return match ? match[0] : null
 }
 
 function buildProductSlug(name, categorySlug) {
@@ -140,6 +223,7 @@ function buildProductSlug(name, categorySlug) {
 async function seedFromCsv() {
   await access(CSV_PATH, constants.F_OK)
   const rows = toObjects(await readFile(CSV_PATH, 'utf8'))
+  const localImageIndex = await buildLocalImageIndex()
   const categoryCache = new Map()
   let imported = 0
 
@@ -164,12 +248,18 @@ async function seedFromCsv() {
       categoryCache.set(categorySlug, category.id)
     }
 
+    const description = replaceDescriptionImages(
+      normalizeDescription(row['Apraksts'] || row['Īss apraksts']),
+      localImageIndex,
+      categorySlug,
+    )
     const product = {
       name,
       slug: buildProductSlug(name, categorySlug),
-      description: normalizeDescription(row['Apraksts'] || row['Īss apraksts']),
+      description,
       price: normalizePrice(row['Parastā cena:'] || row['Akcijas cena']),
-      image: extractImage(row['Attēli']),
+      image: findLocalImage(localImageIndex, categorySlug, extractImage(row['Attēli'])) || extractImage(row['Attēli']),
+      imprintImage: extractFirstLocalImageFromDescription(description),
       stock: normalizeStock(row),
       active: true,
       categoryId,

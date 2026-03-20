@@ -25,6 +25,7 @@ model Product {
   price       Decimal     @db.Decimal(10, 2)
   priceVat    Boolean     @default(false) // true = price includes VAT
   image       String?
+  imprintImage String?
   stock       Int         @default(0)
   active      Boolean     @default(true)
   category    Category    @relation(fields: [categoryId], references: [id])
@@ -36,6 +37,7 @@ model Product {
 
 model Order {
   id          Int         @id @default(autoincrement())
+  publicId    String      @unique @default(uuid())
   name        String
   email       String
   phone       String?

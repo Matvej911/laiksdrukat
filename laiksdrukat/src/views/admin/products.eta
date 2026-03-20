@@ -1,41 +1,54 @@
-<%~ include('layout', { ...it, body: `
+<% layout('layout') %>
+
 <div class="admin-page-header">
   <h1>Produkti</h1>
   <a href="/admin/products/new" class="btn btn-primary btn-sm">+ Jauns produkts</a>
 </div>
+
 <div class="admin-table-wrap">
   <table class="admin-table">
     <thead>
       <tr>
         <th>ID</th>
+        <th>Attēls</th>
         <th>Nosaukums</th>
         <th>Kategorija</th>
         <th>Cena</th>
         <th>Noliktava</th>
-        <th>Aktīvs</th>
+        <th>Statuss</th>
         <th>Darbibas</th>
       </tr>
     </thead>
     <tbody>
       <% for (const p of it.products) { %>
-      <tr>
-        <td style="color:var(--gray-400);font-size:13px;">#<%= p.id %></td>
-        <td style="font-weight:500;"><%= p.name %></td>
-        <td><%= p.category.name %></td>
-        <td style="font-weight:600;"><%= Number(p.price).toFixed(2) %> EUR</td>
-        <td><%= p.stock %></td>
-        <td><%= p.active ? '✅' : '❌' %></td>
-        <td>
-          <div style="display:flex;gap:8px;">
-            <a href="/admin/products/<%= p.id %>/edit" class="btn btn-sm btn-outline">Redigēt</a>
-            <form action="/admin/products/<%= p.id %>/delete" method="POST" onsubmit="return confirm('Dzest produktu?')">
-              <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#991b1b;">Dzest</button>
-            </form>
-          </div>
-        </td>
-      </tr>
+        <tr>
+          <td style="color:var(--gray-400);font-size:13px;">#<%= p.id %></td>
+          <td>
+            <% if (p.image) { %>
+              <img src="<%= p.image %>" alt="<%= p.name %>" class="admin-table-image">
+            <% } else { %>
+              <span style="color:var(--gray-400);">-</span>
+            <% } %>
+          </td>
+          <td style="font-weight:500;"><%= p.name %></td>
+          <td><%= p.category.name %></td>
+          <td style="font-weight:600;"><%= Number(p.price).toFixed(2) %> EUR</td>
+          <td><%= p.stock %></td>
+          <td><%= p.active ? 'Redzams' : 'Paslēpts' %></td>
+          <td>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <a href="/admin/products/<%= p.id %>/edit" class="btn btn-sm btn-outline">Redigēt</a>
+              <form action="/admin/products/<%= p.id %>/visibility" method="POST">
+                <input type="hidden" name="active" value="<%= p.active ? 'false' : 'true' %>">
+                <button type="submit" class="btn btn-sm btn-outline"><%= p.active ? 'Paslēpt' : 'Parādīt' %></button>
+              </form>
+              <form action="/admin/products/<%= p.id %>/delete" method="POST" onsubmit="return confirm('Dzest produktu?')">
+                <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#991b1b;">Dzest</button>
+              </form>
+            </div>
+          </td>
+        </tr>
       <% } %>
     </tbody>
   </table>
 </div>
-`}) %>

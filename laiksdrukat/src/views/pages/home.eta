@@ -1,11 +1,11 @@
-<%~ include('../partials/layout', { ...it, body: `
+<% layout('../partials/layout') %>
 
 <section class="hero-section">
   <div class="container hero-shell">
     <div class="hero-copy">
-      <span class="eyebrow">${it.site.home.eyebrow}</span>
-      <h1>${it.site.home.title}</h1>
-      <p>${it.site.home.intro}</p>
+      <span class="eyebrow"><%= it.site.home.eyebrow %></span>
+      <h1><%= it.site.home.title %></h1>
+      <p><%= it.site.home.intro %></p>
 
       <div class="hero-badges">
         <% for (const item of it.site.home.highlights) { %>
@@ -30,15 +30,15 @@
 
     <div class="hero-visual">
       <div class="hero-image-card">
-        <img src="${it.site.home.heroImage}" alt="${it.site.home.heroAlt}" loading="eager">
+        <img src="<%= it.site.home.heroImage %>" alt="<%= it.site.home.heroAlt %>" loading="eager">
       </div>
       <div class="hero-side-card">
         <span class="eyebrow">Kontakti</span>
         <h3>Jelgava, Asteru iela 16A</h3>
         <p>Ātra saziņa telefoniski, e-pastā un Facebook. Tas pats saturs, bet daudz vieglāka mājaslapa.</p>
         <div class="hero-side-links">
-          <a href="${it.site.contact.phones[0].href}">${it.site.contact.phones[0].label}</a>
-          <a href="${it.site.contact.emailHref}">${it.site.contact.email}</a>
+          <a href="<%= it.site.contact.phones[0].href %>"><%= it.site.contact.phones[0].label %></a>
+          <a href="<%= it.site.contact.emailHref %>"><%= it.site.contact.email %></a>
         </div>
       </div>
     </div>
@@ -73,7 +73,7 @@
     <div class="section-heading section-heading-left">
       <span class="eyebrow">E-veikals</span>
       <h2>Zīmogi un zīmogu tintes kā atsevišķas kategorijas</h2>
-      <p>${it.site.shop.intro}</p>
+      <p><%= it.site.shop.intro %></p>
     </div>
 
     <div class="category-grid">
@@ -121,26 +121,20 @@
   </div>
 </section>
 
-<section class="section" id="portfolio">
-  <div class="container">
-    <div class="section-heading">
-      <span class="eyebrow">Portfolio</span>
-      <h2>Lielais attēlu slīdnis svarīgākajiem darbiem</h2>
-      <p>Šeit redzami auto, banneri, drukas materiāli, uzlīmes un vides reklāmas darbi, lai jaunā versija saglabātu līdzīgu sajūtu kā esošā lapa.</p>
+<section class="section portfolio-showcase" id="portfolio">
+  <div class="container portfolio-showcase-grid">
+    <div class="portfolio-showcase-copy">
+      <h2>Portfolio</h2>
+      <p>Apskatiet dažādus projektus, lai iegūtu priekšstatu par mūsu iespējām</p>
     </div>
 
-    <div class="portfolio-slider" data-slider>
+    <div class="portfolio-slider portfolio-slider-gallery" data-slider>
       <div class="slider-window">
         <div class="slider-track" data-slider-track>
           <% for (const item of it.site.portfolio) { %>
-            <article class="portfolio-slide" data-slide>
+            <article class="portfolio-slide portfolio-slide-gallery" data-slide>
               <div class="portfolio-slide-image">
                 <img src="<%= item.image %>" alt="<%= item.alt %>" loading="lazy">
-              </div>
-              <div class="portfolio-slide-copy">
-                <span class="eyebrow"><%= item.title %></span>
-                <h3><%= item.alt %></h3>
-                <p><%= item.text %></p>
               </div>
             </article>
           <% } %>
@@ -160,6 +154,50 @@
   </div>
 </section>
 
+<% if (it.featuredStampProducts && it.featuredStampProducts.length) { %>
+  <section class="section section-shop-slider">
+    <div class="container">
+      <div class="section-heading section-heading-left">
+        <span class="eyebrow">E-veikals</span>
+        <h2>Apskatīt mūsu e-veikalu</h2>
+        <p>Populārākie zīmogi ātrai izvēlei. Atveriet produktu, lai apskatītu detaļas un pasūtītu sev piemērotāko variantu.</p>
+      </div>
+
+      <div class="shop-slider" data-slider data-slider-mode="carousel" data-slider-visible="4">
+        <div class="slider-window shop-slider-window">
+          <div class="slider-track shop-slider-track" data-slider-track>
+            <% for (const stamp of it.featuredStampProducts) { %>
+              <article class="shop-slide" data-slide>
+                <a href="/veikals/<%= stamp.slug %>" class="shop-slide-link" aria-label="Atvērt produktu <%= stamp.name %>">
+                  <div class="shop-slide-image">
+                    <% if (stamp.image) { %>
+                      <img src="<%= stamp.image %>" alt="<%= stamp.name %>" loading="lazy">
+                    <% } else { %>
+                      <div class="product-img-placeholder">LD</div>
+                    <% } %>
+                  </div>
+
+                  <div class="shop-slide-copy">
+                    <div class="product-category"><%= stamp.category.name %></div>
+                    <h3><%= stamp.name %></h3>
+                    <div class="shop-slide-price"><%= Number(stamp.price).toFixed(2) %> € <span class="product-price-vat">+ PVN</span></div>
+                  </div>
+                </a>
+              </article>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="slider-controls shop-slider-controls">
+          <button type="button" class="slider-arrow" data-slider-prev aria-label="Iepriekšējie zīmogi">Iepriekš</button>
+          <a href="/veikals/kategorija/zimogi" class="btn btn-outline btn-sm">Skatīt visus zīmogus</a>
+          <button type="button" class="slider-arrow" data-slider-next aria-label="Nākamie zīmogi">Nākamais</button>
+        </div>
+      </div>
+    </div>
+  </section>
+<% } %>
+
 <section class="section section-dark">
   <div class="container contact-band">
     <div>
@@ -168,12 +206,10 @@
       <p>Zvaniet, rakstiet vai atsūtiet failus e-pastā. Ja vajag, Fastify versiju varam tālāk papildināt arī ar pilnu kontaktformu un produktu importu.</p>
     </div>
     <div class="contact-points">
-      <a href="${it.site.contact.phones[0].href}" class="contact-pill">${it.site.contact.phones[0].label}</a>
-      <a href="${it.site.contact.phones[1].href}" class="contact-pill">${it.site.contact.phones[1].label}</a>
-      <a href="${it.site.contact.emailHref}" class="contact-pill">${it.site.contact.email}</a>
+      <a href="<%= it.site.contact.phones[0].href %>" class="contact-pill"><%= it.site.contact.phones[0].label %></a>
+      <a href="<%= it.site.contact.phones[1].href %>" class="contact-pill"><%= it.site.contact.phones[1].label %></a>
+      <a href="<%= it.site.contact.emailHref %>" class="contact-pill"><%= it.site.contact.email %></a>
       <a href="/kontakti" class="btn btn-primary">Atvērt kontaktus</a>
     </div>
   </div>
 </section>
-
-` }) %>

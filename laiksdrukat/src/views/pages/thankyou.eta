@@ -9,7 +9,7 @@
 
       <% if (it.order) { %>
         <div class="thankyou-order-card">
-          <div class="thankyou-order-id">Pasūtījuma numurs: #<%= it.order.id %></div>
+          <div class="thankyou-order-id">Pasūtījuma numurs: #<%= it.order.publicId || it.order.id %></div>
 
           <div class="thankyou-order-items">
             <% for (const item of it.order.items) { %>

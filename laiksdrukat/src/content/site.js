@@ -1,4 +1,26 @@
+import { readdirSync } from 'fs'
+import { extname } from 'path'
+
 const contactAddress = 'Asteru iela 16A, Jelgava, LV-3001'
+const portfolioDir = new URL('../../public/images/portfolio/', import.meta.url)
+const portfolioImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.svg'])
+
+function prettifyPortfolioName(filename) {
+  return filename
+    .replace(/\.[^.]+$/, '')
+    .replace(/[-_]+/g, ' ')
+    .replace(/\bscaled\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+const portfolioItems = readdirSync(portfolioDir)
+  .filter((filename) => portfolioImageExtensions.has(extname(filename).toLowerCase()))
+  .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+  .map((filename) => ({
+    image: `/images/portfolio/${filename}`,
+    alt: prettifyPortfolioName(filename),
+  }))
 
 export const siteContent = {
   meta: {
@@ -62,44 +84,7 @@ export const siteContent = {
       },
     ],
   },
-  portfolio: [
-    {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2024/07/IMG_20240706_182833-scaled.jpg',
-      alt: 'Auto aplīmēšana ar pilnu reklāmas dizainu',
-      title: 'Auto aplīmēšana',
-      text: 'Pilnas un daļējas aplīmēšanas risinājumi uzņēmumu auto.',
-    },
-    {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/1756443787080-scaled.jpg',
-      alt: 'Āra reklāmas stends',
-      title: 'Āra reklāma',
-      text: 'Stendi, plāksnes un citi noturīgi risinājumi fasādēm un teritorijām.',
-    },
-    {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/uiig_pages-to-jpg-0001-scaled.jpg',
-      alt: 'Vizītkartes un drukas materiāli',
-      title: 'Vizītkartes un druka',
-      text: 'Vizītkartes, bukleti, brošūras, flajeri un prezentācijas materiāli.',
-    },
-    {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/483989033_122109836724781710_5683284030057054303_n.jpg',
-      alt: 'Gaismas kaste un vides reklāma',
-      title: 'Vides reklāma',
-      text: 'Gaismas kastes, norādes un fasādes vizuālie elementi.',
-    },
-    {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/Uzlmes-jebkdam-mrim.png',
-      alt: 'Uzlīmes un etiķetes',
-      title: 'Uzlīmes',
-      text: 'Etiķetes, zīmola uzlīmes un lielformāta uzlīmes dažādiem pielietojumiem.',
-    },
-    {
-      image: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/IMG_1668-scaled.jpg',
-      alt: 'Norāžu un informācijas plāksnes',
-      title: 'Informācijas plāksnes',
-      text: 'Norāžu sistēmas, kabinetu plāksnes un telpu marķējumi.',
-    },
-  ],
+  portfolio: portfolioItems,
   services: [
     {
       slug: 'zimogi',

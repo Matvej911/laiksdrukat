@@ -120,6 +120,13 @@
       <% } else { %>
         <p>Šim produktam apraksts vēl tiks pievienots.</p>
       <% } %>
+
+      <% if (it.product.imprintImage && !(it.product.description || '').includes(it.product.imprintImage)) { %>
+        <div class="product-imprint-preview">
+          <h3>Nospieduma paraugs</h3>
+          <img src="<%= it.product.imprintImage %>" alt="Nospieduma paraugs <%= it.product.name %>" loading="lazy">
+        </div>
+      <% } %>
     </div>
   </div>
 </section>

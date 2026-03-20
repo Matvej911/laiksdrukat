@@ -169,10 +169,11 @@ function getOrderSummaries({ order, cart }) {
 }
 
 export async function sendOwnerOrderNotification({ order, cart }) {
+  const orderReference = order.publicId || String(order.id)
   const { totalVat, totalWithVat, lines, htmlItems } = getOrderSummaries({ order, cart })
-  const subject = `Jauns pasūtījums #${order.id} - ${order.name}`
+  const subject = `Jauns pasūtījums #${orderReference} - ${order.name}`
   const text = [
-    `Saņemts jauns pasūtījums #${order.id}.`,
+    `Saņemts jauns pasūtījums #${orderReference}.`,
     '',
     `Klients: ${order.name}`,
     `E-pasts: ${order.email}`,
@@ -192,7 +193,7 @@ export async function sendOwnerOrderNotification({ order, cart }) {
     .join('\n')
 
   const html = `
-    <h2>Saņemts jauns pasūtījums #${order.id}</h2>
+    <h2>Saņemts jauns pasūtījums #${orderReference}</h2>
     <p><strong>Klients:</strong> ${order.name}</p>
     <p><strong>E-pasts:</strong> ${order.email}</p>
     <p><strong>Tālrunis:</strong> ${order.phone || '-'}</p>
@@ -209,10 +210,11 @@ export async function sendOwnerOrderNotification({ order, cart }) {
 }
 
 export async function sendCustomerOrderConfirmation({ order, cart }) {
+  const orderReference = order.publicId || String(order.id)
   const { totalVat, totalWithVat, htmlItems } = getOrderSummaries({ order, cart })
-  const subject = `Paldies par pasūtījumu #${order.id}`
+  const subject = `Paldies par pasūtījumu #${orderReference}`
   const text = [
-    `Paldies par jūsu pasūtījumu #${order.id}.`,
+    `Paldies par jūsu pasūtījumu #${orderReference}.`,
     '',
     'Esam saņēmuši jūsu pasūtījumu un drīzumā sazināsimies, lai apstiprinātu detaļas.',
     '',
@@ -227,7 +229,7 @@ export async function sendCustomerOrderConfirmation({ order, cart }) {
   ].join('\n')
 
   const html = `
-    <h2>Paldies par jūsu pasūtījumu #${order.id}</h2>
+    <h2>Paldies par jūsu pasūtījumu #${orderReference}</h2>
     <p>Esam saņēmuši jūsu pasūtījumu un drīzumā sazināsimies, lai apstiprinātu detaļas.</p>
     <h3>Pasūtījuma kopsavilkums</h3>
     ${htmlItems}

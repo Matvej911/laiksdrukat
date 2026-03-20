@@ -22,7 +22,11 @@ const portfolioItems = readdirSync(portfolioDir)
     alt: prettifyPortfolioName(filename),
   }))
 
+
 export const siteContent = {
+  portfolio: portfolioItems,
+  portfolioSlider: portfolioItems,
+
   meta: {
     title: 'Laiks Drukāt',
     description:
@@ -61,7 +65,7 @@ export const siteContent = {
   },
   shop: {
     intro:
-      'E-veikalā koncentrējamies uz biežāk pasūtītajām precēm: COLOP zīmogiem un zīmogu tintēm.',
+      'Populārākās preces',
     categories: [
       {
         slug: 'zimogi',
@@ -75,7 +79,7 @@ export const siteContent = {
       },
     ],
   },
-  portfolio: portfolioItems,
+
   services: [
     {
       slug: 'zimogi',
@@ -130,7 +134,7 @@ export const siteContent = {
       teaser: 'Plāksnes, gaismas kastes, norādes un fasādes vizuālie risinājumi.',
       intro:
         'Veidojam noturīgus vides reklāmas risinājumus uzņēmumu fasādēm, telpām un apkārtējai videi. No vienkāršām plāksnēm līdz gaismas kastēm un norāžu sistēmām.',
-      heroImage: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/483989033_122109836724781710_5683284030057054303_n.jpg',
+      heroImage: '/images/web-design/gaismas-kaste.webp',
       heroAlt: 'Gaismas kaste un vides reklāma',
       highlights: [
         { value: 'Fasādes', label: 'plāksnes un uzraksti' },
@@ -174,7 +178,7 @@ export const siteContent = {
       teaser: 'Standarta, laminētas un izteiksmīgas vizītkartes ar piemērotu apdari.',
       intro:
         'Izgatavojam vizītkartes dažādām vajadzībām, sākot no vienkāršām ikdienas kartēm līdz premium variantiem ar lamināciju vai īpašu papīru.',
-      heroImage: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/skrejjjj.png',
+      heroImage: '/images/web-design/vizitkarte-laiksdrukatwebpb.webp',
       heroAlt: 'Vizītkartes',
       highlights: [
         { value: '1 vai 2 puses', label: 'drukas iespējas' },
@@ -217,7 +221,7 @@ export const siteContent = {
       teaser: 'PVC banneri, reklāmas audumi un gatavie risinājumi āra un iekštelpu reklāmai.',
       intro:
         'Drukājam bannerus uzņēmumu fasādēm, akcijām, pasākumiem un informācijas izvietošanai. Piedāvājam piemērotu materiālu, apmales un stiprinājumu risinājumus.',
-      heroImage: 'https://www.laiksdrukat.lv/wp-content/uploads/slider/cache/a5c6479da819cb4d73ad077bca5799d5/averbaneri-scaled.jpg',
+      heroImage: '/images/web-design/Banner-LAIKSDR-webp.webp',
       heroAlt: 'PVC reklāmas banneri',
       highlights: [
         { value: 'PVC un citi materiāli', label: 'pielāgoti izmēram un vietai' },
@@ -260,7 +264,7 @@ export const siteContent = {
       teaser: 'No vienkāršiem uzrakstiem līdz pilnai transporta reklāmas aplīmēšanai.',
       intro:
         'Piedāvājam auto aplīmēšanu ar reklāmas plēvēm, kas palīdz uzņēmumam būt pamanāmam ikdienā. Veidojam gan nelielus elementus, gan pilnus vizuālos risinājumus transportam.',
-      heroImage: 'https://www.laiksdrukat.lv/wp-content/uploads/2024/07/IMG_20240706_182833-scaled.jpg',
+      heroImage: '/images/web-design/Van_wepp.webp',
       heroAlt: 'Auto aplīmēšana',
       highlights: [
         { value: '3M / Oracal', label: 'plēves materiāli' },
@@ -305,7 +309,7 @@ export const siteContent = {
       teaser: 'Etiķetes, termouzlīmes, krāsainas un lielformāta uzlīmes dažādiem pielietojumiem.',
       intro:
         'Ražojam uzlīmes produktiem, iepakojumam, vitrīnām un reklāmai. Pieejamas gan vienkāršas termouzlīmes, gan izturīgākas materiālu etiķetes un lielformāta uzlīmes.',
-      heroImage: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/uzlimesa-png.webp',
+      heroImage: '/images/web-design/uzlimes_laiks_webp.webp',
       heroAlt: 'Uzlīmes un etiķetes',
       highlights: [
         { value: '5-15 EUR', label: 'dizaina izstrāde vienkāršām etiķetēm' },
@@ -349,7 +353,7 @@ export const siteContent = {
       teaser: 'No vienkāršiem flajeriem līdz biezākām brošūrām un plakātiem.',
       intro:
         'Piedāvājam dažādu drukas materiālu sagatavošanu un izgatavošanu reklāmai, prezentācijām un uzņēmuma ikdienas vajadzībām.',
-      heroImage: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/uiig_pages-to-jpg-0001-scaled.jpg',
+      heroImage: 'images/web-design/reklamas-materialu-druka_small.webp',
       heroAlt: 'Bukleti un drukas materiāli',
       highlights: [
         { value: 'Bukleti', label: 'salokāmi un vienlapas risinājumi' },
@@ -394,3 +398,12 @@ export const serviceRouteEntries = siteContent.services.flatMap((service) => [
   { path: service.path, service, canonical: true },
   ...service.aliases.map((alias) => ({ path: alias, service, canonical: false })),
 ])
+
+
+siteContent.portfolio = siteContent.services
+  .filter(service => service.slug !== 'zimogi')
+  .map(service => ({
+    image: service.heroImage,
+    title: service.title,
+    path: service.path
+  }))

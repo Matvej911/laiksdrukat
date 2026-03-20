@@ -72,6 +72,14 @@ await fastify.register(cartRoutes, { prefix: '/grozs' })
 await fastify.register(checkoutRoutes, { prefix: '/checkout' })
 await fastify.register(adminRoutes, { prefix: '/admin' })
 
+fastify.setNotFoundHandler(async (request, reply) => {
+  return reply.code(404).view('pages/404', {
+    title: '404 | Laiks Drukāt',
+    description: 'Lapa netika atrasta.',
+    cart: fastify.getCart(request),
+  })
+})
+
 // Start server
 try {
   await fastify.listen({

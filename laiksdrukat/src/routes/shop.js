@@ -63,7 +63,13 @@ async function shopRoutes(fastify) {
     const filters = buildShopFilters({ ...request.query, kategorija: slug })
 
     const category = await fastify.db.category.findUnique({ where: { slug } })
-    if (!category) return reply.code(404).send('Category not found')
+    if (!category) {
+      return reply.code(404).view('pages/404', {
+        title: '404 | Laiks Drukāt',
+        description: 'Lapa netika atrasta.',
+        cart: fastify.getCart(request),
+      })
+    }
 
     const [products, categories] = await Promise.all([
       fastify.db.product.findMany({
@@ -102,7 +108,13 @@ async function shopRoutes(fastify) {
       include: { category: true },
     })
 
-    if (!product || !product.active) return reply.code(404).send('Product not found')
+    if (!product || !product.active) {
+      return reply.code(404).view('pages/404', {
+        title: '404 | Laiks Drukāt',
+        description: 'Lapa netika atrasta.',
+        cart: fastify.getCart(request),
+      })
+    }
     const isStampProduct = product.category.slug === 'zimogi'
 
     // Related products from same category

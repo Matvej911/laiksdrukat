@@ -1,4 +1,26 @@
+import { readdirSync } from 'fs'
+import { extname } from 'path'
+
 const contactAddress = 'Asteru iela 16A, Jelgava, LV-3001'
+const portfolioDir = new URL('../../public/images/portfolio/', import.meta.url)
+const portfolioImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.svg'])
+
+function prettifyPortfolioName(filename) {
+  return filename
+    .replace(/\.[^.]+$/, '')
+    .replace(/[-_]+/g, ' ')
+    .replace(/\bscaled\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+const portfolioItems = readdirSync(portfolioDir)
+  .filter((filename) => portfolioImageExtensions.has(extname(filename).toLowerCase()))
+  .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+  .map((filename) => ({
+    image: `/images/portfolio/${filename}`,
+    alt: prettifyPortfolioName(filename),
+  }))
 
 export const siteContent = {
   meta: {
@@ -62,32 +84,7 @@ export const siteContent = {
       },
     ],
   },
-  portfolio: [
-    {
-      image: '/images/portfolio/IMG_20240706_182833-scaled.jpg',
-      alt: 'Auto aplīmēšana ar pilnu reklāmas dizainu',
-    },
-    {
-      image: '/images/portfolio/1000017096-scaled.jpg',
-      alt: 'Āra reklāmas stends',
-    },
-    {
-      image: '/images/portfolio/1000017125-scaled.jpg',
-      alt: 'Reklāmas izkārtne veikalam',
-    },
-    {
-      image: '/images/portfolio/1000017925.jpg',
-      alt: 'Gaismas kaste un vides reklāma',
-    },
-    {
-      image: '/images/portfolio/averbaneri-scaled.jpg',
-      alt: 'Banneri un lielformāta druka',
-    },
-    {
-      image: '/images/portfolio/numuri-scaled.jpg',
-      alt: 'Norāžu un informācijas plāksnes',
-    },
-  ],
+  portfolio: portfolioItems,
   services: [
     {
       slug: 'zimogi',

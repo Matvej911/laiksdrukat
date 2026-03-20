@@ -670,20 +670,39 @@ p {
 }
 
 .portfolio-showcase {
+  position: relative;
   background: #4630a3;
   color: #fff;
   overflow: hidden;
 }
 
+.portfolio-showcase::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 86px;
+  background:
+    radial-gradient(circle at 5% 100%, transparent 46px, #f4efe7 47px),
+    radial-gradient(circle at 18% 100%, #f4efe7 0 50px, transparent 51px),
+    radial-gradient(circle at 33% 100%, transparent 42px, #f4efe7 43px),
+    radial-gradient(circle at 52% 100%, #f4efe7 0 39px, transparent 40px),
+    radial-gradient(circle at 72% 100%, transparent 47px, #f4efe7 48px),
+    radial-gradient(circle at 91% 100%, #f4efe7 0 52px, transparent 53px);
+}
+
 .portfolio-showcase-grid {
   display: grid;
   grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
-  gap: 36px;
-  align-items: start;
+  gap: 56px;
+  align-items: center;
 }
 
 .portfolio-showcase-copy {
-  padding-top: 8px;
+  position: relative;
+  z-index: 1;
+  padding-top: 0;
 }
 
 .portfolio-showcase-copy h2 {
@@ -701,19 +720,21 @@ p {
 }
 
 .portfolio-slider-gallery {
-  gap: 18px;
+  position: relative;
+  z-index: 1;
+  gap: 0;
 }
 
 .slider-window {
   overflow: hidden;
-  border-radius: var(--radius-lg);
-  padding: 0 6px;
+  border-radius: 0;
+  padding: 0;
 }
 
 .slider-track {
   display: flex;
   transition: transform 0.45s ease;
-  gap: 12px;
+  gap: 8px;
 }
 
 .portfolio-slide {
@@ -734,13 +755,20 @@ p {
 }
 
 .portfolio-slide-gallery {
-  min-width: calc((100% - 24px) / 3);
+  min-width: calc((100% - 24px) / 4);
   background: transparent;
 }
 
 .portfolio-slide-gallery .portfolio-slide-image {
-  min-height: 520px;
+  min-height: 620px;
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.portfolio-slide-gallery .portfolio-slide-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .portfolio-slide-copy {
@@ -759,6 +787,10 @@ p {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+}
+
+.portfolio-showcase .slider-controls {
+  display: none;
 }
 
 .slider-arrow {
@@ -1921,7 +1953,7 @@ p {
   }
 
   .portfolio-slide-gallery .portfolio-slide-image {
-    min-height: 380px;
+    min-height: 420px;
   }
 
   .contact-row a {

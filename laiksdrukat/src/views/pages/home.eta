@@ -1,11 +1,11 @@
-<%~ include('../partials/layout', { ...it, body: `
+<% layout('../partials/layout') %>
 
 <section class="hero-section">
   <div class="container hero-shell">
     <div class="hero-copy">
-      <span class="eyebrow">${it.site.home.eyebrow}</span>
-      <h1>${it.site.home.title}</h1>
-      <p>${it.site.home.intro}</p>
+      <span class="eyebrow"><%= it.site.home.eyebrow %></span>
+      <h1><%= it.site.home.title %></h1>
+      <p><%= it.site.home.intro %></p>
 
       <div class="hero-badges">
         <% for (const item of it.site.home.highlights) { %>
@@ -30,15 +30,15 @@
 
     <div class="hero-visual">
       <div class="hero-image-card">
-        <img src="${it.site.home.heroImage}" alt="${it.site.home.heroAlt}" loading="eager">
+        <img src="<%= it.site.home.heroImage %>" alt="<%= it.site.home.heroAlt %>" loading="eager">
       </div>
       <div class="hero-side-card">
         <span class="eyebrow">Kontakti</span>
         <h3>Jelgava, Asteru iela 16A</h3>
         <p>Ātra saziņa telefoniski, e-pastā un Facebook. Tas pats saturs, bet daudz vieglāka mājaslapa.</p>
         <div class="hero-side-links">
-          <a href="${it.site.contact.phones[0].href}">${it.site.contact.phones[0].label}</a>
-          <a href="${it.site.contact.emailHref}">${it.site.contact.email}</a>
+          <a href="<%= it.site.contact.phones[0].href %>"><%= it.site.contact.phones[0].label %></a>
+          <a href="<%= it.site.contact.emailHref %>"><%= it.site.contact.email %></a>
         </div>
       </div>
     </div>
@@ -73,7 +73,7 @@
     <div class="section-heading section-heading-left">
       <span class="eyebrow">E-veikals</span>
       <h2>Zīmogi un zīmogu tintes kā atsevišķas kategorijas</h2>
-      <p>${it.site.shop.intro}</p>
+      <p><%= it.site.shop.intro %></p>
     </div>
 
     <div class="category-grid">
@@ -162,12 +162,10 @@
       <p>Zvaniet, rakstiet vai atsūtiet failus e-pastā. Ja vajag, Fastify versiju varam tālāk papildināt arī ar pilnu kontaktformu un produktu importu.</p>
     </div>
     <div class="contact-points">
-      <a href="${it.site.contact.phones[0].href}" class="contact-pill">${it.site.contact.phones[0].label}</a>
-      <a href="${it.site.contact.phones[1].href}" class="contact-pill">${it.site.contact.phones[1].label}</a>
-      <a href="${it.site.contact.emailHref}" class="contact-pill">${it.site.contact.email}</a>
+      <a href="<%= it.site.contact.phones[0].href %>" class="contact-pill"><%= it.site.contact.phones[0].label %></a>
+      <a href="<%= it.site.contact.phones[1].href %>" class="contact-pill"><%= it.site.contact.phones[1].label %></a>
+      <a href="<%= it.site.contact.emailHref %>" class="contact-pill"><%= it.site.contact.email %></a>
       <a href="/kontakti" class="btn btn-primary">Atvērt kontaktus</a>
     </div>
   </div>
 </section>
-
-` }) %>

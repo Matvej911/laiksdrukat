@@ -51,21 +51,12 @@ export const siteContent = {
   },
   home: {
     eyebrow: 'Druka un reklāma Jelgavā',
-    title: 'Ātrāka mājaslapa jūsu drukas un reklāmas pasūtījumiem',
+    title: 'Jūsu idejas – mūsu risinājumi!',
     intro:
-      'Pārbūvējam WordPress saturu uz vieglāku Fastify pamatu, nezaudējot galvenās pakalpojumu lapas, produktu kategorijas un kontaktu informāciju.',
-    highlights: [
-      'Zīmogi un spiedogi',
-      'Banneri un vides reklāma',
-      'Auto aplīmēšana',
-      'Vizītkartes un drukas materiāli',
-    ],
-    stats: [
-      { value: '7+', label: 'pakalpojumu lapas' },
-      { value: '2', label: 'kontakta tālruņi' },
-      { value: '1', label: 'Jelgavas adrese' },
-    ],
-    heroImage: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/1745849318844-scaled.jpg',
+      'Kvalitatīvi zīmogi uzņēmumiem un birojiem — plaša izvēle vienuviet',
+
+  
+    heroImage: '/images/web-design/col9p.png',
     heroAlt: 'Laiks Drukāt darbi un drukas produkcija',
   },
   shop: {

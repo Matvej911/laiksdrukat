@@ -41,70 +41,8 @@
   </div>
 </section>
 
-<section class="section section-muted">
-  <div class="container">
 
-    <!-- HEADER -->
-    <div class="section-heading section-heading-left">
-      <h2>Apskatīt mūsu e-veikalu</h2>
-      <p class="section-subtitle">Populārākās preces</p>
-    </div>
 
-    <!-- SLIDER -->
-    <div class="products-slider-wrapper">
-
-      <!-- LEFT ARROW -->
-      <button class="slider-btn left" type="button" onclick="scrollSlider('.products-slider', -1)">
-        <img src="/images/web-design/angle-left.svg" alt="left">
-      </button>
-
-      <!-- PRODUCTS -->
-      <div class="products-slider">
-        <% for (const p of it.products) { %>
-          <article class="product-card">
-            <a href="/veikals/<%= p.slug %>">
-              <div class="product-img">
-                <% if (p.image) { %>
-                  <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy">
-                <% } else { %>
-                  <div class="product-img-placeholder">LD</div>
-                <% } %>
-              </div>
-
-              <div class="product-info">
-                <div class="product-category"><%= p.category.name %></div>
-                <div class="product-name"><%= p.name %></div>
-                <div class="product-price">
-                  <%= Number(p.price).toFixed(2) %> €
-                  <span class="product-price-vat">+ PVN</span>
-                </div>
-              </div>
-            </a>
-          </article>
-        <% } %>
-      </div>
-
-      <!-- RIGHT ARROW -->
-      <button class="slider-btn right" type="button" onclick="scrollSlider('.products-slider', 1)">
-        <img src="/images/web-design/angle-right.svg" alt="right">
-      </button>
-
-    </div>
-
-    <!-- CTA TEXT + BUTTON -->
-    <div class="shop-cta">
-      <p>
-        Šeit varat atrast produktu klāstu, kas atbilst jūsu vajadzībām. 
-        Iepērcieties ērti un ātri mūsu tiešsaistes veikalā!
-      </p>
-
-      <a href="/veikals" class="btn btn-primary">
-        Veikals
-      </a>
-    </div>
-
-  </div>
-</section>
 
 <section class="section portfolio-showcase" id="portfolio">
   <div class="container portfolio-showcase-grid">
@@ -118,13 +56,13 @@
 
       <!-- LEFT -->
       <button class="portfolio-arrow left" onclick="portfolioSlide(-1)">
-        <img src="/images/web-design/angle-left.svg">
+        <img src="/images/web-design/arrleft.png">
       </button>
 
       <!-- TRACK -->
       <div class="portfolio-track">
         <% for (const item of it.site.portfolioSlider) { %>
-          <div class="portfolio-item">
+          <div class="portfolio-item <%= item.type %>">
             <img src="<%= item.image %>" alt="<%= item.alt %>">
           </div>
         <% } %>
@@ -132,7 +70,7 @@
 
       <!-- RIGHT -->
       <button class="portfolio-arrow right" onclick="portfolioSlide(1)">
-        <img src="/images/web-design/angle-right.svg">
+        <img src="/images/web-design/rightarr.png">
       </button>
 
     </div>
@@ -140,18 +78,84 @@
   </div>
 </section>
 
-<section class="section section-dark">
-  <div class="container contact-band">
-    <div>
-      <span class="eyebrow">Saziņa</span>
-      <h2>Informācija un pasūtījumi bez liekiem klikšķiem</h2>
-      <p>Zvaniet, rakstiet vai atsūtiet failus e-pastā. Ja vajag, Fastify versiju varam tālāk papildināt arī ar pilnu kontaktformu un produktu importu.</p>
+
+
+
+
+
+<section class="section section-muted">
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="section-heading section-heading-left">
+      <h2>Apskatīt mūsu e-veikalu</h2>
+      <p class="section-subtitle">Populārākās preces</p>
     </div>
-    <div class="contact-points">
-      <a href="<%= it.site.contact.phones[0].href %>" class="contact-pill"><%= it.site.contact.phones[0].label %></a>
-      <a href="<%= it.site.contact.phones[1].href %>" class="contact-pill"><%= it.site.contact.phones[1].label %></a>
-      <a href="<%= it.site.contact.emailHref %>" class="contact-pill"><%= it.site.contact.email %></a>
-      <a href="/kontakti" class="btn btn-primary">Atvērt kontaktus</a>
+
+    <!-- SLIDER -->
+    <div class="products-slider-wrapper">
+
+      <!-- LEFT ARROW -->
+      <button class="slider-btn left" type="button" onclick="scrollSlider(-1)">
+        <img src="/images/web-design/angle-left.svg" alt="left">
+      </button>
+
+      <!-- ↓ NEW WRAPPER -->
+      <div class="products-slider-track">
+        <div class="products-slider">
+          <% for (const p of it.products) { %>
+          <article class="product-card">
+            <a href="/veikals/<%= p.slug %>">
+              <div class="product-img">
+                <% if (p.image) { %>
+                  <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy">
+                <% } else { %>
+                  <div class="product-img-placeholder">LD</div>
+                <% } %>
+              </div>
+              <div class="product-info">
+                <div class="product-category"><%= p.category.name %></div>
+                <div class="product-name"><%= p.name %></div>
+                <div class="product-price">
+                  <%= Number(p.price).toFixed(2) %> €
+                  <span class="product-price-vat">+ PVN</span>
+                </div>
+              </div>
+            </a>
+          </article>
+          <% } %>
+        </div>
+      </div>
+      <!-- ↑ NEW WRAPPER -->
+
+      <!-- RIGHT ARROW -->
+      <button class="slider-btn right" type="button" onclick="scrollSlider(1)">
+        <img src="/images/web-design/angle-right.svg" alt="right">
+      </button>
+
     </div>
+
+    <!-- CTA TEXT + BUTTON -->
+    <div class="shop-cta">
+      <p>
+        Šeit varat atrast produktu klāstu, kas atbilst jūsu vajadzībām. 
+        Iepērcieties ērti un ātri mūsu tiešsaistes veikalā!
+      </p>
+      <a href="/veikals" class="btn btn-primary">Veikals</a>
+    </div>
+
   </div>
 </section>
+
+
+
+
+
+
+
+
+
+
+
+
+

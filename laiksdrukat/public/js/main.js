@@ -131,38 +131,107 @@ if (fileInput && fileLabel) {
   })
 }
 
-function scrollSlider(selector, direction, amount = 320) {
-  const slider = document.querySelector(selector)
-  if (!slider) return
+const slider = document.querySelector('.products-slider');
+const track  = document.querySelector('.products-slider-track');
 
-  slider.scrollBy({
-    left: direction * amount,
-    behavior: 'smooth',
-  })
+if (slider && track) {
+  const gap          = 30;
+  const visibleCount = 3;
+
+  // clone cards for infinite loop
+  const originalCards = Array.from(slider.children);
+  originalCards.forEach(card => {
+    const clone = card.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    slider.appendChild(clone);
+  });
+
+  const totalOriginal = originalCards.length;
+  let step            = 0;
+  let scrollAmount    = 0;
+  let isTransitioning = false;
+
+  // calculate from track, not slider
+  function setCardWidths() {
+    const cardWidth = (track.offsetWidth - gap * (visibleCount - 1)) / visibleCount;
+    Array.from(slider.children).forEach(card => {
+      card.style.flex = `0 0 ${cardWidth}px`;
+      card.style.width = `${cardWidth}px`;
+    });
+    step = cardWidth + gap;
+  }
+
+  function scrollSlider(direction) {
+    if (isTransitioning || !step) return;
+    isTransitioning = true;
+
+    scrollAmount += direction * step;
+    slider.style.transition = 'transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    slider.style.transform   = `translateX(${-scrollAmount}px)`;
+  }
+
+  slider.addEventListener('transitionend', (e) => {
+    if (e.target !== slider) return;
+    if (e.propertyName !== 'transform') return; // ← only react to transform, ignore others
+
+    isTransitioning = false;
+    const maxScroll = step * totalOriginal;
+
+    if (scrollAmount >= maxScroll) {
+      scrollAmount -= maxScroll;
+      slider.style.transition = 'none';
+      slider.style.transform   = `translateX(${-scrollAmount}px)`;
+    } else if (scrollAmount < 0) {
+      scrollAmount += maxScroll;
+      slider.style.transition = 'none';
+      slider.style.transform   = `translateX(${-scrollAmount}px)`;
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    setCardWidths();
+    scrollAmount    = 0;
+    isTransitioning = false;
+    slider.style.transition = 'none';
+    slider.style.transform   = 'translateX(0)';
+  });
+
+  // init — works whether DOMContentLoaded has fired or not
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', setCardWidths);
+  } else {
+    setCardWidths();
+  }
+
+  // expose for onclick buttons
+  window.scrollSlider = scrollSlider;
 }
 
+
+// ── Portfolio (unchanged) ──────────────────────────────────
 let portfolioIndex = 0;
 
 function portfolioSlide(direction) {
   const track = document.querySelector('.portfolio-track');
   const items = document.querySelectorAll('.portfolio-item');
 
-  if (!track || items.length === 0) return;
-
   portfolioIndex += direction;
-
   if (portfolioIndex < 0) portfolioIndex = items.length - 1;
   if (portfolioIndex >= items.length) portfolioIndex = 0;
 
-  track.style.transform = `translateX(-${portfolioIndex * 100}%)`;
+  track.style.transform = `translateX(-${portfolioIndex * 60}%)`;
 }
 
 
-function portfolioSlide(direction) {
-  const track = document.querySelector('.portfolio-track');
 
-  track.scrollBy({
-    left: direction * 420,   // same as card width + gap
-    behavior: 'smooth'
-  });
-}
+document.querySelectorAll('.portfolio-item img').forEach(img => {
+  img.onload = () => {
+    const parent = img.closest('.portfolio-item')
+
+    if (img.naturalHeight > img.naturalWidth) {
+      parent.classList.add('vertical')
+    } else {
+      parent.classList.add('horizontal')
+    }
+  }
+})

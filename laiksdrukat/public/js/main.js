@@ -130,3 +130,17 @@ if (fileInput && fileLabel) {
     fileLabel.textContent = fileInput.files?.[0]?.name || 'Izvēlieties failu vai ievelciet to šeit'
   })
 }
+
+let portfolioIndex = 0
+
+window.portfolioSlide = (direction) => {
+  const track = document.querySelector('.portfolio-track')
+  const items = Array.from(document.querySelectorAll('.portfolio-item'))
+
+  if (!track || items.length === 0) {
+    return
+  }
+
+  portfolioIndex = (portfolioIndex + direction + items.length) % items.length
+  track.style.transform = `translateX(-${portfolioIndex * 100}%)`
+}

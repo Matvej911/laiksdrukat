@@ -131,20 +131,6 @@ if (fileInput && fileLabel) {
   })
 }
 
-let portfolioIndex = 0
-
-window.portfolioSlide = (direction) => {
-  const track = document.querySelector('.portfolio-track')
-  const items = Array.from(document.querySelectorAll('.portfolio-item'))
-
-  if (!track || items.length === 0) {
-    return
-  }
-
-  portfolioIndex = (portfolioIndex + direction + items.length) % items.length
-  track.style.transform = `translateX(-${portfolioIndex * 100}%)`
-}
-
 function scrollSlider(selector, direction, amount = 320) {
   const slider = document.querySelector(selector)
   if (!slider) return

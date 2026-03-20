@@ -144,3 +144,39 @@ window.portfolioSlide = (direction) => {
   portfolioIndex = (portfolioIndex + direction + items.length) % items.length
   track.style.transform = `translateX(-${portfolioIndex * 100}%)`
 }
+
+function scrollSlider(selector, direction, amount = 320) {
+  const slider = document.querySelector(selector)
+  if (!slider) return
+
+  slider.scrollBy({
+    left: direction * amount,
+    behavior: 'smooth',
+  })
+}
+
+let portfolioIndex = 0;
+
+function portfolioSlide(direction) {
+  const track = document.querySelector('.portfolio-track');
+  const items = document.querySelectorAll('.portfolio-item');
+
+  if (!track || items.length === 0) return;
+
+  portfolioIndex += direction;
+
+  if (portfolioIndex < 0) portfolioIndex = items.length - 1;
+  if (portfolioIndex >= items.length) portfolioIndex = 0;
+
+  track.style.transform = `translateX(-${portfolioIndex * 100}%)`;
+}
+
+
+function portfolioSlide(direction) {
+  const track = document.querySelector('.portfolio-track');
+
+  track.scrollBy({
+    left: direction * 420,   // same as card width + gap
+    behavior: 'smooth'
+  });
+}

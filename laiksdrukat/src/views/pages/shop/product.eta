@@ -1,165 +1,232 @@
-<% layout('../../partials/layout') %>
+<% layout('../../partials/layout', { bodyClass: 'page-product' }) %>
 
-<section class="page-hero page-hero-compact">
+<!-- BREADCRUMB -->
+<section class="product-hero-section">
   <div class="container">
     <div class="breadcrumb">
       <a href="/">Sākums</a>
       <span class="breadcrumb-sep">/</span>
       <a href="/veikals">Veikals</a>
-      <span class="breadcrumb-sep">/</span>
-      <a href="/veikals/kategorija/<%= it.product.category.slug %>"><%= it.product.category.name %></a>
+      <% if (it.product.category) { %>
+        <span class="breadcrumb-sep">/</span>
+        <a href="/veikals/kategorija/<%= it.product.category.slug %>"><%= it.product.category.name %></a>
+      <% } %>
       <span class="breadcrumb-sep">/</span>
       <span><%= it.product.name %></span>
     </div>
   </div>
 </section>
 
-<section class="section">
-  <div class="container product-layout">
-    <div class="product-stage">
-      <% if (it.product.image) { %>
-        <img src="<%= it.product.image %>" alt="<%= it.product.name %>" loading="lazy">
-      <% } else { %>
-        <div class="product-stage-placeholder">LD</div>
-      <% } %>
+<!-- MAIN PRODUCT -->
+<section class="product-main">
+  <div class="container product-main-grid">
+
+    <!-- IMAGE -->
+    <div class="product-image-block">
+      <div class="product-image-wrap">
+        <% if (it.product.image) { %>
+          <img src="<%= it.product.image %>" alt="<%= it.product.name %>" loading="lazy">
+        <% } else { %>
+          <div class="product-image-placeholder">LD</div>
+        <% } %>
+      </div>
+      <div class="product-image-badges">
+      </div>
     </div>
 
-    <div class="product-summary">
-      <div class="product-category"><%= it.product.category.name %></div>
-      <h1><%= it.product.name %></h1>
-      <div class="product-price-large"><%= Number(it.product.price).toFixed(2) %> €</div>
-      <p class="product-note">+ PVN</p>
+    <!-- INFO -->
+    <div class="product-info-block">
+
+      <% if (it.product.category) { %>
+        <span class="product-cat-label"><%= it.product.category.name %></span>
+      <% } %>
+      <h1 class="product-title"><%= it.product.name %></h1>
+
+      <div class="product-price-block">
+        <span class="product-price-main"><%= Number(it.product.price).toFixed(2) %> €</span>
+        <span class="product-price-tax">+ PVN (21%)</span>
+        <span class="product-price-total">Kopā: <%= (Number(it.product.price) * 1.21).toFixed(2) %> €</span>
+      </div>
 
       <% if (it.product.stock > 0) { %>
-        <div class="stock-pill">Pieejams noliktavā: <%= it.product.stock %> gab.</div>
+        <div class="product-stock-row">
+          <span class="product-in-stock">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Pieejams noliktavā
+          </span>
+          <span class="product-stock-count"><%= it.product.stock %> gab.</span>
+        </div>
+
+        <div class="product-divider"></div>
+
         <% if (it.isStampProduct) { %>
-          <form action="/grozs/add" method="POST" enctype="multipart/form-data" class="product-config-form">
+          <form action="/grozs/add" method="POST" enctype="multipart/form-data" class="product-form">
             <input type="hidden" name="productId" value="<%= it.product.id %>">
 
-            <div class="form-group">
-              <label class="form-label">Nospieduma tintes krāsa: <span class="required">*</span></label>
-              <select name="inkColor" class="form-input" required>
-                <option value="Melna">Melna</option>
-                <option value="Zila">Zila</option>
-                <option value="Sarkana">Sarkana</option>
-                <option value="Zaļa">Zaļa</option>
-                <option value="Violeta">Violeta</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Preces saņemšana: <span class="required">*</span></label>
-              <select name="deliveryMethod" class="form-input" data-delivery-method required>
-                <option value="Birojā">Birojā</option>
-                <option value="Pakomāts">Pakomāts + 3,00 €</option>
-              </select>
+            <div class="product-form-row">
+              <div class="form-group">
+                <label class="form-label">Tintes krāsa <span class="required">*</span></label>
+                <select name="inkColor" class="form-input" required>
+                  <option value="Melna">Melna</option>
+                  <option value="Zila">Zila</option>
+                  <option value="Sarkana">Sarkana</option>
+                  <option value="Zaļa">Zaļa</option>
+                  <option value="Violeta">Violeta</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Saņemšana <span class="required">*</span></label>
+                <select name="deliveryMethod" class="form-input" data-delivery-method required>
+                  <option value="Birojā">Birojā</option>
+                  <option value="Pakomāts">Pakomāts + 3,00 €</option>
+                </select>
+              </div>
             </div>
 
             <div class="form-group delivery-address-group" data-delivery-address-group hidden>
-              <label class="form-label">Adrese: <span class="required">*</span></label>
-              <input
-                type="text"
-                name="deliveryAddress"
-                class="form-input"
-                data-delivery-address-input
-                placeholder="Ievadiet Omniva pakomāta adresi (stingrs formāts nav obligāts)"
-              >
+              <label class="form-label">Pakomāta adrese <span class="required">*</span></label>
+              <input type="text" name="deliveryAddress" class="form-input" data-delivery-address-input placeholder="Ievadiet pakomāta adresi">
             </div>
 
             <div class="form-group">
               <label class="form-label">Teksts zīmogam</label>
-              <textarea name="stampText" class="form-input form-textarea" placeholder="Pievienot tekstu zīmogam (rakstat brīvā veidā) vai pievienojiet failu zemāk."></textarea>
+              <textarea name="stampText" class="form-input form-textarea" placeholder="Rakstiet zīmoga tekstu brīvā formā vai pievienojiet failu zemāk..."></textarea>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Faila augšupielāde</label>
-              <input type="file" name="stampFile" class="form-input" accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
+              <label class="form-label">Faila pielikums</label>
+              <label class="upload-dropzone">
+                <input type="file" name="stampFile" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
+                <span class="upload-dropzone-copy">
+                  <strong>Pievienot failu</strong>
+                  <small data-file-label>PDF, JPG, PNG, SVG, AI, EPS</small>
+                </span>
+              </label>
             </div>
 
             <div class="product-buy-row">
-              <div class="form-group">
-                <label class="form-label"><%= it.product.name %> daudzums</label>
-                <input type="number" name="quantity" value="1" min="1" max="<%= it.product.stock %>" class="qty-input">
+              <div class="product-qty-wrap">
+                <label class="form-label">Daudzums</label>
+                <div class="product-qty-control">
+                  <button type="button" class="qty-btn" onclick="this.nextElementSibling.stepDown()">−</button>
+                  <input type="number" name="quantity" value="1" min="1" max="<%= it.product.stock %>" class="qty-input">
+                  <button type="button" class="qty-btn" onclick="this.previousElementSibling.stepUp()">+</button>
+                </div>
               </div>
-              <button type="submit" class="btn btn-primary">Pievienot grozam</button>
+              <button type="submit" class="product-add-btn">
+                <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Pievienot grozam
+              </button>
             </div>
           </form>
+
         <% } else { %>
-          <form action="/grozs/add" method="POST" class="product-buy-form">
+          <form action="/grozs/add" method="POST" class="product-form">
             <input type="hidden" name="productId" value="<%= it.product.id %>">
-            <input type="number" name="quantity" value="1" min="1" max="<%= it.product.stock %>" class="qty-input">
-            <button type="submit" class="btn btn-primary">Pievienot grozam</button>
+            <div class="product-buy-row">
+              <div class="product-qty-wrap">
+                <label class="form-label">Daudzums</label>
+                <div class="product-qty-control">
+                  <button type="button" class="qty-btn" onclick="this.nextElementSibling.stepDown()">−</button>
+                  <input type="number" name="quantity" value="1" min="1" max="<%= it.product.stock %>" class="qty-input">
+                  <button type="button" class="qty-btn" onclick="this.previousElementSibling.stepUp()">+</button>
+                </div>
+              </div>
+              <button type="submit" class="product-add-btn">
+                <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Pievienot grozam
+              </button>
+            </div>
           </form>
         <% } %>
+
       <% } else { %>
+        <div class="product-out-of-stock">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Prece pagaidām nav pieejama
+        </div>
         <div class="note-card">
           <h3>Pieejamība pēc pieprasījuma</h3>
-          <p>Ja prece nav noliktavā, rakstiet mums un precizēsim piegādes iespējas.</p>
+          <p>Rakstiet mums un precizēsim piegādes iespējas.</p>
+          <a href="/kontakti" class="btn btn-primary">Sazināties</a>
         </div>
       <% } %>
 
-      <div class="product-support-card">
-        <span class="eyebrow">Jautājumi?</span>
-        <p>Ja nepieciešams pielāgots zīmoga teksts, makets vai cita modifikācija, rakstiet mums pirms pasūtījuma.</p>
-        <a href="/kontakti" class="btn btn-outline">Atvērt kontaktus</a>
+      <!-- SUPPORT -->
+      <div class="product-support">
+        <div class="product-support-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div>
+          <strong>Jautājumi par produktu?</strong>
+          <p>Palīdzēsim izvēlēties pareizo zīmoga modeli un tekstu.</p>
+        </div>
+        <a href="/kontakti" class="product-support-link">Jautāt →</a>
       </div>
+
     </div>
   </div>
 </section>
 
-<section class="section section-muted">
-  <div class="container">
-    <div class="section-heading section-heading-left">
-      <span class="eyebrow">Produkta apraksts</span>
-      <h2>Apraksts un nospieduma paraugs</h2>
+<!-- DESCRIPTION -->
+<% if (it.product.description) { %>
+<section class="product-desc-section">
+  <div class="container product-desc-grid">
+    <div class="product-desc-sidebar">
+      <span class="product-desc-eyebrow">Apraksts</span>
+      <h2>Produkta informācija</h2>
+      <p>Detalizēta informācija par zīmoga izmēriem, lietošanu un pielietojumu.</p>
     </div>
-
-    <div class="product-description-card">
-      <% if (it.product.description) { %>
-        <%~ it.product.description %>
-      <% } else { %>
-        <p>Šim produktam apraksts vēl tiks pievienots.</p>
-      <% } %>
-
+    <div class="product-desc-content">
+      <%~ it.product.description %>
       <% if (it.product.imprintImage && !(it.product.description || '').includes(it.product.imprintImage)) { %>
         <div class="product-imprint-preview">
           <h3>Nospieduma paraugs</h3>
-          <img src="<%= it.product.imprintImage %>" alt="Nospieduma paraugs <%= it.product.name %>" loading="lazy">
+          <img src="<%= it.product.imprintImage %>" alt="Nospieduma paraugs" loading="lazy">
         </div>
       <% } %>
     </div>
   </div>
 </section>
+<% } %>
 
+<!-- RELATED -->
 <% if (it.related.length > 0) { %>
-<section class="section section-muted">
+<section class="product-related-section">
   <div class="container">
-    <div class="section-heading section-heading-left">
-      <span class="eyebrow">Saistītās preces</span>
-      <h2>Līdzīgi produkti no tās pašas kategorijas</h2>
+    <div class="product-related-header">
+      <span class="shop-eyebrow">Saistītās preces</span>
+      <h2>Līdzīgi produkti</h2>
     </div>
-
-    <div class="products-grid">
+    <div class="shop-grid">
       <% for (const p of it.related) { %>
-        <article class="product-card">
-          <a href="/veikals/<%= p.slug %>">
-            <div class="product-img">
+        <article class="shop-product-card">
+          <a href="/veikals/<%= p.slug %>" class="shop-product-link">
+            <div class="shop-product-img">
               <% if (p.image) { %>
                 <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy">
               <% } else { %>
-                <div class="product-img-placeholder">LD</div>
+                <div class="shop-product-placeholder">LD</div>
               <% } %>
             </div>
-            <div class="product-info">
-              <div class="product-name"><%= p.name %></div>
-              <div class="product-price"><%= Number(p.price).toFixed(2) %> € <span class="product-price-vat">+ PVN</span></div>
+            <div class="shop-product-info">
+              <% if (p.category) { %>
+                <span class="shop-product-category"><%= p.category.name %></span>
+              <% } %>
+              <h3 class="shop-product-name"><%= p.name %></h3>
+              <div class="shop-product-footer">
+                <div class="shop-product-price"><%= Number(p.price).toFixed(2) %> € <span class="shop-product-vat">+ PVN</span></div>
+              </div>
             </div>
           </a>
-          <div class="product-actions">
+          <div class="shop-product-actions">
             <form action="/grozs/add" method="POST">
               <input type="hidden" name="productId" value="<%= p.id %>">
               <input type="hidden" name="quantity" value="1">
-              <button type="submit" class="btn btn-dark btn-full btn-sm">Pievienot grozam</button>
+              <button type="submit" class="shop-add-btn">
+                <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Pievienot grozam
+              </button>
             </form>
           </div>
         </article>

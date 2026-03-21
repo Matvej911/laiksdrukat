@@ -1,110 +1,123 @@
-<% layout('../../partials/layout') %>
+<% layout('../../partials/layout', { bodyClass: 'page-shop' }) %>
 
-<section class="page-hero page-hero-compact">
+<!-- HERO -->
+<section class="shop-hero">
   <div class="container">
     <div class="breadcrumb">
       <a href="/">Sākums</a>
       <span class="breadcrumb-sep">/</span>
       <span>Veikals</span>
     </div>
-
-    <div class="page-hero-copy">
-      <span class="eyebrow">E-veikals</span>
-      <h1>Zīmogi un zīmogu tintes</h1>
-      <p><%= it.site.shop.intro %></p>
+    <div class="shop-hero-inner">
+      <div>
+        <span class="shop-eyebrow">E-veikals</span>
+        <h1>Zīmogi un zīmogu tintes</h1>
+        <p><%= it.site.shop.intro %></p>
+      </div>
     </div>
+  </div>
+</section>
 
-    <div class="category-grid category-grid-compact">
-      <a href="/veikals" class="category-card <%= !it.activeCategory ? 'category-card-active' : '' %>">
-        <span class="eyebrow">Skats</span>
-        <h3>Visas preces</h3>
-        <p>Vienā skatā redzami visi pieejamie zīmogi un tintes.</p>
-        <div class="category-meta">
-          <span><%= it.products.length %> preces filtrā</span>
-          <span>Atvērt</span>
-        </div>
+<!-- CATEGORIES -->
+<section class="shop-categories-section">
+  <div class="container">
+    <div class="shop-categories">
+      <a href="/veikals" class="shop-cat-pill <%= !it.activeCategory ? 'active' : '' %>">
+        Visas preces
+        <span class="shop-cat-count"><%= it.products.length %></span>
       </a>
-
       <% for (const categoryInfo of it.site.shop.categories) { %>
-        <% const dbCategory = it.categories.find((category) => category.slug === categoryInfo.slug) %>
-        <a href="/veikals/kategorija/<%= categoryInfo.slug %>" class="category-card <%= it.activeCategory === categoryInfo.slug ? 'category-card-active' : '' %>">
-          <span class="eyebrow">Kategorija</span>
-          <h3><%= categoryInfo.title %></h3>
-          <p><%= categoryInfo.description %></p>
-          <div class="category-meta">
-            <span><%= dbCategory ? dbCategory._count.products : 0 %> preces</span>
-            <span>Filtrēt</span>
-          </div>
+        <% const dbCategory = it.categories.find((c) => c.slug === categoryInfo.slug) %>
+        <a href="/veikals/kategorija/<%= categoryInfo.slug %>" class="shop-cat-pill <%= it.activeCategory === categoryInfo.slug ? 'active' : '' %>">
+          <%= categoryInfo.title %>
+          <span class="shop-cat-count"><%= dbCategory ? dbCategory._count.products : 0 %></span>
         </a>
       <% } %>
     </div>
   </div>
 </section>
 
-<section class="section">
+<!-- TOOLBAR + PRODUCTS -->
+<section class="shop-main">
   <div class="container">
-    <form action="<%= it.activeCategory ? ('/veikals/kategorija/' + it.activeCategory) : '/veikals' %>" method="GET" class="shop-toolbar">
-      <div class="shop-toolbar-field">
-        <label for="q" class="shop-toolbar-label">Meklēt produktu</label>
-        <input id="q" type="search" name="q" value="<%= it.q || '' %>" class="form-input" placeholder="Piemēram, Colop 55 oval">
-      </div>
 
-      <div class="shop-toolbar-field">
-        <label for="sort" class="shop-toolbar-label">Kārtot</label>
-        <select id="sort" name="sort" class="form-input">
+    <!-- TOOLBAR -->
+    <form action="<%= it.activeCategory ? ('/veikals/kategorija/' + it.activeCategory) : '/veikals' %>" method="GET" class="shop-toolbar-new">
+      <div class="shop-search-wrap">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" name="q" value="<%= it.q || '' %>" class="shop-search-input" placeholder="Meklēt produktu...">
+      </div>
+      <div class="shop-toolbar-right">
+        <select name="sort" class="shop-sort-select">
           <option value="name-asc" <%= it.sort === 'name-asc' ? 'selected' : '' %>>Pēc nosaukuma</option>
-          <option value="price-asc" <%= it.sort === 'price-asc' ? 'selected' : '' %>>Cena: no zemākās</option>
-          <option value="price-desc" <%= it.sort === 'price-desc' ? 'selected' : '' %>>Cena: no augstākās</option>
+          <option value="price-asc" <%= it.sort === 'price-asc' ? 'selected' : '' %>>Cena: zemākā</option>
+          <option value="price-desc" <%= it.sort === 'price-desc' ? 'selected' : '' %>>Cena: augstākā</option>
         </select>
-      </div>
-
-      <div class="shop-toolbar-actions">
-        <button type="submit" class="btn btn-primary">Meklēt</button>
-        <a href="<%= it.activeCategory ? ('/veikals/kategorija/' + it.activeCategory) : '/veikals' %>" class="btn btn-outline">Notīrīt</a>
+        <button type="submit" class="shop-search-btn">Meklēt</button>
+        <% if (it.q) { %>
+          <a href="<%= it.activeCategory ? ('/veikals/kategorija/' + it.activeCategory) : '/veikals' %>" class="shop-clear-btn">Notīrīt</a>
+        <% } %>
       </div>
     </form>
 
-    <div class="shop-results-meta">
-      <strong><%= it.products.length %></strong> produkti
+    <!-- RESULTS META -->
+    <div class="shop-meta">
       <% if (it.q) { %>
-        <span>Meklēšana: "<%= it.q %>"</span>
+        <span>Rezultāti priekš "<strong><%= it.q %></strong>"</span>
       <% } %>
+      <span class="shop-meta-count"><%= it.products.length %> preces</span>
     </div>
 
+    <!-- EMPTY -->
     <% if (it.products.length === 0) { %>
-      <div class="empty-state">
-        <h2>Šajā kategorijā pagaidām nav produktu</h2>
-        <p>Ja vajadzīgā prece nav sarakstā, sazinieties ar mums un piemeklēsim piemērotu risinājumu.</p>
+      <div class="shop-empty">
+        <div class="shop-empty-icon">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <h2>Nekas netika atrasts</h2>
+        <p>Mēģiniet citu meklēšanas vārdu vai sazinieties ar mums.</p>
         <a href="/kontakti" class="btn btn-primary">Sazināties</a>
       </div>
+
     <% } else { %>
-      <div class="products-grid">
+
+      <!-- GRID -->
+      <div class="shop-grid">
         <% for (const p of it.products) { %>
-          <article class="product-card">
-            <a href="/veikals/<%= p.slug %>">
-              <div class="product-img">
+          <article class="shop-product-card">
+            <a href="/veikals/<%= p.slug %>" class="shop-product-link">
+              <div class="shop-product-img">
                 <% if (p.image) { %>
                   <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy">
                 <% } else { %>
-                  <div class="product-img-placeholder">LD</div>
+                  <div class="shop-product-placeholder">LD</div>
                 <% } %>
               </div>
-              <div class="product-info">
-                <div class="product-category"><%= p.category.name %></div>
-                <div class="product-name"><%= p.name %></div>
-                <div class="product-price"><%= Number(p.price).toFixed(2) %> € <span class="product-price-vat">+ PVN</span></div>
+              <div class="shop-product-info">
+                <span class="shop-product-category"><%= p.category.name %></span>
+                <h3 class="shop-product-name"><%= p.name %></h3>
+                <div class="shop-product-footer">
+                  <div class="shop-product-price">
+                    <%= Number(p.price).toFixed(2) %> €
+                    <span class="shop-product-vat">+ PVN</span>
+                  </div>
+                </div>
               </div>
             </a>
-            <div class="product-actions">
+            <div class="shop-product-actions">
               <form action="/grozs/add" method="POST">
                 <input type="hidden" name="productId" value="<%= p.id %>">
                 <input type="hidden" name="quantity" value="1">
-                <button type="submit" class="btn btn-dark btn-full btn-sm">Pievienot grozam</button>
+                <button type="submit" class="shop-add-btn">
+                  <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                  Pievienot grozam
+                </button>
               </form>
             </div>
           </article>
         <% } %>
       </div>
+
     <% } %>
   </div>
 </section>

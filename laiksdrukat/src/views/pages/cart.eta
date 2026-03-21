@@ -1,100 +1,143 @@
 <% layout('../partials/layout') %>
 
-<section class="section">
+<section class="cart-section">
   <div class="container">
-    <h1 style="font-size:32px;font-weight:800;margin-bottom:32px;">Iepirkumu grozs</h1>
+
+    <div class="cart-header">
+      <h1>Iepirkumu grozs</h1>
+      <% if (it.cart.length > 0) { %>
+        <span class="cart-count-badge"><%= it.cart.reduce((s, i) => s + i.quantity, 0) %> preces</span>
+      <% } %>
+    </div>
 
     <% if (it.cart.length === 0) { %>
-      <div style="text-align:center;padding:80px 0;">
-        <div style="font-size:64px;margin-bottom:20px;">🛒</div>
-        <h2 style="font-size:20px;font-weight:600;margin-bottom:12px;">Grozs ir tukšs</h2>
-        <p style="color:var(--text-soft);margin-bottom:28px;">Pievienojiet preces no mūsu veikala</p>
-        <a href="/veikals" class="btn btn-primary">Uz veikalu</a>
+
+      <div class="cart-empty">
+        <div class="cart-empty-icon">
+          <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+        <h2>Grozs ir tukšs</h2>
+        <p>Pievienojiet preces no mūsu veikala un tās parādīsies šeit.</p>
+        <a href="/veikals" class="btn btn-primary">Doties uz veikalu</a>
       </div>
+
     <% } else { %>
-      <div style="display:grid;grid-template-columns:1fr 340px;gap:40px;align-items:start;">
-        <div>
-          <table class="cart-table">
-            <thead>
-              <tr>
-                <th>Prece</th>
-                <th>Cena</th>
-                <th>Daudzums</th>
-                <th>Kopā</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% for (const item of it.cart) { %>
-                <tr>
-                  <td>
-                    <div style="display:flex;align-items:center;gap:12px;">
-                      <div style="width:60px;height:60px;background:var(--surface-muted);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;">
-                        LD
-                      </div>
-                      <div>
-                        <div style="font-weight:500;"><%= item.name %></div>
-                        <% if (item.options && Object.keys(item.options).length > 0) { %>
-                          <div class="cart-option-list">
-                            <% for (const [key, value] of Object.entries(item.options)) { %>
-                              <% if (key !== 'Faila saite') { %>
-                                <div><strong><%= key %>:</strong> <%= value %></div>
-                              <% } %>
-                            <% } %>
-                            <% if (item.options['Faila saite']) { %>
-                              <div><a href="<%= item.options['Faila saite'] %>" target="_blank" rel="noreferrer">Atvērt augšupielādēto failu</a></div>
-                            <% } %>
-                          </div>
-                        <% } %>
-                      </div>
-                    </div>
-                  </td>
-                  <td><%= item.price.toFixed(2) %> €</td>
-                  <td>
-                    <form action="/grozs/update" method="POST" style="display:flex;align-items:center;gap:8px;">
-                      <input type="hidden" name="lineId" value="<%= item.lineId %>">
-                      <input type="number" name="quantity" value="<%= item.quantity %>" min="1" class="qty-input">
-                      <button type="submit" class="btn btn-sm btn-outline" style="padding:6px 10px;">↻</button>
-                    </form>
-                  </td>
-                  <td style="font-weight:600;"><%= (item.price * item.quantity).toFixed(2) %> €</td>
-                  <td>
-                    <form action="/grozs/remove" method="POST">
-                      <input type="hidden" name="lineId" value="<%= item.lineId %>">
-                      <button type="submit" style="background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:18px;" title="Dzēst">×</button>
-                    </form>
-                  </td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
 
-          <div style="margin-top:16px;">
-            <a href="/veikals" style="font-size:14px;color:var(--text-soft);">← Turpināt iepirkties</a>
+      <div class="cart-layout">
+
+        <!-- ITEMS -->
+        <div class="cart-items">
+          <% for (const item of it.cart) { %>
+            <div class="cart-item">
+
+              <div class="cart-item-image">
+                <% if (item.image) { %>
+                  <img src="<%= item.image %>" alt="<%= item.name %>">
+                <% } else { %>
+                  <div class="cart-item-placeholder">LD</div>
+                <% } %>
+              </div>
+
+              <div class="cart-item-details">
+                <div class="cart-item-name"><%= item.name %></div>
+                <% if (item.options && Object.keys(item.options).length > 0) { %>
+                  <div class="cart-item-options">
+                    <% for (const [key, value] of Object.entries(item.options)) { %>
+                      <% if (key !== 'Faila saite') { %>
+                        <span class="cart-item-option"><strong><%= key %>:</strong> <%= value %></span>
+                      <% } %>
+                    <% } %>
+                    <% if (item.options['Faila saite']) { %>
+                      <a href="<%= item.options['Faila saite'] %>" target="_blank" rel="noreferrer" class="cart-item-file">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        Skatīt failu
+                      </a>
+                    <% } %>
+                  </div>
+                <% } %>
+                <div class="cart-item-price-mobile"><%= item.price.toFixed(2) %> €</div>
+              </div>
+
+              <div class="cart-item-price"><%= item.price.toFixed(2) %> €</div>
+
+              <form action="/grozs/update" method="POST" class="cart-item-qty">
+                <input type="hidden" name="lineId" value="<%= item.lineId %>">
+                <button type="button" class="qty-btn" onclick="this.nextElementSibling.stepDown();this.form.submit()">−</button>
+                <input type="number" name="quantity" value="<%= item.quantity %>" min="1" class="qty-input">
+                <button type="button" class="qty-btn" onclick="this.previousElementSibling.stepUp();this.form.submit()">+</button>
+              </form>
+
+              <div class="cart-item-total"><%= (item.price * item.quantity).toFixed(2) %> €</div>
+
+              <form action="/grozs/remove" method="POST" class="cart-item-remove">
+                <input type="hidden" name="lineId" value="<%= item.lineId %>">
+                <button type="submit" class="cart-remove-btn" title="Noņemt">
+                  <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                </button>
+              </form>
+
+            </div>
+          <% } %>
+
+          <div class="cart-continue">
+            <a href="/veikals" class="cart-back-link">
+              <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              Turpināt iepirkties
+            </a>
           </div>
         </div>
 
-        <div class="cart-summary">
-          <h3 style="font-size:18px;font-weight:700;margin-bottom:20px;">Pasūtījuma kopsavilkums</h3>
-          <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;">
-            <span style="color:var(--text-soft);">Preces</span>
-            <span><%= it.total.toFixed(2) %> €</span>
+        <!-- SUMMARY -->
+        <div class="cart-summary-block">
+          <div class="cart-summary-card">
+            <h3>Kopsavilkums</h3>
+
+            <div class="cart-summary-rows">
+              <div class="cart-summary-row">
+                <span>Preces</span>
+                <span><%= it.total.toFixed(2) %> €</span>
+              </div>
+              <div class="cart-summary-row">
+                <span>PVN (21%)</span>
+                <span><%= (it.total * 0.21).toFixed(2) %> €</span>
+              </div>
+              <div class="cart-summary-row">
+                <span>Piegāde</span>
+                <span class="cart-summary-shipping">Aprēķina pie checkout</span>
+              </div>
+            </div>
+
+            <div class="cart-summary-total">
+              <span>Kopā ar PVN</span>
+              <span class="cart-total-price"><%= (it.total * 1.21).toFixed(2) %> €</span>
+            </div>
+
+            <a href="/checkout" class="btn btn-primary btn-full cart-checkout-btn">
+              Noformēt pasūtījumu
+              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+
+            <p class="cart-summary-note">Droša apmaksa. Piegādes izmaksas tiek pievienotas pie noformēšanas.</p>
+
+            <div class="cart-summary-badges">
+              <div class="cart-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Droši
+              </div>
+              <div class="cart-badge">
+                <svg viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="1"/></svg>
+                Droša maksājuma
+              </div>
+              <div class="cart-badge">
+                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Jelgava, LV
+              </div>
+            </div>
           </div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;">
-            <span style="color:var(--text-soft);">PVN (21%)</span>
-            <span><%= (it.total * 0.21).toFixed(2) %> €</span>
-          </div>
-          <div style="border-top:1px solid var(--line);margin:16px 0;"></div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:24px;">
-            <span style="font-weight:700;">Kopā ar PVN</span>
-            <span class="cart-total"><%= (it.total * 1.21).toFixed(2) %> €</span>
-          </div>
-          <a href="/checkout" class="btn btn-primary btn-full">Noformēt pasūtījumu →</a>
-          <p style="font-size:12px;color:var(--text-faint);margin-top:12px;text-align:center;">
-            Piegādes izmaksas jau tiek pieskaitītas, ja izvēlēts pakomāts.
-          </p>
         </div>
+
       </div>
+
     <% } %>
   </div>
 </section>

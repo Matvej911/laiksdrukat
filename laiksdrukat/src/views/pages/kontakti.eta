@@ -1,76 +1,71 @@
-<% layout('../partials/layout') %>
+<% layout('../partials/layout', { bodyClass: 'page-home' }) %>
 <% const formData = it.formData || {} %>
 
-<section class="page-hero page-hero-compact contact-hero">
+<!-- HERO -->
+<section class="contact-hero-section">
   <div class="container">
     <div class="breadcrumb">
       <a href="/">Sākums</a>
       <span class="breadcrumb-sep">/</span>
       <span>Kontakti</span>
     </div>
-
-    <div class="page-hero-copy">
-      <span class="eyebrow">Kontakti</span>
-      <h1>Sazinieties ar Laiks Drukāt</h1>
-      <p>Vienmēr gatavi palīdzēt ar jūsu jautājumiem un pasūtījumiem. Rakstiet mums, pievienojiet failu un ērti atrodiet mūsu atrašanās vietu Jelgavā.</p>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container contact-top-grid">
-    <div class="contact-panel">
-      <span class="eyebrow">Tiešā saziņa</span>
-      <h2>Kontaktu informācija</h2>
-
-      <div class="contact-stack">
-        <div class="contact-row">
-          <span class="contact-label">Adrese</span>
-          <a href="<%= it.site.contact.mapUrl %>" target="_blank" rel="noreferrer"><%= it.site.contact.address %></a>
+    <div class="contact-hero-inner">
+      <div class="contact-hero-copy">
+        <span class="contact-eyebrow">Kontakti</span>
+        <h1>Sazinieties ar mums</h1>
+        <p>Vienmēr gatavi palīdzēt ar jūsu jautājumiem un pasūtījumiem.</p>
+        <div class="contact-hero-pills">
+          <a href="<%= it.site.contact.phones[0].href %>" class="contact-hero-pill">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <%= it.site.contact.phones[0].label %>
+          </a>
+          <a href="<%= it.site.contact.emailHref %>" class="contact-hero-pill">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <%= it.site.contact.email %>
+          </a>
+          <a href="<%= it.site.contact.mapUrl %>" class="contact-hero-pill" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <%= it.site.contact.shortAddress %>
+          </a>
         </div>
-        <% for (const phone of it.site.contact.phones) { %>
-          <div class="contact-row">
-            <span class="contact-label">Tālrunis</span>
-            <a href="<%= phone.href %>"><%= phone.label %></a>
+      </div>
+      <div class="contact-hero-info">
+        <div class="contact-info-card">
+          <div class="contact-info-row">
+            <span class="contact-info-label">Pirmdiena – Ceturtdiena</span>
+            <span class="contact-info-value">8:00 – 17:00</span>
           </div>
-        <% } %>
-        <div class="contact-row">
-          <span class="contact-label">E-pasts</span>
-          <a href="<%= it.site.contact.emailHref %>"><%= it.site.contact.email %></a>
+          <div class="contact-info-row">
+            <span class="contact-info-label">Piektdiena</span>
+            <span class="contact-info-value">8:00 – 16:00</span>
+          </div>
+          <div class="contact-info-row">
+            <span class="contact-info-label">Sestdiena – Svētdiena</span>
+            <span class="contact-info-value">Slēgts</span>
+          </div>
+          <div class="contact-info-divider"></div>
+          <% for (const phone of it.site.contact.phones) { %>
+            <a href="<%= phone.href %>" class="contact-info-link">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <%= phone.label %>
+            </a>
+          <% } %>
+          <a href="<%= it.site.contact.emailHref %>" class="contact-info-link">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <%= it.site.contact.email %>
+          </a>
         </div>
-        <div class="contact-row">
-          <span class="contact-label">Facebook</span>
-          <a href="<%= it.site.contact.facebook.url %>" target="_blank" rel="noreferrer"><%= it.site.contact.facebook.label %></a>
-        </div>
-      </div>
-
-      <div class="contact-actions">
-        <a href="<%= it.site.contact.emailHref %>" class="btn btn-primary">Rakstīt e-pastu</a>
-        <a href="<%= it.site.contact.mapUrl %>" class="btn btn-outline" target="_blank" rel="noreferrer">Atvērt kartē</a>
-      </div>
-    </div>
-
-    <div class="contact-panel contact-panel-accent">
-      <span class="eyebrow">Ātrākai atbildei</span>
-      <h2>Kas palīdz sagatavot piedāvājumu</h2>
-      <ul class="info-list">
-        <li>Pakalpojuma veids vai interesējošā prece.</li>
-        <li>Izmērs, tirāža vai cits aptuvenais darba apjoms.</li>
-        <li>Termiņš un svarīgākās prasības materiālam vai dizainam.</li>
-        <li>Faili, logotipi vai vizuālie piemēri, ja tie jau ir sagatavoti.</li>
-      </ul>
-
-      <div class="note-card">
-        <h3>Juridiskā informācija</h3>
-        <p><%= it.site.company.legalName %> · Reģ. Nr. <%= it.site.company.registrationNumber %></p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section section-muted">
-  <div class="container contact-page-grid">
-    <div class="contact-map-card">
+<!-- MAP + FORM -->
+<section class="contact-main-section">
+  <div class="container contact-main-grid">
+
+    <!-- MAP -->
+    <div class="contact-map-block">
       <div class="contact-map-frame">
         <iframe
           src="<%= it.site.contact.mapEmbedUrl %>"
@@ -80,38 +75,38 @@
           referrerpolicy="no-referrer-when-downgrade"
         ></iframe>
       </div>
-
-      <div class="contact-map-actions">
-        <div>
-          <strong><%= it.site.contact.shortAddress %></strong>
-          <p>Viegli atrodama lokācija klientu apmeklējumam Jelgavā.</p>
+      <div class="contact-map-footer">
+        <div class="contact-map-address">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span><%= it.site.contact.address %></span>
         </div>
-        <a href="<%= it.site.contact.mapUrl %>" class="btn btn-outline" target="_blank" rel="noreferrer">Atvērt Google Maps</a>
+        <a href="<%= it.site.contact.mapUrl %>" class="btn btn-outline" target="_blank" rel="noreferrer">Google Maps</a>
       </div>
     </div>
 
-    <div class="contact-form-card">
-      <span class="eyebrow">Ziņa mums</span>
+    <!-- FORM -->
+    <div class="contact-form-block">
+      <span class="contact-eyebrow">Sūtīt ziņu</span>
       <h2>Nosūtīt pieprasījumu</h2>
-      <p>Atbildēsim, tiklīdz būsim apskatījuši jūsu ziņu un pievienotos failus.</p>
+      <p>Atbildēsim pēc iespējas ātrāk.</p>
 
       <% if (it.success) { %>
         <div class="contact-success">Ziņa veiksmīgi nosūtīta. Sazināsimies ar jums pēc iespējas ātrāk.</div>
       <% } %>
-
       <% if (it.error) { %>
         <div class="form-error"><%= it.error %></div>
       <% } %>
 
       <form action="/kontakti" method="POST" enctype="multipart/form-data" class="contact-form">
-        <div class="form-group">
-          <label class="form-label">Vārds <span class="required">*</span></label>
-          <input type="text" name="name" class="form-input" required value="<%= formData.name || '' %>">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">E-pasts <span class="required">*</span></label>
-          <input type="email" name="email" class="form-input" required value="<%= formData.email || '' %>">
+        <div class="contact-form-row">
+          <div class="form-group">
+            <label class="form-label">Vārds <span class="required">*</span></label>
+            <input type="text" name="name" class="form-input" required value="<%= formData.name || '' %>">
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-pasts <span class="required">*</span></label>
+            <input type="email" name="email" class="form-input" required value="<%= formData.email || '' %>">
+          </div>
         </div>
 
         <div class="form-group">
@@ -136,7 +131,7 @@
         <div class="form-group">
           <label class="form-label">Faila pielikums</label>
           <label class="upload-dropzone">
-            <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx,.xls,.xlsx">
+            <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
             <span class="upload-dropzone-copy">
               <strong>Pievienot failu</strong>
               <small data-file-label>Izvēlieties failu vai ievelciet to šeit</small>
@@ -144,8 +139,9 @@
           </label>
         </div>
 
-        <button type="submit" class="btn btn-primary">Nosūtīt</button>
+        <button type="submit" class="btn btn-primary btn-full">Nosūtīt pieprasījumu</button>
       </form>
     </div>
+
   </div>
 </section>

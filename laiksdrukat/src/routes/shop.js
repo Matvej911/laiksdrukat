@@ -127,6 +127,14 @@ async function shopRoutes(fastify) {
       take: 4,
     })
 
+    if (product.description) {
+      product.description = product.description
+        .replace(/\s*data-draftjs-conductor-fragment=(?:"[^"]*"|&quot;.*?&quot;)/g, '')
+        .replace(/<div>\s*<\/div>/g, '')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim()
+    }
+
     return reply.view('pages/shop/product', {
       title: `${product.name} | Laiks Drukāt`,
       description:

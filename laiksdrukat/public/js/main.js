@@ -208,30 +208,97 @@ if (slider && track) {
 }
 
 
-// ── Portfolio (unchanged) ──────────────────────────────────
-let portfolioIndex = 0;
 
-function portfolioSlide(direction) {
-  const track = document.querySelector('.portfolio-track');
-  const items = document.querySelectorAll('.portfolio-item');
 
-  portfolioIndex += direction;
-  if (portfolioIndex < 0) portfolioIndex = items.length - 1;
-  if (portfolioIndex >= items.length) portfolioIndex = 0;
 
-  track.style.transform = `translateX(-${portfolioIndex * 60}%)`;
+
+
+
+
+
+
+
+
+
+
+
+
+// ── Portfolio infinite loop ────────────────────────────────
+const portfolioTrack = document.querySelector('.portfolio-track');
+const portfolioSliderEl = portfolioTrack; // track IS the sliding element
+
+if (portfolioTrack) {
+  const gap = 11;
+
+  const portfolioOriginals = Array.from(portfolioTrack.children);
+  portfolioOriginals.forEach(item => {
+    const clone = item.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    const img = clone.querySelector('img');
+    if (img && img.complete) {
+      clone.classList.add(img.naturalHeight > img.naturalWidth ? 'vertical' : 'horizontal');
+    }
+    portfolioTrack.appendChild(clone);
+  });
+
+  const totalOriginal = portfolioOriginals.length;
+  let pStep = 0;
+  let pScroll = 0;
+  let pTransitioning = false;
+
+  function initPortfolio() {
+    const first = portfolioTrack.children[0];
+    pStep = first ? first.offsetWidth + gap : 0;
+  }
+
+  function portfolioSlide(direction) {
+    if (pTransitioning || !pStep) return;
+    pTransitioning = true;
+
+    pScroll += direction * pStep;
+    portfolioTrack.style.transition = 'transform 0.4s ease';
+    portfolioTrack.style.transform = `translateX(${-pScroll}px)`;
+  }
+
+  portfolioTrack.addEventListener('transitionend', (e) => {
+    if (e.target !== portfolioTrack) return;
+    if (e.propertyName !== 'transform') return;
+
+    pTransitioning = false;
+    const maxScroll = pStep * totalOriginal;
+
+    if (pScroll >= maxScroll) {
+      pScroll -= maxScroll;
+      portfolioTrack.style.transition = 'none';
+      portfolioTrack.style.transform = `translateX(${-pScroll}px)`;
+    } else if (pScroll < 0) {
+      pScroll += maxScroll;
+      portfolioTrack.style.transition = 'none';
+      portfolioTrack.style.transform = `translateX(${-pScroll}px)`;
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    initPortfolio();
+    pScroll = 0;
+    pTransitioning = false;
+    portfolioTrack.style.transition = 'none';
+    portfolioTrack.style.transform = 'translateX(0)';
+  });
+
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initPortfolio);
+  } else {
+    initPortfolio();
+  }
+
+  window.portfolioSlide = portfolioSlide;
 }
-
-
 
 document.querySelectorAll('.portfolio-item img').forEach(img => {
   img.onload = () => {
-    const parent = img.closest('.portfolio-item')
-
-    if (img.naturalHeight > img.naturalWidth) {
-      parent.classList.add('vertical')
-    } else {
-      parent.classList.add('horizontal')
-    }
+    const parent = img.closest('.portfolio-item');
+    parent.classList.add(img.naturalHeight > img.naturalWidth ? 'vertical' : 'horizontal');
   }
-})
+  if (img.complete && img.naturalWidth) img.onload();
+});

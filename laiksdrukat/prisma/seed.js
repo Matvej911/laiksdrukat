@@ -122,10 +122,20 @@ function normalizeStock(row) {
 function normalizeDescription(value) {
   const text = String(value || '')
     .replace(/\\r\\n/g, '\n')
+    .replace(/\\n/g, '')        // ← remove literal \n strings
     .replace(/&nbsp;/g, ' ')
     .trim()
 
-  return text || null
+  if (!text) return null
+
+  return text
+    .replace(/\s*data-draftjs-conductor-fragment="[^"]*"/g, '')
+    .replace(/\s*data-draftjs-conductor-fragment=&quot;.*?&quot;/g, '')
+    .replace(/<div>\s*<\/div>/g, '')  // empty divs
+    .replace(/<div>/g, '')            // opening div tags
+    .replace(/<\/div>/g, '<br>')      // closing div → line break
+    .replace(/(<br>\s*){2,}/g, '<br>') // multiple breaks → single
+    .trim() || null
 }
 
 function stripWordPressSizeSuffix(filename) {

@@ -13,7 +13,7 @@ import 'dotenv/config'
 import dbPlugin from './plugins/db.js'
 import cartPlugin from './plugins/cart.js'
 import authPlugin from './plugins/auth.js'
-import { siteContent } from './content/site.js'
+import { siteContent, getSiteContent } from './content/site.js'
 
 import storefrontRoutes from './routes/storefront.js'
 import shopRoutes from './routes/shop.js'

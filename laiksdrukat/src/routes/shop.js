@@ -1,7 +1,7 @@
 async function shopRoutes(fastify) {
   const buildShopFilters = (query = {}) => {
     const q = typeof query.q === 'string' ? query.q.trim() : ''
-    const sort = typeof query.sort === 'string' ? query.sort : 'name-asc'
+    const sort = typeof query.sort === 'string' ? query.sort : 'default'
     const kategorija = typeof query.kategorija === 'string' ? query.kategorija : null
 
     const where = { active: true }
@@ -17,7 +17,8 @@ async function shopRoutes(fastify) {
       ]
     }
 
-    let orderBy = { name: 'asc' }
+    let orderBy = { sortOrder: 'asc' }
+    if (sort === 'name-asc') orderBy = { name: 'asc' }
     if (sort === 'price-asc') orderBy = { price: 'asc' }
     if (sort === 'price-desc') orderBy = { price: 'desc' }
 

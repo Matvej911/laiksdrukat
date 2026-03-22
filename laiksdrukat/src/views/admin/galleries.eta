@@ -1,0 +1,23 @@
+<% layout('layout') %>
+
+<div class="admin-page-header">
+  <h1>Galerijas</h1>
+</div>
+
+<div class="admin-galleries-grid">
+  <% for (const g of it.galleries) { %>
+    <a href="/admin/galleries/<%= g.slug %>" class="admin-gallery-card">
+      <div class="admin-gallery-preview">
+        <% if (g.preview) { %>
+          <img src="<%= g.preview %>" alt="<%= g.label %>">
+        <% } else { %>
+          <div class="admin-gallery-empty-preview">Nav attēlu</div>
+        <% } %>
+      </div>
+      <div class="admin-gallery-info">
+        <strong><%= g.label %></strong>
+        <span><%= g.count %> attēli</span>
+      </div>
+    </a>
+  <% } %>
+</div>

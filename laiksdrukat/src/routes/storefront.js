@@ -1,8 +1,7 @@
 import { appendFile, mkdir, writeFile } from 'fs/promises'
 import { randomUUID } from 'crypto'
 import { extname, join } from 'path'
-
-import { serviceRouteEntries } from '../content/site.js'
+import { serviceRouteEntries, getSiteContent } from '../content/site.js'
 import { sendContactNotification } from '../lib/mailer.js'
 
 function sanitizeFilename(filename) {
@@ -73,6 +72,7 @@ async function storefrontRoutes(fastify) {
       products,
       categories,
       cart: fastify.getCart(request),
+      site: getSiteContent(),
     })
   })
 
@@ -200,6 +200,7 @@ async function storefrontRoutes(fastify) {
           service: route.service,
           cart: fastify.getCart(request),
           success,
+          site: getSiteContent(),
         })
       }
 
@@ -224,6 +225,7 @@ async function storefrontRoutes(fastify) {
           service: route.service,
           cart: fastify.getCart(request),
           success,
+          site: getSiteContent(),
         })
       }
 

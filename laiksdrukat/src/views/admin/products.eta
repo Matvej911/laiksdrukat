@@ -6,9 +6,10 @@
 </div>
 
 <div class="admin-table-wrap">
-  <table class="admin-table">
+  <table class="admin-table" id="products-table">
     <thead>
       <tr>
+        <th style="width:36px;"></th>
         <th>ID</th>
         <th>Attēls</th>
         <th>Nosaukums</th>
@@ -19,9 +20,16 @@
         <th>Darbibas</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="sortable-tbody">
       <% for (const p of it.products) { %>
-        <tr>
+        <tr data-id="<%= p.id %>" class="sortable-row">
+          <td class="drag-handle" title="Vilkt lai pārkārtotu">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="8" y1="6" x2="16" y2="6"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+              <line x1="8" y1="18" x2="16" y2="18"/>
+            </svg>
+          </td>
           <td style="color:var(--gray-400);font-size:13px;">#<%= p.id %></td>
           <td>
             <% if (p.image) { %>
@@ -52,3 +60,64 @@
     </tbody>
   </table>
 </div>
+
+<style>
+.drag-handle {
+  cursor: grab;
+  color: var(--gray-400);
+  text-align: center;
+  user-select: none;
+}
+.drag-handle:active { cursor: grabbing; }
+.sortable-row.dragging {
+  opacity: 0.4;
+  background: #f4f2fd;
+}
+.sortable-row.drag-over {
+  border-top: 2px solid #5f4bd8;
+}
+</style>
+
+<script>
+const tbody = document.getElementById('sortable-tbody')
+let draggingRow = null
+
+tbody.querySelectorAll('.sortable-row').forEach(row => {
+  row.setAttribute('draggable', 'true')
+
+  row.addEventListener('dragstart', () => {
+    draggingRow = row
+    setTimeout(() => row.classList.add('dragging'), 0)
+  })
+
+  row.addEventListener('dragend', () => {
+    row.classList.remove('dragging')
+    tbody.querySelectorAll('.sortable-row').forEach(r => r.classList.remove('drag-over'))
+    saveOrder()
+  })
+
+  row.addEventListener('dragover', (e) => {
+    e.preventDefault()
+    if (row === draggingRow) return
+    tbody.querySelectorAll('.sortable-row').forEach(r => r.classList.remove('drag-over'))
+    row.classList.add('drag-over')
+
+    const rect = row.getBoundingClientRect()
+    const mid = rect.top + rect.height / 2
+    if (e.clientY < mid) {
+      tbody.insertBefore(draggingRow, row)
+    } else {
+      tbody.insertBefore(draggingRow, row.nextSibling)
+    }
+  })
+})
+
+function saveOrder() {
+  const ids = Array.from(tbody.querySelectorAll('.sortable-row')).map(r => r.dataset.id)
+  fetch('/admin/products/reorder', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids })
+  })
+}
+</script>

@@ -14,6 +14,7 @@
     <nav class="admin-nav">
       <a href="/admin" class="admin-nav-link">📊 Dashboard</a>
       <a href="/admin/products" class="admin-nav-link">📦 Produkti</a>
+      <a href="/admin/galleries" class="admin-nav-link">🖼️ Galerijas</a>
       <a href="/admin/orders" class="admin-nav-link">🛒 Pasutijumi</a>
       <a href="/admin/messages" class="admin-nav-link">✉️ Zinas</a>
       <a href="/admin/notification-emails" class="admin-nav-link">📧 Paziņojumi</a>

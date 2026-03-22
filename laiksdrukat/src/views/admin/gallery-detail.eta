@@ -1,0 +1,93 @@
+<% layout('layout') %>
+
+<div class="admin-page-header">
+  <div>
+    <a href="/admin/galleries" style="font-size:13px;color:var(--gray-500);text-decoration:none;">← Galerijas</a>
+    <h1><%= it.gallery.label %></h1>
+  </div>
+</div>
+
+<% if (it.success) { %>
+  <div class="admin-alert admin-alert-success">Izmaiņas saglabātas!</div>
+<% } %>
+<% if (it.error) { %>
+  <div class="admin-alert admin-alert-error"><%= it.error %></div>
+<% } %>
+
+<!-- UPLOAD -->
+<div class="admin-card" style="margin-bottom:32px;">
+  <h3 style="margin-bottom:16px;">Pievienot attēlus</h3>
+  <form action="/admin/galleries/<%= it.gallery.slug %>/upload" method="POST" enctype="multipart/form-data" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+    <input type="file" name="file" accept="image/*" multiple class="admin-file-input">
+    <button type="submit" class="btn btn-primary btn-sm">Augšupielādēt</button>
+  </form>
+</div>
+
+<!-- IMAGE GRID -->
+<% if (it.images.length === 0) { %>
+  <div style="padding:48px;text-align:center;color:var(--gray-400);">
+    Nav neviena attēla. Augšupielādējiet pirmo!
+  </div>
+<% } else { %>
+  <div class="admin-image-grid" id="sortable-images">
+    <% for (const img of it.images) { %>
+      <div class="admin-image-item sortable-img" data-filename="<%= img.filename %>">
+        <div class="admin-image-drag-handle">⠿</div>
+        <div class="admin-image-wrap">
+          <img src="<%= img.url %>" alt="<%= img.filename %>" loading="lazy">
+        </div>
+        <div class="admin-image-footer">
+          <span class="admin-image-name"><%= img.filename %></span>
+          <form action="/admin/galleries/<%= it.gallery.slug %>/delete" method="POST"
+            onsubmit="return confirm('Dzēst šo attēlu?')">
+            <input type="hidden" name="filename" value="<%= img.filename %>">
+            <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#991b1b;">Dzēst</button>
+          </form>
+        </div>
+      </div>
+    <% } %>
+  </div>
+<% } %>
+
+<script>
+const grid = document.getElementById('sortable-images')
+let draggingItem = null
+
+grid.querySelectorAll('.sortable-img').forEach(item => {
+  item.setAttribute('draggable', 'true')
+
+  item.addEventListener('dragstart', () => {
+    draggingItem = item
+    setTimeout(() => item.style.opacity = '0.4', 0)
+  })
+
+  item.addEventListener('dragend', () => {
+    item.style.opacity = '1'
+    saveOrder()
+  })
+
+  item.addEventListener('dragover', (e) => {
+    e.preventDefault()
+    if (item === draggingItem) return
+    const rect = item.getBoundingClientRect()
+    const mid = rect.left + rect.width / 2
+    if (e.clientX < mid) {
+      grid.insertBefore(draggingItem, item)
+    } else {
+      grid.insertBefore(draggingItem, item.nextSibling)
+    }
+  })
+})
+
+function saveOrder() {
+  const filenames = Array.from(grid.querySelectorAll('.sortable-img')).map(i => i.dataset.filename)
+  fetch('/admin/galleries/<%= it.gallery.slug %>/reorder', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ filenames })
+  })
+  .then(r => r.json())
+  .then(() => console.log('Order saved'))
+  .catch(err => console.error(err))
+}
+</script>

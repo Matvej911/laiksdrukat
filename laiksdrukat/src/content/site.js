@@ -1,10 +1,9 @@
-import { readdirSync } from 'fs'
-import { extname } from 'path'
+import { readdirSync, readFileSync } from 'fs'
+import { extname, join } from 'path'
+import { fileURLToPath } from 'url'
 
 const contactAddress = 'Asteru iela 16A, Jelgava, LV-3001'
-const portfolioDir = new URL('../../public/images/portfolio/', import.meta.url)
-const vizitkaртesSliderDir = new URL('../../public/images/slider-vizitkartes/', import.meta.url)
-const autoGalleryTrack = new URL('../../public/images/car-portfolio/', import.meta.url)
+
 const portfolioImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.svg'])
 
 function prettifyPortfolioName(filename) {
@@ -16,37 +15,45 @@ function prettifyPortfolioName(filename) {
     .trim()
 }
 
-const portfolioItems = readdirSync(portfolioDir)
-  .filter((filename) => portfolioImageExtensions.has(extname(filename).toLowerCase()))
-  .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-  .map((filename) => ({
-    image: `/images/portfolio/${filename}`,
-    alt: prettifyPortfolioName(filename),
-  }))
+function readGallery(dirUrl, urlPrefix) {
+  try {
+    const dir = fileURLToPath(dirUrl)
+    const allFiles = readdirSync(dir)
+      .filter(f => f !== '_order.json' && portfolioImageExtensions.has(extname(f).toLowerCase()))
 
-const vizitkaртesItems = readdirSync(vizitkaртesSliderDir)
-.filter((filename) => portfolioImageExtensions.has(extname(filename).toLowerCase()))
-.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-.map((filename) => ({
-  image: `/images/slider-vizitkartes/${filename}`,
-  alt: prettifyPortfolioName(filename),
-}))
+    let ordered = []
+    try {
+      const orderFile = JSON.parse(readFileSync(join(dir, '_order.json'), 'utf8'))
+      ordered = [
+        ...orderFile.filter(f => allFiles.includes(f)),
+        ...allFiles.filter(f => !orderFile.includes(f))
+      ]
+    } catch {
+      ordered = allFiles.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+    }
 
-const autoItems = readdirSync(autoGalleryTrack)
-.filter((filename) => portfolioImageExtensions.has(extname(filename).toLowerCase()))
-.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-.map((filename) => ({
-  image: `/images/car-portfolio/${filename}`,
-  alt: prettifyPortfolioName(filename),
-}))
+    return ordered.map(filename => ({
+      image: `${urlPrefix}/${filename}`,
+      alt: prettifyPortfolioName(filename),
+    }))
+  } catch {
+    return []
+  }
+}
 
+const portfolioDir = new URL('../../public/images/portfolio/', import.meta.url)
+const vizitkaртesSliderDir = new URL('../../public/images/slider-vizitkartes/', import.meta.url)
+const autoGalleryTrack = new URL('../../public/images/car-portfolio/', import.meta.url)
 
+export function getSiteContent() {
+  const portfolioItems = readGallery(portfolioDir, '/images/portfolio')
+  const vizitkaртesItems = readGallery(vizitkaртesSliderDir, '/images/slider-vizitkartes')
+  const autoItems = readGallery(autoGalleryTrack, '/images/car-portfolio')
 
-export const siteContent = {
-  portfolio: portfolioItems,
-  portfolioSlider: portfolioItems,
-  portfolioSliderVizitki: vizitkaртesItems,
-  autoGalleryTrack: autoItems,
+  const content = {
+    portfolioSlider: portfolioItems,
+    portfolioSliderVizitki: vizitkaртesItems,
+    autoGalleryTrack: autoItems,
 
   meta: {
     title: 'Laiks Drukāt',
@@ -409,7 +416,22 @@ export const siteContent = {
       ],
     },
   ],
+   
 }
+
+  content.portfolio = content.services
+    .filter(service => service.slug !== 'zimogi')
+    .map(service => ({
+      image: service.heroImage,
+      title: service.title,
+      path: service.path
+    }))
+
+  return content
+}
+
+
+export const siteContent = getSiteContent()
 
 export const serviceBySlug = Object.fromEntries(
   siteContent.services.map((service) => [service.slug, service]),
@@ -421,10 +443,3 @@ export const serviceRouteEntries = siteContent.services.flatMap((service) => [
 ])
 
 
-siteContent.portfolio = siteContent.services
-  .filter(service => service.slug !== 'zimogi')
-  .map(service => ({
-    image: service.heroImage,
-    title: service.title,
-    path: service.path
-  }))

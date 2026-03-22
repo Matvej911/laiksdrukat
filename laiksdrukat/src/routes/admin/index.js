@@ -3,6 +3,11 @@ import { mkdir, readFile, writeFile } from 'fs/promises'
 import { randomUUID } from 'crypto'
 import { extname, join } from 'path'
 
+import { unlink } from 'fs/promises'
+import { basename } from 'path'
+import { fileURLToPath } from 'url'
+import { readdirSync, readFileSync } from 'fs'
+
 import {
   addNotificationRecipient,
   deleteNotificationRecipient,
@@ -153,7 +158,7 @@ async function adminRoutes(fastify) {
   fastify.get('/products', { preHandler: fastify.requireAdmin }, async (request, reply) => {
     const products = await fastify.db.product.findMany({
       include: { category: true },
-      orderBy: { createdAt: 'desc' },
+       orderBy: { sortOrder: 'asc' },
     })
     return reply.view('admin/products', { title: 'Admin | Produkti', products })
   })
@@ -181,6 +186,19 @@ async function adminRoutes(fastify) {
         error: 'Kļūda saglabājot produktu. Pārbaudiet vai slug ir unikāls.',
       })
     }
+  })
+
+  fastify.post('/products/reorder', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const { ids } = request.body
+    await Promise.all(
+      ids.map((id, index) =>
+        fastify.db.product.update({
+          where: { id: Number(id) },
+          data: { sortOrder: index }
+        })
+      )
+    )
+    return { ok: true }
   })
 
   fastify.get('/products/:id/edit', { preHandler: fastify.requireAdmin }, async (request, reply) => {
@@ -315,6 +333,133 @@ async function adminRoutes(fastify) {
     await deleteNotificationRecipient(request.body.email)
     return reply.redirect('/admin/notification-emails?saved=1')
   })
+
+// --- GALLERIES ---
+
+  const GALLERIES = [
+    {
+      slug: 'portfolio',
+      label: 'Galvenais portfolio',
+      dir: fileURLToPath(new URL('../../../public/images/portfolio/', import.meta.url)),
+      urlPrefix: '/images/portfolio',
+    },
+    {
+      slug: 'car-portfolio',
+      label: 'Auto aplīmēšana',
+      dir: fileURLToPath(new URL('../../../public/images/car-portfolio/', import.meta.url)),
+      urlPrefix: '/images/car-portfolio',
+    },
+    {
+      slug: 'slider-vizitkartes',
+      label: 'Vizītkartes galerija',
+      dir: fileURLToPath(new URL('../../../public/images/slider-vizitkartes/', import.meta.url)),
+      urlPrefix: '/images/slider-vizitkartes',
+    },
+  ]
+
+  const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.svg'])
+
+  function getGallery(slug) {
+    return GALLERIES.find(g => g.slug === slug)
+  }
+
+  function readGalleryImages(gallery) {
+    try {
+      const allFiles = readdirSync(gallery.dir)
+        .filter(f => f !== '_order.json' && IMAGE_EXTENSIONS.has(extname(f).toLowerCase()))
+
+      let ordered = []
+      try {
+        const orderFile = JSON.parse(readFileSync(join(gallery.dir, '_order.json'), 'utf8'))
+        // put ordered files first, then any new files not yet in order
+        ordered = [
+          ...orderFile.filter(f => allFiles.includes(f)),
+          ...allFiles.filter(f => !orderFile.includes(f))
+        ]
+      } catch {
+        ordered = allFiles.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+      }
+
+      return ordered.map(filename => ({
+        filename,
+        url: `${gallery.urlPrefix}/${filename}`,
+      }))
+    } catch {
+      return []
+    }
+  }
+
+  fastify.get('/galleries', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const galleries = GALLERIES.map(g => ({
+      ...g,
+      count: readGalleryImages(g).length,
+      preview: readGalleryImages(g)[0]?.url || null,
+    }))
+    return reply.view('admin/galleries', { title: 'Admin | Galerijas', galleries })
+  })
+
+  fastify.get('/galleries/:slug', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const gallery = getGallery(request.params.slug)
+    if (!gallery) return reply.code(404).send('Not found')
+    const images = readGalleryImages(gallery)
+    return reply.view('admin/gallery-detail', {
+      title: `Admin | ${gallery.label}`,
+      gallery,
+      images,
+      success: request.query.success === '1',
+      error: request.query.error || null,
+    })
+  })
+
+  fastify.post('/galleries/:slug/upload', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const gallery = getGallery(request.params.slug)
+    if (!gallery) return reply.code(404).send('Not found')
+
+    await mkdir(gallery.dir, { recursive: true })
+
+    for await (const part of request.parts()) {
+      if (part.type === 'file' && part.filename) {
+        const buffer = await part.toBuffer()
+        if (buffer.length === 0) continue
+        const ext = extname(part.filename).toLowerCase()
+        if (!IMAGE_EXTENSIONS.has(ext)) continue
+        const filename = `${Date.now()}-${randomUUID()}${ext}`
+        await writeFile(join(gallery.dir, filename), buffer)
+      }
+    }
+
+    return reply.redirect(`/admin/galleries/${gallery.slug}?success=1`)
+  })
+
+  fastify.post('/galleries/:slug/delete', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const gallery = getGallery(request.params.slug)
+    if (!gallery) return reply.code(404).send('Not found')
+
+    const filename = basename(request.body.filename)
+    const filepath = join(gallery.dir, filename)
+
+    if (!filepath.startsWith(gallery.dir)) {
+      return reply.redirect(`/admin/galleries/${gallery.slug}?error=Nederīgs+fails`)
+    }
+
+    try {
+      await unlink(filepath)
+    } catch {
+      return reply.redirect(`/admin/galleries/${gallery.slug}?error=Neizdevās+dzēst`)
+    }
+
+    return reply.redirect(`/admin/galleries/${gallery.slug}?success=1`)
+  })
+  fastify.post('/galleries/:slug/reorder', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const gallery = getGallery(request.params.slug)
+    if (!gallery) return reply.code(404).send('Not found')
+
+    const { filenames } = request.body
+    await writeFile(join(gallery.dir, '_order.json'), JSON.stringify(filenames))
+    return { ok: true }
+  })
+
 }
 
 export default adminRoutes
+

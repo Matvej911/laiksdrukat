@@ -11,6 +11,7 @@
   <% } %>
 
   <form action="/admin/products/<%= it.product && it.product.id ? it.product.id + '/edit' : 'new' %>" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf" value="<%= it.csrf %>">
     <div class="form-group">
       <label class="form-label">Nosaukums <span class="required">*</span></label>
       <input type="text" name="name" class="form-input" required value="<%= it.product ? it.product.name || '' : '' %>">

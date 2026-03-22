@@ -5,6 +5,7 @@ import FastifyFormbody from '@fastify/formbody'
 import FastifyMultipart from '@fastify/multipart'
 import FastifyCookie from '@fastify/cookie'
 import FastifySession from '@fastify/session'
+import FastifyCsrf from '@fastify/csrf-protection'
 import { Eta } from 'eta'
 import { fileURLToPath } from 'url'
 import { join, dirname } from 'path'
@@ -20,6 +21,10 @@ import shopRoutes from './routes/shop.js'
 import cartRoutes from './routes/cart.js'
 import checkoutRoutes from './routes/checkout.js'
 import adminRoutes from './routes/admin/index.js'
+
+if (!process.env.SESSION_SECRET) {
+  throw new Error('SESSION_SECRET must be set in .env')
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -52,13 +57,24 @@ await fastify.register(FastifyMultipart, {
   },
 })
 
+
 // Cookies + session
 await fastify.register(FastifyCookie)
 await fastify.register(FastifySession, {
-  secret: process.env.SESSION_SECRET || 'fallback-secret-change-in-production',
-  cookie: { secure: false }, // set to true in production with HTTPS
+  secret: process.env.SESSION_SECRET,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax',
+  },
   saveUninitialized: false,
 })
+
+await fastify.register(FastifyCsrf, {
+  sessionPlugin: '@fastify/session'
+})
+
+
 
 // Custom plugins
 await fastify.register(dbPlugin)

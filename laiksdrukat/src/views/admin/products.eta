@@ -47,10 +47,12 @@
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
               <a href="/admin/products/<%= p.id %>/edit" class="btn btn-sm btn-outline">Redigēt</a>
               <form action="/admin/products/<%= p.id %>/visibility" method="POST">
+                <input type="hidden" name="_csrf" value="<%= it.csrf %>">
                 <input type="hidden" name="active" value="<%= p.active ? 'false' : 'true' %>">
                 <button type="submit" class="btn btn-sm btn-outline"><%= p.active ? 'Paslēpt' : 'Parādīt' %></button>
               </form>
               <form action="/admin/products/<%= p.id %>/delete" method="POST" onsubmit="return confirm('Dzest produktu?')">
+                <input type="hidden" name="_csrf" value="<%= it.csrf %>">
                 <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#991b1b;">Dzest</button>
               </form>
             </div>
@@ -116,7 +118,10 @@ function saveOrder() {
   const ids = Array.from(tbody.querySelectorAll('.sortable-row')).map(r => r.dataset.id)
   fetch('/admin/products/reorder', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'csrf-token': '<%= it.csrf %>'
+    },
     body: JSON.stringify({ ids })
   })
 }

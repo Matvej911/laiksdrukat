@@ -18,6 +18,7 @@
 <div class="admin-card" style="margin-bottom:32px;">
   <h3 style="margin-bottom:16px;">Pievienot attēlus</h3>
   <form action="/admin/galleries/<%= it.gallery.slug %>/upload" method="POST" enctype="multipart/form-data" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+    <input type="hidden" name="_csrf" value="<%= it.csrf %>">
     <input type="file" name="file" accept="image/*" multiple class="admin-file-input">
     <button type="submit" class="btn btn-primary btn-sm">Augšupielādēt</button>
   </form>
@@ -40,6 +41,7 @@
           <span class="admin-image-name"><%= img.filename %></span>
           <form action="/admin/galleries/<%= it.gallery.slug %>/delete" method="POST"
             onsubmit="return confirm('Dzēst šo attēlu?')">
+            <input type="hidden" name="_csrf" value="<%= it.csrf %>">
             <input type="hidden" name="filename" value="<%= img.filename %>">
             <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#991b1b;">Dzēst</button>
           </form>
@@ -83,7 +85,10 @@ function saveOrder() {
   const filenames = Array.from(grid.querySelectorAll('.sortable-img')).map(i => i.dataset.filename)
   fetch('/admin/galleries/<%= it.gallery.slug %>/reorder', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'csrf-token': '<%= it.csrf %>'
+    },
     body: JSON.stringify({ filenames })
   })
   .then(r => r.json())

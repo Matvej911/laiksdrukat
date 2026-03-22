@@ -18,6 +18,7 @@
 
     <form action="/admin/notification-emails" method="POST" class="admin-inline-form" style="margin-bottom:18px;">
       <input type="email" name="email" class="form-input" placeholder="darbinieks@uznemums.lv" required>
+      <input type="hidden" name="_csrf" value="<%= it.csrf %>">
       <button type="submit" class="btn btn-primary btn-sm">Pievienot</button>
     </form>
 
@@ -33,6 +34,7 @@
             <div class="admin-meta-label">Pievienots <%= new Date(recipient.createdAt).toLocaleDateString('lv-LV') %></div>
           </div>
           <form action="/admin/notification-emails/delete" method="POST">
+            <input type="hidden" name="_csrf" value="<%= it.csrf %>">
             <input type="hidden" name="email" value="<%= recipient.email %>">
             <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#991b1b;">Dzest</button>
           </form>

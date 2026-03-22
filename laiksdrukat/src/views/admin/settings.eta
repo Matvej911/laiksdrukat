@@ -1,0 +1,48 @@
+<% layout('layout') %>
+
+<div class="admin-page-header">
+  <h1>Iestatījumi</h1>
+</div>
+
+<% if (it.success) { %>
+  <div class="admin-alert admin-alert-success">Parole veiksmīgi nomainīta!</div>
+<% } %>
+<% if (it.error) { %>
+  <div class="admin-alert admin-alert-error"><%= it.error %></div>
+<% } %>
+
+<div class="admin-card" style="max-width:480px;">
+  <h3 style="margin-bottom:24px;font-size:16px;font-weight:700;">Mainīt paroli</h3>
+  <form action="/admin/settings/change-password" method="POST">
+    <input type="hidden" name="_csrf" value="<%= it.csrf %>">
+    <div class="form-group" style="margin-bottom:16px;">
+      <label class="admin-label">Pašreizējā parole</label>
+      <input type="password" name="currentPassword" class="admin-input" required>
+    </div>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label class="admin-label">Jaunā parole</label>
+      <input type="password" name="newPassword" class="admin-input" required minlength="8">
+    </div>
+    <div class="form-group" style="margin-bottom:24px;">
+      <label class="admin-label">Atkārtot jauno paroli</label>
+      <input type="password" name="confirmPassword" class="admin-input" required minlength="8">
+    </div>
+    <button type="submit" class="btn btn-primary">Saglabāt jauno paroli</button>
+  </form>
+</div>
+
+<div class="admin-card" style="max-width:480px;margin-top:24px;">
+  <h3 style="margin-bottom:24px;font-size:16px;font-weight:700;">Mainīt lietotājvārdu</h3>
+  <form action="/admin/settings/change-username" method="POST">
+    <input type="hidden" name="_csrf" value="<%= it.csrf %>">
+    <div class="form-group" style="margin-bottom:16px;">
+      <label class="admin-label">Jaunais lietotājvārds</label>
+      <input type="text" name="newUsername" class="admin-input" required minlength="4">
+    </div>
+    <div class="form-group" style="margin-bottom:24px;">
+      <label class="admin-label">Parole (apstiprināšanai)</label>
+      <input type="password" name="password" class="admin-input" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Saglabāt lietotājvārdu</button>
+  </form>
+</div>

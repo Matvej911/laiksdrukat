@@ -18,9 +18,11 @@
       <a href="/admin/orders" class="admin-nav-link">🛒 Pasutijumi</a>
       <a href="/admin/messages" class="admin-nav-link">✉️ Zinas</a>
       <a href="/admin/notification-emails" class="admin-nav-link">📧 Paziņojumi</a>
+      <a href="/admin/settings" class="admin-nav-link">⚙️ Iestatījumi</a>
       <div style="flex:1;"></div>
       <a href="/" class="admin-nav-link" target="_blank">🌐 Vietne</a>
       <form action="/admin/logout" method="POST" style="margin:0;">
+        <input type="hidden" name="_csrf" value="<%= it.csrf %>">
         <button type="submit" class="admin-nav-link admin-logout">🚪 Iziet</button>
       </form>
     </nav>

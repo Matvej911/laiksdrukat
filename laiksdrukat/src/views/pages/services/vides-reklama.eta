@@ -1,30 +1,248 @@
-<%~ include('../../partials/layout', { ...it, body: `
-<section class="section-sm">
-  <div class="container" style="max-width:800px;">
+<% layout('../../partials/layout', { bodyClass: 'page-vides-reklama' }) %>
+
+<!-- HERO -->
+<section class="vr-hero">
+  <div class="container">
     <div class="breadcrumb">
-      <a href="/">Sakums</a>
+      <a href="/">Sākums</a>
       <span class="breadcrumb-sep">/</span>
-      <span>Pakalpojumi</span>
+      <a href="/#pakalpojumi">Pakalpojumi</a>
       <span class="breadcrumb-sep">/</span>
-      <span><%= it.title.split(' | ')[0] %></span>
+      <span>Vides reklāma</span>
     </div>
-    <h1 style="font-size:36px;font-weight:800;margin-bottom:16px;"><%= it.title.split(' | ')[0] %></h1>
-    <p style="font-size:17px;color:var(--gray-600);margin-bottom:48px;line-height:1.7;">
-      Sazinieties ar mums, lai apspriestu jusu projektu. Piedavajam individualu pieeju katram klientam.
-    </p>
-    <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:32px;margin-bottom:40px;">
-      <h3 style="font-size:18px;font-weight:700;margin-bottom:20px;">Interesejat par so pakalpojumu?</h3>
-      <p style="color:var(--gray-600);margin-bottom:24px;">Zvaniet vai rakstiet, un mes palidizsim atrast labako risinajumu.</p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;">
-        <a href="tel:+37129109703" class="btn btn-primary">Zvanit: +371 29 109 703</a>
-        <a href="/kontakti" class="btn btn-outline">Nosutit zinojumu</a>
+    <div class="vr-hero-inner">
+      <div class="vr-hero-copy">
+        <span class="vr-eyebrow">Pakalpojums</span>
+        <h1>Vides reklāma — izkārtnes, gaismas kastes un reklāmas burti</h1>
+        <p>Vides reklāma palīdz uzņēmumiem kļūt pamanāmiem un piesaistīt klientu uzmanību gan dienā, gan naktī. Izgatavojam dažādus reklāmas risinājumus — no klasiskām izkārtnēm līdz gaismas kastēm un telpiskiem burtiem.</p>
+        <div class="vr-hero-actions">
+          <a href="/kontakti" class="vr-btn-primary">Pieprasīt piedāvājumu</a>
+          <a href="tel:+37129109703" class="vr-btn-outline">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +371 29 109 703
+          </a>
+        </div>
       </div>
-    </div>
-    <div style="padding:24px;border:1px solid var(--gray-200);border-radius:var(--radius-lg);">
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">Skatiet musu darbus</h3>
-      <p style="font-size:14px;color:var(--gray-600);">Apmeklejiet sakumlapu, lai aplukotu musu portfolio.</p>
-      <a href="/#portfolio" style="font-size:14px;color:var(--accent);font-weight:500;">Skatit portfolio</a>
+      <div class="vr-hero-img">
+        <img src="/images/web-design/creative_gaismas-kaste.webp" alt="Vides reklāma Jelgavā" loading="lazy">
+        <div class="vr-hero-tag">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Katrs projekts ir unikāls
+        </div>
+      </div>
     </div>
   </div>
 </section>
-`}) %>
+
+<!-- EXTRA SERVICES -->
+<section class="vr-extras">
+  <div class="container">
+    <div class="vr-section-header">
+      <span class="vr-eyebrow-dark">Iekļautie pakalpojumi</span>
+      <h2>Papildus pakalpojumi</h2>
+    </div>
+    <div class="vr-extras-grid">
+      <div class="vr-extra-card">
+        <div class="vr-extra-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <h4>Saskaņošana ar pašvaldību</h4>
+        <p>Dokumentu sagatavošana un iesniegšana pašvaldībā.</p>
+      </div>
+      <div class="vr-extra-card">
+        <div class="vr-extra-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+        </div>
+        <h4>Reklāmas konstrukciju montāža</h4>
+        <p>Uzstādīšana uz ēkas vai iekštelpās.</p>
+      </div>
+      <div class="vr-extra-card">
+        <div class="vr-extra-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <h4>Dizaina izstrāde un maketēšana</h4>
+        <p>Maketa sagatavošana atbilstoši jūsu vēlmēm.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEON — NEW -->
+<section class="vr-neon">
+  <div class="container">
+    <div class="vr-neon-inner">
+      <div class="vr-neon-img">
+        <img src="/images/web-design/laiksdrukatbistro.jpg" alt="Neona reklāma" loading="lazy">
+      </div>
+      <div class="vr-neon-copy">
+        <span class="vr-new-badge">JAUNUMS</span>
+        <h2>Neona reklāma</h2>
+        <p>Piedāvājam arī neona burtu izgatavošanu, kas ir moderns un pamanāms risinājums uzņēmumu nosaukumiem, logotipiem un interjera reklāmai.</p>
+        <p>Neona reklāma izceļas jebkurā apkārtnē — gan ārpus telpām, gan iekštelpu dekorācijām. Pieejams plašs krāsu klāsts un izmēri pēc pasūtījuma.</p>
+        <a href="/kontakti" class="vr-btn-primary">Pieprasīt neona piedāvājumu</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT TYPES -->
+<section class="vr-types">
+  <div class="container">
+    <div class="vr-section-header">
+      <span class="vr-eyebrow-dark">Ko piedāvājam</span>
+      <h2>Reklāmas veidi</h2>
+    </div>
+
+    <div class="vr-type-block">
+      <div class="vr-type-copy">
+        <h3>Reklāmas izkārtnes</h3>
+        <p>Izgatavojam dažādu veidu izkārtnes:</p>
+        <ul class="vr-type-list">
+          <li>Fasādes izkārtnes</li>
+          <li>Iekštelpu izkārtnes</li>
+          <li>Reklāmas paneļus</li>
+        </ul>
+        <p class="vr-type-note">Cena ir atkarīga no plāksnes izmēra, montāžas sarežģītības, dizaina, izvēlētā materiāla (biezuma un veida), kā arī no drukas tehnoloģijas — UV druka vai druka uz plēves.</p>
+      </div>
+      <div class="vr-type-img">
+        <img src="/images/web-design/ambro_auto (1).webp" alt="Reklāmas izkārtne" loading="lazy">
+      </div>
+    </div>
+
+    <div class="vr-type-block vr-type-block-reverse">
+      <div class="vr-type-copy">
+        <h3>3D Telpiskie burti</h3>
+        <p class="vr-type-sub">Reklāmas burti uz sienas</p>
+        <p>Telpiskie burti ir moderns un elegants reklāmas risinājums uzņēmuma nosaukuma vai logotipa attēlošanai. Tie var tikt uzstādīti uz ēkas fasādes, sienas vai interjerā.</p>
+      </div>
+      <div class="vr-type-img">
+        <img src="/images/web-design/carmena_laiks-1.webp" alt="3D Telpiskie burti" loading="lazy">
+      </div>
+    </div>
+
+    <div class="vr-type-block">
+      <div class="vr-type-copy">
+        <h3>Gaismas kastes</h3>
+        <p>Gaismas kaste ir efektīvs reklāmas risinājums, kas nodrošina labi redzamu zīmolu gan dienas, gan nakts laikā. Izgatavojam pēc individuāliem izmēriem un dizaina.</p>
+        <ul class="vr-type-list">
+          <li>Vienpusējas un divpusējas</li>
+          <li>Fasādes un kronšteinu kastes</li>
+          <li>LED apgaismojums ar ilgu kalpošanas laiku</li>
+        </ul>
+      </div>
+      <div class="vr-type-img">
+        <img src="/images/web-design/creative_gaismas-kaste.webp" alt="Gaismas kaste" loading="lazy">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="vr-process">
+  <div class="container">
+    <div class="vr-section-header">
+      <span class="vr-eyebrow-dark">Kā strādājam</span>
+      <h2>Darba process</h2>
+    </div>
+    <div class="vr-process-steps">
+      <div class="vr-process-step">
+        <div class="vr-process-num">1</div>
+        <h4>Konsultācija</h4>
+        <p>Apspriežam jūsu vajadzības, izmērus, novietojumu un budžetu.</p>
+      </div>
+      <div class="vr-process-line"></div>
+      <div class="vr-process-step">
+        <div class="vr-process-num">2</div>
+        <h4>Maketa izstrāde</h4>
+        <p>Sagatavosim vizuālo maketu apstiprināšanai.</p>
+      </div>
+      <div class="vr-process-line"></div>
+      <div class="vr-process-step">
+        <div class="vr-process-num">3</div>
+        <h4>Saskaņošana</h4>
+        <p>Ja nepieciešams, nokārtojam pašvaldības atļaujas.</p>
+      </div>
+      <div class="vr-process-line"></div>
+      <div class="vr-process-step">
+        <div class="vr-process-num">4</div>
+        <h4>Izgatavošana</h4>
+        <p>Ražošanas process.</p>
+      </div>
+      <div class="vr-process-line"></div>
+      <div class="vr-process-step">
+        <div class="vr-process-num">5</div>
+        <h4>Uzstādīšana</h4>
+        <p>Reklāmas montāža.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT FORM -->
+<section class="vr-contact">
+  <div class="container">
+    <div class="vr-contact-inner">
+
+      <div class="vr-contact-copy">
+        <span class="vr-eyebrow-dark">Sazināties</span>
+        <h2>Saņem piedāvājumu</h2>
+        <p>Nepieciešama vides reklāma jūsu uzņēmumam? Sazinieties ar mums, lai saņemtu konsultāciju un piedāvājumu.</p>
+        <div class="vr-contact-info">
+          <a href="tel:+37129109703" class="vr-contact-link">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +371 29 109 703
+          </a>
+          <a href="tel:+37129653300" class="vr-contact-link">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +371 29 653 300
+          </a>
+          <a href="mailto:dp@ml.lv" class="vr-contact-link">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            dp@ml.lv
+          </a>
+        </div>
+      </div>
+
+      <form action="/kontakti" method="POST" enctype="multipart/form-data" class="vr-form">
+        <div class="vr-form-row">
+          <div class="form-group">
+            <label class="vr-label">Vārds <span class="required">*</span></label>
+            <input type="text" name="name" class="vr-input" required placeholder="Jānis Bērziņš">
+          </div>
+          <div class="form-group">
+            <label class="vr-label">E-pasts <span class="required">*</span></label>
+            <input type="email" name="email" class="vr-input" required placeholder="janis@example.lv">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="vr-label">Tālrunis</label>
+          <input type="tel" name="phone" class="vr-input" placeholder="+371 2X XXX XXX">
+        </div>
+        <div class="form-group">
+          <label class="vr-label">Jūsu ziņa <span class="required">*</span></label>
+          <textarea name="message" class="vr-input vr-textarea" required maxlength="180" data-message-input placeholder="Aprakstiet savu projektu — izmērs, novietojums, materiāls..."></textarea>
+          <div style="text-align:right;font-size:12px;color:#a099cc;margin-top:4px;"><span data-message-count>0</span> / 180</div>
+        </div>
+
+        <!-- ← FILE UPLOAD -->
+        <div class="form-group">
+          <label class="vr-label">Faila pielikums</label>
+          <label class="upload-dropzone">
+            <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
+            <span class="upload-dropzone-copy">
+              <strong>Pievienot failu</strong>
+              <small data-file-label>PDF, JPG, PNG, SVG, AI, EPS, DOC</small>
+            </span>
+          </label>
+        </div>
+
+        <button type="submit" class="vr-btn-primary vr-btn-full">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Nosūtīt pieprasījumu
+        </button>
+      </form>
+
+    </div>
+  </div>
+</section>

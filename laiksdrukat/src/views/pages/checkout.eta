@@ -1,9 +1,10 @@
-<% layout('../partials/layout') %>
+<% layout('../partials/layout', { bodyClass: 'page-checkout' }) %>
 <% const formData = it.formData || {} %>
 <% const totalVat = Number(it.total) * 0.21 %>
 <% const totalWithVat = Number(it.total) + totalVat %>
 
-<section class="page-hero page-hero-compact">
+<!-- HERO -->
+<section class="checkout-hero">
   <div class="container">
     <div class="breadcrumb">
       <a href="/">Sākums</a>
@@ -12,148 +13,308 @@
       <span class="breadcrumb-sep">/</span>
       <span>Pasūtījums</span>
     </div>
+    <div class="checkout-hero-inner">
+      <div class="checkout-hero-copy">
+        <h1>Noformēt pasūtījumu</h1>
+        <p>Aizpildiet savus datus un mēs sazināsimies par apstiprināšanu.</p>
+      </div>
+      <div class="checkout-steps">
+        <div class="checkout-step done">
+          <div class="checkout-step-dot">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span>Grozs</span>
+        </div>
+        <div class="checkout-step-line"></div>
+        <div class="checkout-step active">
+          <div class="checkout-step-dot">2</div>
+          <span>Pasūtījums</span>
+        </div>
+        <div class="checkout-step-line"></div>
+        <div class="checkout-step">
+          <div class="checkout-step-dot">3</div>
+          <span>Apstiprinājums</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="section">
-  <div class="container checkout-layout">
-    <div class="checkout-form-card">
-      <div class="checkout-section-head">
-        <span class="eyebrow">Informācija</span>
-        <h1>Noformēt pasūtījumu</h1>
-        <p>Aizpildiet savus datus, un mēs sazināsimies ar jums par pasūtījuma apstiprināšanu.</p>
-      </div>
+<!-- MAIN -->
+<section class="checkout-main">
+  <div class="container checkout-grid">
+
+    <!-- FORM -->
+    <div class="checkout-form-wrap">
 
       <% if (it.error) { %>
-        <div class="form-error"><%= it.error %></div>
+        <div class="checkout-error">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <%= it.error %>
+        </div>
       <% } %>
 
-      <form action="/checkout" method="POST" class="checkout-form">
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Vārds <span class="required">*</span></label>
-            <input type="text" name="firstName" class="form-input" required value="<%= formData.firstName || '' %>">
+      <form action="/checkout" method="POST" class="checkout-form-new">
+
+        <!-- CONTACT -->
+        <div class="checkout-form-section">
+          <div class="checkout-form-section-header">
+            <div class="checkout-form-section-num">1</div>
+            <h2>Kontaktinformācija</h2>
           </div>
-          <div class="form-group">
-            <label class="form-label">Uzvārds <span class="required">*</span></label>
-            <input type="text" name="lastName" class="form-input" required value="<%= formData.lastName || '' %>">
+          <div class="checkout-fields">
+            <div class="checkout-field-row">
+              <div class="form-group">
+                <label class="co-label">Vārds <span class="required">*</span></label>
+                <input type="text" name="firstName" class="co-input" required value="<%= formData.firstName || '' %>" placeholder="Jānis">
+              </div>
+              <div class="form-group">
+                <label class="co-label">Uzvārds <span class="required">*</span></label>
+                <input type="text" name="lastName" class="co-input" required value="<%= formData.lastName || '' %>" placeholder="Bērziņš">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="co-label">E-pasta adrese <span class="required">*</span></label>
+              <input type="email" name="email" class="co-input" required value="<%= formData.email || '' %>" placeholder="janis@example.lv">
+            </div>
+            <div class="form-group">
+              <label class="co-label">Tālrunis</label>
+              <input type="tel" name="phone" class="co-input" value="<%= formData.phone || '' %>" placeholder="+371 2X XXX XXX">
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Valsts / Reģions <span class="required">*</span></label>
-          <select name="country" class="form-input">
-            <option value="Latvija" <%= (formData.country || 'Latvija') === 'Latvija' ? 'selected' : '' %>>Latvija</option>
-          </select>
+        <!-- DELIVERY METHOD -->
+        <div class="checkout-form-section">
+          <div class="checkout-form-section-header">
+            <div class="checkout-form-section-num">2</div>
+            <h2>Piegādes veids</h2>
+          </div>
+          <div class="checkout-fields">
+
+            <label class="co-payment-option">
+              <input type="radio" name="deliveryType" value="pickup" 
+                <%= !formData.deliveryType || formData.deliveryType === 'pickup' ? 'checked' : '' %>
+                onchange="toggleDelivery(this.value)">
+              <div class="co-payment-card">
+                <div class="co-payment-icon">
+                  <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <div>
+                  <strong>Saņemt birojā — bezmaksas</strong>
+                  <span>Asteru iela 16A, Jelgava · Pirmdiena–Ceturtdiena 8:00–17:00, Piektdiena 8:00–16:00</span>
+                </div>
+                <div class="co-payment-check">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+              </div>
+            </label>
+
+            <label class="co-payment-option">
+              <input type="radio" name="deliveryType" value="omniva"
+                <%= formData.deliveryType === 'omniva' ? 'checked' : '' %>
+                onchange="toggleDelivery(this.value)">
+              <div class="co-payment-card">
+                <div class="co-payment-icon">
+                  <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                </div>
+                <div>
+                  <strong>Omniva pakomāts <span class="co-delivery-price">+ 3,00 €</span></strong>
+                  <span>Piegāde uz jebkuru Omniva pakomātu Latvijā.</span>
+                </div>
+                <div class="co-payment-check">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+              </div>
+            </label>
+
+          </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Ielas nosaukums <span class="required">*</span></label>
-          <input type="text" name="address" class="form-input" required placeholder="Mājas numurs un ielas nosaukums" value="<%= formData.address || '' %>">
+        <!-- ADDRESS — shown only for omniva -->
+        <div class="checkout-form-section" id="addressSection" 
+          style="<%= formData.deliveryType === 'omniva' ? '' : 'display:none' %>">
+          <div class="checkout-form-section-header">
+            <div class="checkout-form-section-num">3</div>
+            <h2>Piegādes adrese</h2>
+          </div>
+          <div class="checkout-fields">
+            <div class="form-group">
+              <label class="co-label">Valsts</label>
+              <select name="country" class="co-input co-select">
+                <option value="Latvija">🇱🇻 Latvija</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="co-label">Omniva pakomāta adrese <span class="required">*</span></label>
+              <input type="text" name="address" class="co-input" 
+                placeholder="Piem. Brīvības iela 1, Rīga" 
+                value="<%= formData.address || '' %>">
+            </div>
+            <div class="checkout-field-row">
+              <div class="form-group">
+                <label class="co-label">Pilsēta <span class="required">*</span></label>
+                <input type="text" name="city" class="co-input" 
+                  value="<%= formData.city || '' %>" placeholder="Rīga">
+              </div>
+              <div class="form-group">
+                <label class="co-label">Pasta indekss <span class="required">*</span></label>
+                <input type="text" name="zip" class="co-input" 
+                  value="<%= formData.zip || '' %>" placeholder="LV-1001">
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Pilsēta <span class="required">*</span></label>
-          <input type="text" name="city" class="form-input" required value="<%= formData.city || '' %>">
+        <!-- PAYMENT -->
+        <div class="checkout-form-section">
+          <div class="checkout-form-section-header">
+            <div class="checkout-form-section-num">3</div>
+            <h2>Maksājuma veids</h2>
+          </div>
+          <div class="checkout-fields">
+            <label class="co-payment-option">
+              <input type="radio" name="paymentMethod" value="Tiešais bankas pārskaitījums" <%= !formData.paymentMethod || formData.paymentMethod === 'Tiešais bankas pārskaitījums' ? 'checked' : '' %>>
+              <div class="co-payment-card">
+                <div class="co-payment-icon">
+                  <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                </div>
+                <div>
+                  <strong>Bankas pārskaitījums</strong>
+                  <span>Pēc pasūtījuma apstiprināšanas nosūtīsim rekvizītus.</span>
+                </div>
+                <div class="co-payment-check">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+              </div>
+            </label>
+
+            <label class="co-payment-option">
+              <input type="radio" name="paymentMethod" value="Skaidrā naudā pēc piegādes" <%= formData.paymentMethod === 'Skaidrā naudā pēc piegādes' ? 'checked' : '' %>>
+              <div class="co-payment-card">
+                <div class="co-payment-icon">
+                  <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div>
+                  <strong>Skaidra nauda</strong>
+                  <span>Norēķins pie saņemšanas vai pēc iepriekšējas saskaņošanas.</span>
+                </div>
+                <div class="co-payment-check">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+              </div>
+            </label>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Pasta indekss <span class="required">*</span></label>
-          <input type="text" name="zip" class="form-input" required value="<%= formData.zip || '' %>">
-        </div>
+        <button type="submit" class="co-submit-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Veikt pasūtījumu
+        </button>
 
-        <div class="form-group">
-          <label class="form-label">Tālrunis (nav obligāts)</label>
-          <input type="tel" name="phone" class="form-input" value="<%= formData.phone || '' %>">
-        </div>
+        <p class="co-submit-note">Nospiežot pogu, jūs piekrītat mūsu noteikumiem. Pasūtījums tiks apstiprināts pa e-pastu.</p>
 
-        <div class="form-group">
-          <label class="form-label">Epasta adrese <span class="required">*</span></label>
-          <input type="email" name="email" class="form-input" required value="<%= formData.email || '' %>">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Papildu informācija</label>
-          <textarea name="note" class="form-input form-textarea" placeholder="Piezīmes par pasūtījumu, piegādi vai rekvizītiem."><%= formData.note || '' %></textarea>
-        </div>
-
-        <div class="checkout-payment-box">
-          <h3>Maksājuma veids</h3>
-          <label class="checkout-radio">
-            <input type="radio" name="paymentMethod" value="Tiešais bankas pārskaitījums" <%= !formData.paymentMethod || formData.paymentMethod === 'Tiešais bankas pārskaitījums' ? 'checked' : '' %>>
-            <span>
-              <strong>Tiešais bankas pārskaitījums</strong>
-              <small>Veiciet maksājumu uz mūsu bankas kontu pēc pasūtījuma apstiprināšanas.</small>
-            </span>
-          </label>
-          <label class="checkout-radio">
-            <input type="radio" name="paymentMethod" value="Skaidrā naudā pēc piegādes" <%= formData.paymentMethod === 'Skaidrā naudā pēc piegādes' ? 'checked' : '' %>>
-            <span>
-              <strong>Skaidrā naudā pēc piegādes</strong>
-              <small>Norēķins pie preces saņemšanas vai iepriekš saskaņojot ar mums.</small>
-            </span>
-          </label>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-full checkout-submit">Veikt pasūtījumu</button>
       </form>
     </div>
 
-    <aside class="checkout-summary-card">
-      <h2>Jūsu pasūtījums</h2>
+    <!-- SUMMARY -->
+    <aside class="co-summary">
+      <div class="co-summary-card">
+        <h3>Jūsu pasūtījums</h3>
 
-      <div class="checkout-summary-head">
-        <span>Produkts</span>
-        <span>Cena ar PVN</span>
-      </div>
-
-      <div class="checkout-item-list">
-        <% for (const item of it.cart) { %>
-          <article class="checkout-item">
-            <div class="checkout-item-main">
-              <% if (item.image) { %>
-                <img src="<%= item.image %>" alt="<%= item.name %>" class="checkout-item-image" loading="lazy">
-              <% } else { %>
-                <div class="checkout-item-image checkout-item-image-placeholder">LD</div>
-              <% } %>
-
-              <div class="checkout-item-copy">
-                <div class="checkout-item-name"><%= item.name %> × <%= item.quantity %></div>
-
+        <div class="co-item-list">
+          <% for (const item of it.cart) { %>
+            <div class="co-item">
+              <div class="co-item-img">
+                <% if (item.image) { %>
+                  <img src="<%= item.image %>" alt="<%= item.name %>" loading="lazy">
+                <% } else { %>
+                  <div class="co-item-placeholder">LD</div>
+                <% } %>
+              </div>
+              <div class="co-item-info">
+                <div class="co-item-name"><%= item.name %></div>
                 <% if (item.options && Object.keys(item.options).length > 0) { %>
-                  <div class="checkout-item-options">
+                  <div class="co-item-options">
                     <% for (const [key, value] of Object.entries(item.options)) { %>
                       <% if (key !== 'Faila saite') { %>
-                        <div><strong><%= key %>:</strong> <%= value %></div>
+                        <span><%= key %>: <%= value %></span>
                       <% } %>
                     <% } %>
                   </div>
                 <% } %>
+                <div class="co-item-qty">× <%= item.quantity %></div>
               </div>
+              <div class="co-item-price"><%= (Number(item.price) * item.quantity * 1.21).toFixed(2) %> €</div>
             </div>
+          <% } %>
+        </div>
+        <div class="co-totals">
+          <div class="co-total-row">
+            <span>Bez PVN</span>
+            <span id="co-subtotal-display"><%= Number(it.total).toFixed(2) %> €</span>
+          </div>
+          <div class="co-total-row">
+            <span>PVN 21%</span>
+            <span id="co-vat-display"><%= (Number(it.total) * 0.21).toFixed(2) %> €</span>
+          </div>
+          <div class="co-total-row" id="co-delivery-row" style="display:none">
+            <span>Piegāde (Omniva)</span>
+            <span>+ 3,00 €</span>
+          </div>
+          <div class="co-total-final">
+            <span>Kopā</span>
+            <span id="co-total-display"><%= (Number(it.total) * 1.21).toFixed(2) %> €</span>
+          </div>
+        </div>
 
-            <div class="checkout-item-price">
-              <strong><%= (Number(item.price) * item.quantity * 1.21).toFixed(2) %> €</strong>
-              <span>(iesk. PVN)</span>
-            </div>
-          </article>
-        <% } %>
+        <div class="co-trust-badges">
+          <div class="co-trust-badge">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Droši
+          </div>
+          <div class="co-trust-badge">
+            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Jelgava, LV
+          </div>
+          <div class="co-trust-badge">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Garantija
+          </div>
+        </div>
       </div>
 
-      <div class="checkout-total-list">
-        <div>
-          <span>Bez PVN</span>
-          <strong><%= Number(it.total).toFixed(2) %> €</strong>
-        </div>
-        <div>
-          <span>PVN 21%</span>
-          <strong><%= totalVat.toFixed(2) %> €</strong>
-        </div>
-        <div class="checkout-total-row">
-          <span>Cena ar PVN</span>
-          <strong><%= totalWithVat.toFixed(2) %> €</strong>
-        </div>
-      </div>
+      <a href="/grozs" class="co-back-link">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Atpakaļ uz grozu
+      </a>
     </aside>
+
   </div>
 </section>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const baseTotal = <%= totalWithVat.toFixed(2) %>
+  const deliveryFee = 3.00
+  const totalEl = document.getElementById('co-total-display')
+  const deliveryRow = document.getElementById('co-delivery-row')
+
+  function updateTotal(deliveryType) {
+    const extra = deliveryType === 'omniva' ? deliveryFee : 0
+    const newTotal = (baseTotal + extra).toFixed(2)
+    if (totalEl) totalEl.textContent = newTotal + ' €'
+    if (deliveryRow) {
+      deliveryRow.style.display = deliveryType === 'omniva' ? 'flex' : 'none'
+    }
+  }
+
+  document.querySelectorAll('input[name="deliveryType"]').forEach(radio => {
+    radio.addEventListener('change', () => updateTotal(radio.value))
+  })
+
+  const selected = document.querySelector('input[name="deliveryType"]:checked')
+  if (selected) updateTotal(selected.value)
+})
+</script>

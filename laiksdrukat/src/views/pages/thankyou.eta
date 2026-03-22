@@ -1,36 +1,100 @@
-<% layout('../partials/layout') %>
+<% layout('../partials/layout', { bodyClass: 'page-thankyou' }) %>
 
-<section class="section">
-  <div class="container thankyou-shell">
-    <div class="thankyou-card">
-      <span class="eyebrow">Pasūtījums saņemts</span>
-      <h1>Paldies par pasūtījumu!</h1>
-      <p>Mēs esam saņēmuši jūsu pieteikumu un drīzumā sazināsimies, lai apstiprinātu detaļas.</p>
+<section class="thankyou-section">
+  <div class="container">
 
-      <% if (it.order) { %>
-        <div class="thankyou-order-card">
-          <div class="thankyou-order-id">Pasūtījuma numurs: #<%= it.order.publicId || it.order.id %></div>
-
-          <div class="thankyou-order-items">
-            <% for (const item of it.order.items) { %>
-              <div class="thankyou-order-row">
-                <span><%= item.name %> × <%= item.quantity %></span>
-                <strong><%= (Number(item.price) * item.quantity * 1.21).toFixed(2) %> €</strong>
-              </div>
-            <% } %>
-          </div>
-
-          <div class="thankyou-order-total">
-            <span>Kopā ar PVN</span>
-            <strong><%= (Number(it.order.total) * 1.21).toFixed(2) %> €</strong>
-          </div>
+    <!-- SUCCESS ANIMATION -->
+    <div class="thankyou-hero">
+      <div class="thankyou-icon-wrap">
+        <div class="thankyou-icon-ring"></div>
+        <div class="thankyou-icon">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-      <% } %>
+      </div>
+      <span class="thankyou-eyebrow">Pasūtījums saņemts</span>
+      <h1>Paldies par pasūtījumu!</h1>
+      <p>Esam saņēmuši jūsu pieteikumu.</p>
+    </div>
 
-      <div class="thankyou-actions">
-        <a href="/veikals" class="btn btn-primary">Atpakaļ uz veikalu</a>
-        <a href="/kontakti" class="btn btn-outline">Sazināties ar mums</a>
+    <!-- WHAT HAPPENS NEXT -->
+    <div class="thankyou-steps">
+      <div class="thankyou-step">
+        <div class="thankyou-step-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <h4>Apstiprinājums pa e-pastu</h4>
+        <p>Nosūtīsim apstiprinājumu uz jūsu e-pastu ar pasūtījuma detaļām.</p>
+      </div>
+      <div class="thankyou-step-arrow">→</div>
+      <div class="thankyou-step">
+        <div class="thankyou-step-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <h4>Maketa sagatavošana</h4>
+        <p>Sagatavosim dizaina maketu un nosūtīsim apstiprināšanai.</p>
+      </div>
+      <div class="thankyou-step-arrow">→</div>
+      <div class="thankyou-step">
+        <div class="thankyou-step-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h4>Izgatavošana 2–4 dienās</h4>
+        <p>Pēc apstiprināšanas izgatavosim pasūtījumu 2–4 darba dienās.</p>
+      </div>
+      <div class="thankyou-step-arrow">→</div>
+      <div class="thankyou-step">
+        <div class="thankyou-step-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h4>Saņemšana vai piegāde</h4>
+        <p>Saņemiet birojā Jelgavā vai piegāde uz pakomātu visā Latvijā.</p>
       </div>
     </div>
+
+    <!-- ORDER DETAILS -->
+    <% if (it.order) { %>
+    <div class="thankyou-order">
+      <div class="thankyou-order-header">
+        <div>
+          <span class="thankyou-order-eyebrow">Pasūtījuma kopsavilkums</span>
+          <div class="thankyou-order-id">#<%= it.order.publicId || it.order.id %></div>
+        </div>
+        <div class="thankyou-order-status">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          Saņemts
+        </div>
+      </div>
+
+      <div class="thankyou-order-items">
+        <% for (const item of it.order.items) { %>
+          <div class="thankyou-order-row">
+            <div class="thankyou-order-item-info">
+              <span class="thankyou-order-item-name"><%= item.name %></span>
+              <span class="thankyou-order-item-qty">× <%= item.quantity %></span>
+            </div>
+            <strong class="thankyou-order-item-price"><%= (Number(item.price) * item.quantity * 1.21).toFixed(2) %> €</strong>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="thankyou-order-total">
+        <span>Kopā ar PVN</span>
+        <strong><%= (Number(it.order.total) * 1.21).toFixed(2) %> €</strong>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- ACTIONS -->
+    <div class="thankyou-actions">
+      <a href="/veikals" class="thankyou-btn-primary">
+        <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Atpakaļ uz veikalu
+      </a>
+      <a href="/kontakti" class="thankyou-btn-outline">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Sazināties ar mums
+      </a>
+    </div>
+
   </div>
 </section>

@@ -3,6 +3,7 @@ import { extname } from 'path'
 
 const contactAddress = 'Asteru iela 16A, Jelgava, LV-3001'
 const portfolioDir = new URL('../../public/images/portfolio/', import.meta.url)
+const vizitkaртesSliderDir = new URL('../../public/images/slider-vizitkartes/', import.meta.url)
 const portfolioImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.svg'])
 
 function prettifyPortfolioName(filename) {
@@ -22,10 +23,19 @@ const portfolioItems = readdirSync(portfolioDir)
     alt: prettifyPortfolioName(filename),
   }))
 
+const vizitkaртesItems = readdirSync(vizitkaртesSliderDir)
+.filter((filename) => portfolioImageExtensions.has(extname(filename).toLowerCase()))
+.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+.map((filename) => ({
+  image: `/images/slider-vizitkartes/${filename}`,
+  alt: prettifyPortfolioName(filename),
+}))
+
 
 export const siteContent = {
   portfolio: portfolioItems,
   portfolioSlider: portfolioItems,
+   portfolioSliderVizitki: vizitkaртesItems,
 
   meta: {
     title: 'Laiks Drukāt',

@@ -302,3 +302,30 @@ document.querySelectorAll('.portfolio-item img').forEach(img => {
   }
   if (img.complete && img.naturalWidth) img.onload();
 });
+
+
+function toggleDelivery(value) {
+  const addressSection = document.getElementById('addressSection');
+  const addressInputs = addressSection.querySelectorAll('input, select');
+
+  if (value === 'omniva') {
+    addressSection.style.display = 'block';
+    addressInputs.forEach(input => {
+      if (input.name === 'address' || input.name === 'city' || input.name === 'zip') {
+        input.required = true;
+      }
+    });
+  } else {
+    addressSection.style.display = 'none';
+    addressInputs.forEach(input => {
+      input.required = false;
+    });
+  }
+}
+
+// run on page load in case browser remembers omniva selection
+document.addEventListener('DOMContentLoaded', () => {
+  const selected = document.querySelector('input[name="deliveryType"]:checked');
+  if (selected) toggleDelivery(selected.value);
+});
+

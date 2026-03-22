@@ -1,15 +1,41 @@
-<%~ include('../partials/layout', { ...it, body: `
-<section class="section">
-  <div class="container not-found-shell">
-    <div class="not-found-card">
-      <span class="eyebrow">404</span>
-      <h1>Lapa nav atrasta</h1>
-      <p>Iespējams, adrese ir ievadīta nepareizi vai arī šī lapa vairs nepastāv. Dodieties atpakaļ uz sākumu vai atveriet veikalu.</p>
-      <div class="not-found-actions">
-        <a href="/" class="btn btn-primary">Uz sākumlapu</a>
-        <a href="/veikals" class="btn btn-outline">Atvērt veikalu</a>
+<% layout('../partials/layout', { bodyClass: 'page-404-layout' }) %>
+
+<section class="page-404">
+
+  <div class="page-404-bg">
+    <div class="ink-blob ink-blob-1"></div>
+    <div class="ink-blob ink-blob-2"></div>
+    <div class="ink-blob ink-blob-3"></div>
+  </div>
+
+  <div class="container page-404-inner">
+
+    <div class="stamp-wrap">
+      <div class="stamp">
+        <div class="stamp-inner">
+          <div class="stamp-number">404</div>
+          <div class="stamp-text">NAV ATRASTS</div>
+          <div class="stamp-border"></div>
+        </div>
+      </div>
+      <div class="stamp-shadow"></div>
+    </div>
+
+    <div class="page-404-copy">
+      <h1>Šī lapa nav atrasta</h1>
+      <p>Izskatās, ka mēs šo lapu neesam izspieduši. Iespējams, adrese ir ievadīta nepareizi vai arī lapa vairs nepastāv.</p>
+      <div class="page-404-actions">
+        <a href="/" class="btn-404-primary">Uz sākumlapu</a>
+        <a href="/veikals" class="btn-404-outline">Atvērt veikalu</a>
+      </div>
+      <div class="page-404-links">
+        <span>Vai meklējāt:</span>
+        <a href="/kontakti">Kontakti</a>
+        <a href="/veikals/kategorija/zimogi">Zīmogi</a>
+        <a href="/grozs">Grozs</a>
       </div>
     </div>
+
   </div>
+
 </section>
-` }) %>

@@ -83,9 +83,7 @@ async function cartRoutes(fastify) {
       return reply.code(400).send('Product is out of stock')
     }
 
-    const derivedDeliveryPrice = deliveryMethod && String(deliveryMethod).toLowerCase().includes('pakom')
-      ? 3
-      : 0
+    const derivedDeliveryPrice = 0
     const extraPrice = Number(derivedDeliveryPrice || 0)
     const parsedQuantity = Number.parseInt(quantity, 10)
     const safeQuantity = Math.max(1, Math.min(Number.isFinite(parsedQuantity) ? parsedQuantity : 1, product.stock))

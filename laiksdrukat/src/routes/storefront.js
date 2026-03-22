@@ -203,6 +203,42 @@ async function storefrontRoutes(fastify) {
         })
       }
 
+      if (route.service.path === '/baneri') {
+        const success = request.session.contactFormSent === true
+        delete request.session.contactFormSent
+        return reply.view('pages/services/baneri', {
+          title: 'Banneri | Laiks Drukāt',
+          description: route.service.teaser,
+          service: route.service,
+          cart: fastify.getCart(request),
+          success,
+        })
+      }
+
+      if (route.service.path === '/auto-aplimesana') {
+        const success = request.session.contactFormSent === true
+        delete request.session.contactFormSent
+        return reply.view('pages/services/auto-aplimesana', {
+          title: 'Auto aplīmēšana | Laiks Drukāt',
+          description: route.service.teaser,
+          service: route.service,
+          cart: fastify.getCart(request),
+          success,
+        })
+      }
+
+      if (route.service.path === '/uzlimes') {
+        const success = request.session.contactFormSent === true
+        delete request.session.contactFormSent
+        return reply.view('pages/services/uzlimes', {
+          title: 'Uzlīmes | Laiks Drukāt',
+          description: route.service.teaser,
+          service: route.service,
+          cart: fastify.getCart(request),
+          success,
+        })
+      }
+
       // all other services use service-page
       return reply.view('partials/service-page', {
         title: `${route.service.title} | Laiks Drukāt`,

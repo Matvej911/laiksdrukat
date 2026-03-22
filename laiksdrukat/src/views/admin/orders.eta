@@ -25,7 +25,14 @@
           <td><%= o.name %></td>
           <td style="font-size:13px;color:var(--gray-600);"><%= o.email %></td>
           <td style="font-size:13px;"><%= o.items.length %> preces</td>
-          <td style="font-weight:600;"><%= (Number(o.total) * 1.21).toFixed(2) %> EUR</td>
+          <td style="font-weight:600;">
+            <%
+              const isOmniva = o.note && o.note.includes('Omniva')
+              const sub = Number(o.total) - (isOmniva ? 3.5 : 0)
+              const listTotal = sub * 1.21 + (isOmniva ? 3.5 : 0)
+            %>
+            <%= listTotal.toFixed(2) %> EUR
+          </td>
           <td><span class="badge badge-<%= o.status.toLowerCase() %>"><%= o.status %></span></td>
           <td style="font-size:13px;color:var(--gray-400);"><%= new Date(o.createdAt).toLocaleDateString('lv-LV') %></td>
           <td><a href="/admin/orders/<%= o.id %>" class="btn btn-sm btn-outline">Skatit</a></td>

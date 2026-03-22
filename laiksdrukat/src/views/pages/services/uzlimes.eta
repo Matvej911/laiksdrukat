@@ -1,30 +1,309 @@
-<%~ include('../../partials/layout', { ...it, body: `
-<section class="section-sm">
-  <div class="container" style="max-width:800px;">
+<% layout('../../partials/layout', { bodyClass: 'page-uzlimes' }) %>
+
+<!-- HERO -->
+<section class="uz-hero">
+  <div class="container">
     <div class="breadcrumb">
-      <a href="/">Sakums</a>
+      <a href="/">Sākums</a>
       <span class="breadcrumb-sep">/</span>
-      <span>Pakalpojumi</span>
+      <a href="/#pakalpojumi">Pakalpojumi</a>
       <span class="breadcrumb-sep">/</span>
-      <span><%= it.title.split(' | ')[0] %></span>
+      <span>Uzlīmes</span>
     </div>
-    <h1 style="font-size:36px;font-weight:800;margin-bottom:16px;"><%= it.title.split(' | ')[0] %></h1>
-    <p style="font-size:17px;color:var(--gray-600);margin-bottom:48px;line-height:1.7;">
-      Sazinieties ar mums, lai apspriestu jusu projektu. Piedavajam individualu pieeju katram klientam.
-    </p>
-    <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:32px;margin-bottom:40px;">
-      <h3 style="font-size:18px;font-weight:700;margin-bottom:20px;">Interesejat par so pakalpojumu?</h3>
-      <p style="color:var(--gray-600);margin-bottom:24px;">Zvaniet vai rakstiet, un mes palidizsim atrast labako risinajumu.</p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;">
-        <a href="tel:+37129109703" class="btn btn-primary">Zvanit: +371 29 109 703</a>
-        <a href="/kontakti" class="btn btn-outline">Nosutit zinojumu</a>
+    <div class="uz-hero-inner">
+      <div class="uz-hero-copy">
+        <span class="uz-eyebrow">Pakalpojums</span>
+        <h1>Uzlīmes jebkuram mērķim</h1>
+        <p>Izgatavojam ruļļu uzlīmes, krāsainas uzlīmes un lielformāta uzlīmes. Piemērotas produktu marķēšanai, reklāmai, iepakojumam un daudz kam citam.</p>
+        <div class="uz-hero-actions">
+          <a href="#uz-contact" class="uz-btn-primary">Saņemt piedāvājumu</a>
+          <a href="#uz-types" class="uz-btn-outline">Skatīt veidus</a>
+        </div>
+        <div class="uz-hero-tags">
+          <span>Ruļļu uzlīmes</span>
+          <span>Krāsainas uzlīmes</span>
+          <span>Lielformāts</span>
+          <span>UV druka</span>
+        </div>
       </div>
-    </div>
-    <div style="padding:24px;border:1px solid var(--gray-200);border-radius:var(--radius-lg);">
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">Skatiet musu darbus</h3>
-      <p style="font-size:14px;color:var(--gray-600);">Apmeklejiet sakumlapu, lai aplukotu musu portfolio.</p>
-      <a href="/#portfolio" style="font-size:14px;color:var(--accent);font-weight:500;">Skatit portfolio</a>
+      <div class="uz-hero-visual">
+        <div class="uz-hero-stickers">
+          <div class="uz-sticker uz-sticker-1">
+            <div class="uz-sticker-inner">
+              <span class="uz-sticker-logo">LD</span>
+              <span class="uz-sticker-text">Laiks Drukāt</span>
+            </div>
+          </div>
+          <div class="uz-sticker uz-sticker-2">
+            <div class="uz-sticker-inner uz-sticker-round">
+              <span class="uz-sticker-logo">★</span>
+            </div>
+          </div>
+          <div class="uz-sticker uz-sticker-3">
+            <div class="uz-sticker-inner uz-sticker-label">
+              <div class="uz-label-lines">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="uz-sticker-barcode">||||| ||| ||||</span>
+            </div>
+          </div>
+          <div class="uz-sticker uz-sticker-4">
+            <div class="uz-sticker-inner uz-sticker-dark">
+              <span>PASŪTI</span>
+              <span class="uz-sticker-sub">ŠODIEN</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-`}) %>
+
+<!-- TYPES -->
+<section class="uz-types" id="uz-types">
+  <div class="container">
+    <div class="uz-section-header center">
+      <span class="uz-eyebrow-dark">Ko piedāvājam</span>
+      <h2>Uzlīmju veidi</h2>
+    </div>
+
+    <!-- RULLU -->
+    <div class="uz-type-block">
+      <div class="uz-type-copy">
+        <div class="uz-type-num">01</div>
+        <h3>Ruļļu uzlīmes (Direct Thermal)</h3>
+        <p>Drukājam ruļļu uzlīmes ar jūsu sniegto informāciju — piemērotas pārtikai, medikamentiem, kosmētikai un citiem produktiem.</p>
+        <div class="uz-specs-grid">
+          <div class="uz-spec">
+            <span class="uz-spec-label">Drukas veids</span>
+            <span class="uz-spec-value">Termopārneses (Direct Thermal)</span>
+          </div>
+          <div class="uz-spec">
+            <span class="uz-spec-label">Lente</span>
+            <span class="uz-spec-value">Wax-Resin (ribbon)</span>
+          </div>
+          <div class="uz-spec">
+            <span class="uz-spec-label">Virsma</span>
+            <span class="uz-spec-value">Pusglancēta</span>
+          </div>
+          <div class="uz-spec">
+            <span class="uz-spec-label">Temperatūra</span>
+            <span class="uz-spec-value">−20 °C līdz +50 °C</span>
+          </div>
+          <div class="uz-spec">
+            <span class="uz-spec-label">Uzglabāšana</span>
+            <span class="uz-spec-value">Līdz 10 gadiem</span>
+          </div>
+          <div class="uz-spec">
+            <span class="uz-spec-label">Mitruma noturība</span>
+            <span class="uz-spec-value">Augsta</span>
+          </div>
+        </div>
+        <div class="uz-price-note">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Cena atkarīga no apjoma — jo lielāks daudzums, jo zemāka cena par vienu uzlīmi. Maketa izstrāde: 5–15 €.
+        </div>
+        <a href="#uz-contact" class="uz-btn-primary">Apspriest projektu</a>
+      </div>
+      <div class="uz-type-img uz-type-img-nobg">
+        <img src="/images/web-design/direct-termal-uzlimes.webp" alt="Ruļļu uzlīmes" loading="lazy">
+      </div>
+    </div>
+
+    <!-- KRASAINAS -->
+    <div class="uz-type-block uz-type-reverse">
+      <div class="uz-type-copy">
+        <div class="uz-type-num">02</div>
+        <h3>Krāsainas uzlīmes</h3>
+        <p>Izgatavojam krāsainas uzlīmes produktu marķēšanai, reklāmai, iepakojumam un individuāliem projektiem. Pieejami dažādi izmēri, formas un tirāžas.</p>
+        <div class="uz-price-grid">
+          <div class="uz-price-card">
+            <span class="uz-price-label">Parastās uzlīmes</span>
+            <span class="uz-price-val">19–20 €/m²</span>
+            <span class="uz-price-sub">bez PVN</span>
+          </div>
+          <div class="uz-price-card">
+            <span class="uz-price-label">UV druka</span>
+            <span class="uz-price-val">28 €/m²</span>
+            <span class="uz-price-sub">bez PVN</span>
+          </div>
+          <div class="uz-price-card">
+            <span class="uz-price-label">Dizaina izstrāde</span>
+            <span class="uz-price-val">25 €/h</span>
+            <span class="uz-price-sub">no</span>
+          </div>
+          <div class="uz-price-card">
+            <span class="uz-price-label">Maketēšana</span>
+            <span class="uz-price-val">20 €/h</span>
+            <span class="uz-price-sub">no</span>
+          </div>
+        </div>
+        <a href="#uz-contact" class="uz-btn-primary">Apspriest projektu</a>
+      </div>
+      <div class="uz-type-img uz-type-img-dark">
+        <img src="/images/web-design/uzlime-laiksdr_new.webp" alt="Krāsainas uzlīmes" loading="lazy">
+        <div class="uz-img-badge">PASŪTI JAU ŠODIEN</div>
+      </div>
+    </div>
+
+    <!-- LIELFORMATA -->
+    <div class="uz-type-block">
+      <div class="uz-type-copy">
+        <div class="uz-type-num">03</div>
+        <h3>Lielformāta uzlīmes</h3>
+        <p>Izgatavojam lielformāta uzlīmes dažādiem vizuālajiem risinājumiem — skatlogiem, sienām, transportam, stendiem un citām virsmām.</p>
+        <div class="uz-features">
+          <div class="uz-feature">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Pieejami dažādi materiāli un izmēri
+          </div>
+          <div class="uz-feature">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Griezuma varianti atbilstoši projektam
+          </div>
+          <div class="uz-feature">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Piemērotas ārtelpu un iekštelpu lietošanai
+          </div>
+          <div class="uz-feature">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Cena aprēķināta individuāli pēc izmēra un materiāla
+          </div>
+        </div>
+        <a href="#uz-contact" class="uz-btn-primary">Apspriest projektu</a>
+      </div>
+      <div class="uz-type-img">
+        <img src="/images/web-design/leilformata-druka_new.webp" alt="Lielformāta uzlīmes" loading="lazy">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SPEC SECTION -->
+<section class="uz-spec-section">
+  <div class="container">
+    <div class="uz-section-header">
+      <span class="uz-eyebrow-dark">Tehniskā informācija</span>
+      <h2>Ruļļu uzlīmju specifikācija</h2>
+    </div>
+    <div class="uz-spec-grid">
+      <div class="uz-spec-card">
+        <div class="uz-spec-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <h4>Rakstīšanas virsma</h4>
+        <p>Virsma piemērota rakstīšanai ar pildspalvu vai marķieri.</p>
+      </div>
+      <div class="uz-spec-card">
+        <div class="uz-spec-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h4>Izturība pret vidi</h4>
+        <p>Augsta izturība — piemērota ikdienas lietošanai (vērtējums 3 no 4).</p>
+      </div>
+      <div class="uz-spec-card">
+        <div class="uz-spec-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h4>Ilgs kalpošanas laiks</h4>
+        <p>Uzglabāšana līdz 10 gadiem, ja nodrošināti piemēroti apstākļi.</p>
+      </div>
+      <div class="uz-spec-card">
+        <div class="uz-spec-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+        </div>
+        <h4>Mitruma noturība</h4>
+        <p>Noturīgs pret augstu mitruma līmeni ikdienas apstākļos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="uz-contact" id="uz-contact">
+  <div class="container">
+    <div class="uz-contact-inner">
+      <div class="uz-contact-copy">
+        <span class="uz-eyebrow-dark">Sazināties</span>
+        <h2>Saņem piedāvājumu</h2>
+        <p>Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.</p>
+        <div class="uz-contact-tips">
+          <div class="uz-tip">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Uzlīmju veids (ruļļu, krāsainas, lielformāta)
+          </div>
+          <div class="uz-tip">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Izmērs, forma un aptuvenā tirāža
+          </div>
+          <div class="uz-tip">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Vai ir gatavs dizains vai nepieciešama izstrāde
+          </div>
+          <div class="uz-tip">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Pievienojiet logo vai dizaina failu, ja ir
+          </div>
+        </div>
+        <div class="uz-contact-phones">
+          <a href="tel:+37129109703" class="uz-phone-link">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +371 29 109 703
+          </a>
+          <a href="mailto:dp@ml.v" class="uz-phone-link">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            dp@ml.lv
+          </a>
+        </div>
+      </div>
+
+      <% if (it.success) { %>
+        <div class="vk-success">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <div>
+            <strong>Ziņa veiksmīgi nosūtīta!</strong>
+            <span>Sazināsimies ar jums pēc iespējas ātrāk.</span>
+          </div>
+        </div>
+      <% } else { %>
+        <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="uz-form">
+          <input type="hidden" name="returnTo" value="/uzlimes">
+          <div class="uz-form-row">
+            <div class="form-group">
+              <label class="uz-label">Vārds <span class="required">*</span></label>
+              <input type="text" name="name" class="uz-input" required placeholder="Jānis Bērziņš">
+            </div>
+            <div class="form-group">
+              <label class="uz-label">E-pasts <span class="required">*</span></label>
+              <input type="email" name="email" class="uz-input" required placeholder="janis@example.lv">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="uz-label">Tālrunis</label>
+            <input type="tel" name="phone" class="uz-input" placeholder="+371 2X XXX XXX">
+          </div>
+          <div class="form-group">
+            <label class="uz-label">Jūsu ziņa <span class="required">*</span></label>
+            <textarea name="message" class="uz-input uz-textarea" required maxlength="180" data-message-input placeholder="Uzlīmju veids, izmērs, tirāža..."></textarea>
+            <div style="text-align:right;font-size:12px;color:#a099cc;margin-top:4px;"><span data-message-count>0</span> / 180</div>
+          </div>
+          <div class="form-group">
+            <label class="uz-label">Dizaina fails vai logo</label>
+            <label class="upload-dropzone">
+              <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
+              <span class="upload-dropzone-copy">
+                <strong>Pievienot failu</strong>
+                <small data-file-label>PDF, AI, EPS, JPG, PNG, SVG</small>
+              </span>
+            </label>
+          </div>
+          <button type="submit" class="uz-btn-primary uz-btn-full">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Nosūtīt pieprasījumu
+          </button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</section>

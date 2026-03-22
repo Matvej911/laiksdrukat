@@ -1,30 +1,306 @@
-<%~ include('../../partials/layout', { ...it, body: `
-<section class="section-sm">
-  <div class="container" style="max-width:800px;">
+<% layout('../../partials/layout', { bodyClass: 'page-auto' }) %>
+
+<!-- HERO -->
+<section class="au-hero">
+  <div class="container">
     <div class="breadcrumb">
-      <a href="/">Sakums</a>
+      <a href="/">Sākums</a>
       <span class="breadcrumb-sep">/</span>
-      <span>Pakalpojumi</span>
+      <a href="/#pakalpojumi">Pakalpojumi</a>
       <span class="breadcrumb-sep">/</span>
-      <span><%= it.title.split(' | ')[0] %></span>
+      <span>Auto aplīmēšana</span>
     </div>
-    <h1 style="font-size:36px;font-weight:800;margin-bottom:16px;"><%= it.title.split(' | ')[0] %></h1>
-    <p style="font-size:17px;color:var(--gray-600);margin-bottom:48px;line-height:1.7;">
-      Sazinieties ar mums, lai apspriestu jusu projektu. Piedavajam individualu pieeju katram klientam.
-    </p>
-    <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:32px;margin-bottom:40px;">
-      <h3 style="font-size:18px;font-weight:700;margin-bottom:20px;">Interesejat par so pakalpojumu?</h3>
-      <p style="color:var(--gray-600);margin-bottom:24px;">Zvaniet vai rakstiet, un mes palidizsim atrast labako risinajumu.</p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;">
-        <a href="tel:+37129109703" class="btn btn-primary">Zvanit: +371 29 109 703</a>
-        <a href="/kontakti" class="btn btn-outline">Nosutit zinojumu</a>
+    <div class="au-hero-inner">
+      <div class="au-hero-copy">
+        <span class="au-eyebrow">Pakalpojums</span>
+        <h1>Auto un logu aplīmēšana</h1>
+        <p>Auto aplīmēšana un reklāma, kas piesaista skatienus un piešķir automašīnai unikālu tēlu. Izmantojam 3M un Oracal vinila plēves ilgstošam rezultātam.</p>
+        <div class="au-hero-actions">
+          <a href="#au-prices" class="au-btn-secondary">Skatīt cenas</a>
+          <a href="#au-contact" class="au-btn-primary">Rakstīt mums</a>
+        </div>
+        <div class="au-hero-stats">
+          <div class="au-stat">
+            <span class="au-stat-num">3M</span>
+            <span class="au-stat-label">un Oracal plēves</span>
+          </div>
+          <div class="au-stat-divider"></div>
+          <div class="au-stat">
+            <span class="au-stat-num">2–4h</span>
+            <span class="au-stat-label">vienkāršiem darbiem</span>
+          </div>
+          <div class="au-stat-divider"></div>
+          <div class="au-stat">
+            <span class="au-stat-num">100%</span>
+            <span class="au-stat-label">individuāli</span>
+          </div>
+        </div>
       </div>
-    </div>
-    <div style="padding:24px;border:1px solid var(--gray-200);border-radius:var(--radius-lg);">
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">Skatiet musu darbus</h3>
-      <p style="font-size:14px;color:var(--gray-600);">Apmeklejiet sakumlapu, lai aplukotu musu portfolio.</p>
-      <a href="/#portfolio" style="font-size:14px;color:var(--accent);font-weight:500;">Skatit portfolio</a>
+      <div class="au-hero-visual">
+        <div class="au-car-wrap">
+          <img src="/images/web-design/car-mockup.png" alt="Auto aplīmēšana" loading="lazy" class="au-car-img">
+          <div class="au-car-glow"></div>
+          <div class="au-floating-badge au-badge-1">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            3M materiāls
+          </div>
+          <div class="au-floating-badge au-badge-2">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            2-3 stundas
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-`}) %>
+
+<!-- FEATURES -->
+<section class="au-features">
+  <div class="container">
+    <div class="au-section-header center">
+      <span class="au-eyebrow-dark">Pakalpojuma priekšrocības</span>
+      <h2>Kāpēc izvēlēties mūs</h2>
+    </div>
+    <div class="au-features-grid">
+      <div class="au-feature">
+        <div class="au-feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Augstas kvalitātes materiāli</h3>
+        <p>Izmantotas 3M un Oracal vinila plēves, kas nodrošina spilgtas krāsas, izturību un ilgstošu rezultātu.</p>
+      </div>
+      <div class="au-feature">
+        <div class="au-feature-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Ātrs rezultāts</h3>
+        <p>Plēves uzklāšana notiek 2–4 stundu laikā nelieliem auto dizainiem.</p>
+      </div>
+      <div class="au-feature">
+        <div class="au-feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <h3>Individuāli risinājumi</h3>
+        <p>Katrs auto vai logs tiek aplīmēts pēc jūsu dizaina idejām, ar pielāgotām krāsām, formām un stiliem.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="au-gallery">
+  <div class="container">
+    <div class="au-section-header">
+      <span class="au-eyebrow-dark">Darbu piemēri</span>
+      <h2>Mūsu darbi</h2>
+    </div>
+    <div class="au-gallery-slider">
+      <button class="au-gallery-btn left" onclick="portfolioSlide(-1)">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="au-gallery-track-wrap">
+        <div class="portfolio-track" id="auGalleryTrack">
+          <% for (const item of it.site.autoGalleryTrack) { %>
+            <div class="portfolio-item <%= item.type %>">
+              <img src="<%= item.image %>" alt="<%= item.alt %>">
+            </div>
+          <% } %>
+        </div>
+      </div>
+      <button class="au-gallery-btn right" onclick="portfolioSlide(1)">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- PRICES -->
+<section class="au-prices" id="au-prices">
+  <div class="container">
+    <div class="au-section-header center">
+      <span class="au-eyebrow-dark">Cenas</span>
+      <h2>Aplīmēšanas pakalpojumi</h2>
+    </div>
+
+    <div class="au-price-block">
+      <div class="au-price-img">
+        <img src="/images/web-design/autoaplimesana_1.webp" alt="Logo un info" loading="lazy">
+        <div class="au-price-tag">no €50</div>
+      </div>
+      <div class="au-price-copy">
+        <div class="au-price-num">01</div>
+        <h3>Logo + info</h3>
+        <p>Uzlīmēsim jūsu logotipu uz auto sāniem un motora pārsega, bet aizmugurē izvietosim skaidri redzamu kontaktinformāciju — lai klienti jūs pamana un viegli sazinās.</p>
+        <div class="au-price-amount">
+          <span class="au-price-from">Aptuvenās izmaksas</span>
+          <span class="au-price-value">sākot no €50</span>
+        </div>
+        <a href="#au-contact" class="au-btn-primary">Rakstīt mums</a>
+      </div>
+    </div>
+
+    <div class="au-price-block au-price-block-reverse">
+      <div class="au-price-img">
+        <img src="/images/web-design/autoaplimesana_2.webp" alt="Daļēja aplīmēšana" loading="lazy">
+        <div class="au-price-tag">€300–€650</div>
+      </div>
+      <div class="au-price-copy">
+        <div class="au-price-num">02</div>
+        <h3>Daļēja auto aplīmēšana</h3>
+        <p>Aplīmējam līdz pat 50% no automašīnas virsbūves un logu laukuma — efektīvs veids, kā izcelt dizainu un reklāmu, saglabājot sabalansētu kopskatu.</p>
+        <div class="au-price-amount">
+          <span class="au-price-from">Aptuvenās izmaksas</span>
+          <span class="au-price-value">€300 – €650</span>
+        </div>
+        <a href="#au-contact" class="au-btn-primary">Rakstīt mums</a>
+      </div>
+    </div>
+
+    <div class="au-price-block">
+      <div class="au-price-img">
+        <img src="/images/web-design/autoaplimesana_3.webp" alt="Pilna aplīmēšana" loading="lazy">
+        <div class="au-price-tag">€1000–€2000</div>
+      </div>
+      <div class="au-price-copy">
+        <div class="au-price-num">03</div>
+        <h3>Pilna auto aplīmēšana</h3>
+        <p>Pilnībā pārklājam automašīnas virsbūvi — maksimālai vizuālai ietekmei un vienotam izskatam.</p>
+        <div class="au-price-amount">
+          <span class="au-price-from">Aptuvenās izmaksas</span>
+          <span class="au-price-value">€1000 – €2000</span>
+        </div>
+        <a href="#au-contact" class="au-btn-primary">Rakstīt mums</a>
+      </div>
+    </div>
+
+    <div class="au-price-note">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Cenas ir orientējošas un atkarīgas no automašīnas izmēra, dizaina sarežģītības un materiālu izvēles. Precīzu piedāvājumu sagatavosim pēc projekta apskates.
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="au-process">
+  <div class="container">
+    <div class="au-section-header center">
+      <span class="au-eyebrow-dark">Kā strādājam</span>
+      <h2>Darba process</h2>
+    </div>
+    <div class="au-process-steps">
+      <div class="au-process-step">
+        <div class="au-process-num">1</div>
+        <h4>Konsultācija</h4>
+        <p>Apspriežam jūsu vajadzības un vēlamo rezultātu.</p>
+      </div>
+      <div class="au-process-arrow">→</div>
+      <div class="au-process-step">
+        <div class="au-process-num">2</div>
+        <h4>Izmēru noteikšana</h4>
+        <p>Pirms maketa izstrādes nosakām auto virsbūves izmērus.</p>
+      </div>
+      <div class="au-process-arrow">→</div>
+      <div class="au-process-step">
+        <div class="au-process-num">3</div>
+        <h4>Dizains</h4>
+        <p>Sagatavosim maketu un nosūtīsim apstiprināšanai.</p>
+      </div>
+      <div class="au-process-arrow">→</div>
+      <div class="au-process-step">
+        <div class="au-process-num">4</div>
+        <h4>Plēves druka</h4>
+        <p>Drukājam uz vinila plēvi ar jūsu dizainu.</p>
+      </div>
+      <div class="au-process-arrow">→</div>
+      <div class="au-process-step">
+        <div class="au-process-num">5</div>
+        <h4>Uzklāšana</h4>
+        <p>Uzklājam plēvi uz automašīnas 2–4 stundu laikā.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="au-contact" id="au-contact">
+  <div class="container">
+    <div class="au-contact-inner">
+      <div class="au-contact-copy">
+        <span class="au-eyebrow-dark">Sazināties</span>
+        <h2>Saņem piedāvājumu</h2>
+        <p>Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.</p>
+        <div class="au-contact-tips">
+          <div class="au-tip">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Aplīmēšanas veids (logo, daļēja vai pilna)
+          </div>
+          <div class="au-tip">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Vai ir gatavs dizains vai nepieciešama izstrāde
+          </div>
+          <div class="au-tip">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Pievienojiet dizaina failu vai logo, ja ir
+          </div>
+        </div>
+        <div class="au-contact-phones">
+          <a href="tel:+37129109703" class="au-phone-link">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +371 29 109 703
+          </a>
+          <a href="mailto:dp@ml.lv" class="au-phone-link">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            dp@ml.lv
+          </a>
+        </div>
+      </div>
+
+      <% if (it.success) { %>
+        <div class="vk-success">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <div>
+            <strong>Ziņa veiksmīgi nosūtīta!</strong>
+            <span>Sazināsimies ar jums pēc iespējas ātrāk.</span>
+          </div>
+        </div>
+      <% } else { %>
+        <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="au-form">
+          <input type="hidden" name="returnTo" value="/auto-aplimesana">
+          <div class="au-form-row">
+            <div class="form-group">
+              <label class="au-label">Vārds <span class="required">*</span></label>
+              <input type="text" name="name" class="au-input" required placeholder="Jānis Bērziņš">
+            </div>
+            <div class="form-group">
+              <label class="au-label">E-pasts <span class="required">*</span></label>
+              <input type="email" name="email" class="au-input" required placeholder="janis@example.lv">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="au-label">Tālrunis</label>
+            <input type="tel" name="phone" class="au-input" placeholder="+371 2X XXX XXX">
+          </div>
+          <div class="form-group">
+            <label class="au-label">Jūsu ziņa <span class="required">*</span></label>
+            <textarea name="message" class="au-input au-textarea" required maxlength="180" data-message-input placeholder="Aplīmēšanas veids..."></textarea>
+            <div style="text-align:right;font-size:12px;color:#a099cc;margin-top:4px;"><span data-message-count>0</span> / 180</div>
+          </div>
+          <div class="form-group">
+            <label class="au-label">Dizaina fails vai logo</label>
+            <label class="upload-dropzone">
+              <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
+              <span class="upload-dropzone-copy">
+                <strong>Pievienot failu</strong>
+                <small data-file-label>PDF, AI, EPS, JPG, PNG, SVG</small>
+              </span>
+            </label>
+          </div>
+          <button type="submit" class="au-btn-primary au-btn-full">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Nosūtīt pieprasījumu
+          </button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</section>

@@ -1,30 +1,288 @@
-<%~ include('../../partials/layout', { ...it, body: `
-<section class="section-sm">
-  <div class="container" style="max-width:800px;">
+<% layout('../../partials/layout', { bodyClass: 'page-baneri' }) %>
+
+<!-- HERO -->
+<section class="bn-hero">
+  <div class="container">
     <div class="breadcrumb">
-      <a href="/">Sakums</a>
+      <a href="/">Sākums</a>
       <span class="breadcrumb-sep">/</span>
-      <span>Pakalpojumi</span>
+      <a href="/#pakalpojumi">Pakalpojumi</a>
       <span class="breadcrumb-sep">/</span>
-      <span><%= it.title.split(' | ')[0] %></span>
+      <span>Banneri</span>
     </div>
-    <h1 style="font-size:36px;font-weight:800;margin-bottom:16px;"><%= it.title.split(' | ')[0] %></h1>
-    <p style="font-size:17px;color:var(--gray-600);margin-bottom:48px;line-height:1.7;">
-      Sazinieties ar mums, lai apspriestu jusu projektu. Piedavajam individualu pieeju katram klientam.
-    </p>
-    <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:32px;margin-bottom:40px;">
-      <h3 style="font-size:18px;font-weight:700;margin-bottom:20px;">Interesejat par so pakalpojumu?</h3>
-      <p style="color:var(--gray-600);margin-bottom:24px;">Zvaniet vai rakstiet, un mes palidizsim atrast labako risinajumu.</p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;">
-        <a href="tel:+37129109703" class="btn btn-primary">Zvanit: +371 29 109 703</a>
-        <a href="/kontakti" class="btn btn-outline">Nosutit zinojumu</a>
+    <div class="bn-hero-inner">
+      <div class="bn-hero-copy">
+        <span class="bn-eyebrow">Pakalpojums</span>
+        <h1>Banneru izgatavošana un uzstādīšana</h1>
+        <p>Drukājam augstas kvalitātes bannerus gan iekštelpām, gan āra apstākļiem. Nodrošinām košas krāsas, izturīgus materiālus un skaistu rezultātu.</p>
+        <div class="bn-hero-actions">
+          <a href="#rollup" class="bn-btn-secondary">Roll-Up banneri</a>
+          <a href="#bn-contact" class="bn-btn-primary">Cenu pieprasījums</a>
+        </div>
+        <div class="bn-hero-tags">
+          <span>PVC banneri</span>
+          <span>Roll-Up</span>
+          <span>Lielformāta druka</span>
+          <span>Āra un iekštelpu</span>
+        </div>
       </div>
-    </div>
-    <div style="padding:24px;border:1px solid var(--gray-200);border-radius:var(--radius-lg);">
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">Skatiet musu darbus</h3>
-      <p style="font-size:14px;color:var(--gray-600);">Apmeklejiet sakumlapu, lai aplukotu musu portfolio.</p>
-      <a href="/#portfolio" style="font-size:14px;color:var(--accent);font-weight:500;">Skatit portfolio</a>
+      <div class="bn-hero-img">
+        <img src="/images/web-design/Wall_Mounted_Banner_laiks.webp" alt="Banneri Jelgavā" loading="lazy">
+      </div>
     </div>
   </div>
 </section>
-`}) %>
+
+<!-- WAVES -->
+<div class="bn-waves-white">
+  <svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 283.5 27.8" preserveAspectRatio="xMidYMax slice">
+     <path fill="#5f4bd8" d="M0 0v1.4c.6.7 1.1 1.4 1.4 2 2 3.8 2.2 6.6 1.8 10.8-.3 3.3-2.4 9.4 0 12.3 1.7 2 3.7 1.4 4.6-.9 1.4-3.8-.7-8.2-.6-12 .1-3.7 3.2-5.5 6.9-4.9 4 .6 4.8 4 4.9 7.4.1 1.8-1.1 7 0 8.5.6.8 1.6 1.2 2.4.5 1.4-1.1.1-5.4.1-6.9.1-3.7.3-8.6 4.1-10.5 5-2.5 6.2 1.6 5.4 5.6-.4 1.7-1 9.2 2.9 6.3 1.5-1.1.7-3.5.5-4.9-.4-2.4-.4-4.3 1-6.5.9-1.4 2.4-3.1 4.2-3 2.4.1 2.7 2.2 4 3.7 1.5 1.8 1.8 2.2 3 .1 1.1-1.9 1.2-2.8 3.6-3.3 1.3-.3 4.8-1.4 5.9-.5 1.5 1.1.6 2.8.4 4.3-.2 1.1-.6 4 1.8 3.4 1.7-.4-.3-4.1.6-5.6 1.3-2.2 5.8-1.4 7 .5 1.3 2.1.5 5.8.1 8.1s-1.2 5-.6 7.4c1.3 5.1 4.4.9 4.3-2.4-.1-4.4-2-8.8-.5-13 .9-2.4 4.6-6.6 7.7-4.5 2.7 1.8.5 7.8.2 10.3-.2 1.7-.8 4.6.2 6.2.9 1.4 2 1.5 2.6-.3.5-1.5-.9-4.5-1-6.1-.2-1.7-.4-3.7.2-5.4 1.8-5.6 3.5 2.4 6.3.6 1.4-.9 4.3-9.4 6.1-3.1.6 2.2-1.3 7.8.7 8.9 4.2 2.3 1.5-7.1 2.2-8 3.1-4 4.7 3.8 6.1 4.1 3.1.7 2.8-7.9 8.1-4.5 1.7 1.1 2.9 3.3 3.2 5.2.4 2.2-1 4.5-.6 6.6 1 4.3 4.4 1.5 4.4-1.7 0-2.7-3-8.3 1.4-9.1 4.4-.9 7.3 3.5 7.8 6.9.3 2-1.5 10.9 1.3 11.3 4.1.6-3.2-15.7 4.8-15.8 4.7-.1 2.8 4.1 3.9 6.6 1 2.4 2.1 1 2.3-.8.3-1.9-.9-3.2 1.3-4.3 5.9-2.9 5.9 5.4 5.5 8.5-.3 2-1.7 8.4 2 8.1 6.9-.5-2.8-16.9 4.8-18.7 4.7-1.2 6.1 3.6 6.3 7.1.1 1.7-1.2 8.1.6 9.1 3.5 2 1.9-7 2-8.4.2-4 1.2-9.6 6.4-9.8 4.7-.2 3.2 4.6 2.7 7.5-.4 2.2 1.3 8.6 3.8 4.4 1.1-1.9-.3-4.1-.3-6 0-1.7.4-3.2 1.3-4.6 1-1.6 2.9-3.5 5.1-2.9 2.5.6 2.3 4.1 4.1 4.9 1.9.8 1.6-.9 2.3-2.1 1.2-2.1 2.1-2.1 4.4-2.4 1.4-.2 3.6-1.5 4.9-.5 2.3 1.7-.7 4.4.1 6.5.6 1.5 2.1 1.7 2.8.3.7-1.4-1.1-3.4-.3-4.8 1.4-2.5 6.2-1.2 7.2 1 2.3 4.8-3.3 12-.2 16.3 3 4.1 3.9-2.8 3.8-4.8-.4-4.3-2.1-8.9 0-13.1 1.3-2.5 5.9-5.7 7.9-2.4 2 3.2-1.3 9.8-.8 13.4.5 4.4 3.5 3.3 2.7-.8-.4-1.9-2.4-10 .6-11.1 3.7-1.4 2.8 7.2 6.5.4 2.2-4.1 4.9-3.1 5.2 1.2.1 1.5-.6 3.1-.4 4.6.2 1.9 1.8 3.7 3.3 1.3 1-1.6-2.6-10.4 2.9-7.3 2.6 1.5 1.6 6.5 4.8 2.7 1.3-1.5 1.7-3.6 4-3.7 2.2-.1 4 2.3 4.8 4.1 1.3 2.9-1.5 8.4.9 10.3 4.2 3.3 3-5.5 2.7-6.9-.6-3.9 1-7.2 5.5-5 4.1 2.1 4.3 7.7 4.1 11.6 0 .8-.6 9.5 2.5 5.2 1.2-1.7-.1-7.7.1-9.6.3-2.9 1.2-5.5 4.3-6.2 4.5-1 7.7 1.5 7.4 5.8-.2 3.5-1.8 7.7-.5 11.1 1 2.7 3.6 2.8 5 .2 1.6-3.1 0-8.3-.4-11.6-.4-4.2-.2-7 1.8-10.8 0 0-.1.1-.1.2-.2.4-.3.7-.4.8v.1c-.1.2-.1.2 0 0v-.1l.4-.8c0-.1.1-.1.1-.2.2-.4.5-.8.8-1.2V0H0zM282.7 3.4z"></path>
+  </svg>
+</div>
+
+<!-- PVC SECTION -->
+<section class="bn-pvc">
+  <div class="container">
+    <div class="bn-pvc-inner">
+      <div class="bn-pvc-copy">
+        <span class="bn-eyebrow-dark">PVC Banneri</span>
+        <h2>PVC Banneru drukas cenas</h2>
+        <div class="bn-pvc-features">
+          <div class="bn-pvc-feature">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Cenā iekļauts 440 g/m² laminēts PVC banneru materiāls
+          </div>
+          <div class="bn-pvc-feature">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Banneram veikta pilna apstrāde ar metāla gredzeniem pa visu perimetru ērtai stiprināšanai
+          </div>
+          <div class="bn-pvc-feature">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Maketēšana un sagatavošana drukai — 25 EUR/h*
+          </div>
+          <div class="bn-pvc-note">
+            * Maketēšanas cenas ir atkarīgas no iesniegtajiem materiāliem, prasībām un apjomiem.
+          </div>
+        </div>
+        <a href="#bn-contact" class="bn-btn-primary" style="margin-top:24px;display:inline-flex;">Pieprasīt cenu</a>
+      </div>
+
+      <div class="bn-pvc-table-wrap">
+        <table class="bn-table">
+          <thead>
+            <tr>
+              <th>Laukums kv.m.</th>
+              <th>Cena EUR bez PVN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1–2</td><td><strong>26,00</strong></td></tr>
+            <tr><td>3–4</td><td><strong>13,00</strong></td></tr>
+            <tr><td>5–10</td><td><strong>12,00</strong></td></tr>
+            <tr><td>11–50</td><td><strong>10,00</strong></td></tr>
+            <tr><td>50+</td><td><strong>8,50</strong></td></tr>
+          </tbody>
+        </table>
+        <p class="bn-table-note">Visas cenas norādītas EUR bez PVN. Cena norādīta par 1 kv.m.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROLLUP SECTION -->
+<section class="bn-rollup" id="rollup">
+
+  <div class="bn-rollup-body">
+    <div class="container">
+      <div class="bn-rollup-inner">
+        <div class="bn-rollup-copy">
+          <span class="bn-eyebrow-yellow">Roll-Up Banneri</span>
+          <h2>Roll-up banneri</h2>
+          <p>Piedāvājam roll-up banneru izgatavošanu izstādēm, prezentācijām, pasākumiem un tirdzniecības vietām. Kompakts un viegli uzstādāms reklāmas risinājums, kas nodrošina ērtu transportēšanu.</p>
+          <div class="bn-rollup-features">
+            <h4>Ko piedāvājam:</h4>
+            <div class="bn-rollup-feature">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Dažādus izmērus
+            </div>
+            <div class="bn-rollup-feature">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Dizaina sagatavošanu vai faila pārbaudi
+            </div>
+            <div class="bn-rollup-feature">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Soma ērtai pārnēsāšanai iekļauta komplektā
+            </div>
+            <div class="bn-rollup-feature">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Ātru izgatavošanu
+            </div>
+            <div class="bn-rollup-feature">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Esošā Roll-Up dizaina nomaiņa — 15 EUR
+            </div>
+          </div>
+        </div>
+        <div class="bn-rollup-img">
+          <img src="/images/web-design/laiks-drukaat-rollup-webpp.webp" alt="Roll-up banneris" loading="lazy">
+        </div>
+      </div>
+
+      <!-- ROLLUP TABLE -->
+      <div class="bn-rollup-table-section">
+        <h3>Roll-Up druka, cenas</h3>
+        <table class="bn-table bn-table-dark">
+          <thead>
+            <tr>
+              <th>Tips</th>
+              <th>Izmērs (cm)</th>
+              <th>Cena EUR bez PVN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Ar mehānismu</td><td>85 × 200</td><td><strong>68,00</strong></td></tr>
+            <tr><td>Ar mehānismu</td><td>100 × 200</td><td><strong>73,00</strong></td></tr>
+            <tr><td>Ar mehānismu</td><td>120 × 200</td><td><strong>98,00</strong></td></tr>
+            <tr><td>Ar mehānismu</td><td>150 × 200</td><td><strong>118,00</strong></td></tr>
+            <tr><td>Bez mehānisma</td><td>85 × 200</td><td><strong>32,00</strong></td></tr>
+            <tr><td>Bez mehānisma</td><td>100 × 200</td><td><strong>35,00</strong></td></tr>
+            <tr><td>Bez mehānisma</td><td>120 × 200</td><td><strong>62,00</strong></td></tr>
+            <tr><td>Bez mehānisma</td><td>150 × 200</td><td><strong>68,00</strong></td></tr>
+          </tbody>
+        </table>
+        <div class="bn-table-notes">
+          <span>Visas cenas norādītas EUR bez PVN</span>
+          <span>Cena norādīta par 1 gab.</span>
+          <span>Maketēšana un sagatavošana drukai — 25 EUR/h*</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bn-waves-yellow-bottom">
+    <svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 283.5 27.8" preserveAspectRatio="xMidYMax slice">
+     <path fill="#ffd400" d="M0 0v1.4c.6.7 1.1 1.4 1.4 2 2 3.8 2.2 6.6 1.8 10.8-.3 3.3-2.4 9.4 0 12.3 1.7 2 3.7 1.4 4.6-.9 1.4-3.8-.7-8.2-.6-12 .1-3.7 3.2-5.5 6.9-4.9 4 .6 4.8 4 4.9 7.4.1 1.8-1.1 7 0 8.5.6.8 1.6 1.2 2.4.5 1.4-1.1.1-5.4.1-6.9.1-3.7.3-8.6 4.1-10.5 5-2.5 6.2 1.6 5.4 5.6-.4 1.7-1 9.2 2.9 6.3 1.5-1.1.7-3.5.5-4.9-.4-2.4-.4-4.3 1-6.5.9-1.4 2.4-3.1 4.2-3 2.4.1 2.7 2.2 4 3.7 1.5 1.8 1.8 2.2 3 .1 1.1-1.9 1.2-2.8 3.6-3.3 1.3-.3 4.8-1.4 5.9-.5 1.5 1.1.6 2.8.4 4.3-.2 1.1-.6 4 1.8 3.4 1.7-.4-.3-4.1.6-5.6 1.3-2.2 5.8-1.4 7 .5 1.3 2.1.5 5.8.1 8.1s-1.2 5-.6 7.4c1.3 5.1 4.4.9 4.3-2.4-.1-4.4-2-8.8-.5-13 .9-2.4 4.6-6.6 7.7-4.5 2.7 1.8.5 7.8.2 10.3-.2 1.7-.8 4.6.2 6.2.9 1.4 2 1.5 2.6-.3.5-1.5-.9-4.5-1-6.1-.2-1.7-.4-3.7.2-5.4 1.8-5.6 3.5 2.4 6.3.6 1.4-.9 4.3-9.4 6.1-3.1.6 2.2-1.3 7.8.7 8.9 4.2 2.3 1.5-7.1 2.2-8 3.1-4 4.7 3.8 6.1 4.1 3.1.7 2.8-7.9 8.1-4.5 1.7 1.1 2.9 3.3 3.2 5.2.4 2.2-1 4.5-.6 6.6 1 4.3 4.4 1.5 4.4-1.7 0-2.7-3-8.3 1.4-9.1 4.4-.9 7.3 3.5 7.8 6.9.3 2-1.5 10.9 1.3 11.3 4.1.6-3.2-15.7 4.8-15.8 4.7-.1 2.8 4.1 3.9 6.6 1 2.4 2.1 1 2.3-.8.3-1.9-.9-3.2 1.3-4.3 5.9-2.9 5.9 5.4 5.5 8.5-.3 2-1.7 8.4 2 8.1 6.9-.5-2.8-16.9 4.8-18.7 4.7-1.2 6.1 3.6 6.3 7.1.1 1.7-1.2 8.1.6 9.1 3.5 2 1.9-7 2-8.4.2-4 1.2-9.6 6.4-9.8 4.7-.2 3.2 4.6 2.7 7.5-.4 2.2 1.3 8.6 3.8 4.4 1.1-1.9-.3-4.1-.3-6 0-1.7.4-3.2 1.3-4.6 1-1.6 2.9-3.5 5.1-2.9 2.5.6 2.3 4.1 4.1 4.9 1.9.8 1.6-.9 2.3-2.1 1.2-2.1 2.1-2.1 4.4-2.4 1.4-.2 3.6-1.5 4.9-.5 2.3 1.7-.7 4.4.1 6.5.6 1.5 2.1 1.7 2.8.3.7-1.4-1.1-3.4-.3-4.8 1.4-2.5 6.2-1.2 7.2 1 2.3 4.8-3.3 12-.2 16.3 3 4.1 3.9-2.8 3.8-4.8-.4-4.3-2.1-8.9 0-13.1 1.3-2.5 5.9-5.7 7.9-2.4 2 3.2-1.3 9.8-.8 13.4.5 4.4 3.5 3.3 2.7-.8-.4-1.9-2.4-10 .6-11.1 3.7-1.4 2.8 7.2 6.5.4 2.2-4.1 4.9-3.1 5.2 1.2.1 1.5-.6 3.1-.4 4.6.2 1.9 1.8 3.7 3.3 1.3 1-1.6-2.6-10.4 2.9-7.3 2.6 1.5 1.6 6.5 4.8 2.7 1.3-1.5 1.7-3.6 4-3.7 2.2-.1 4 2.3 4.8 4.1 1.3 2.9-1.5 8.4.9 10.3 4.2 3.3 3-5.5 2.7-6.9-.6-3.9 1-7.2 5.5-5 4.1 2.1 4.3 7.7 4.1 11.6 0 .8-.6 9.5 2.5 5.2 1.2-1.7-.1-7.7.1-9.6.3-2.9 1.2-5.5 4.3-6.2 4.5-1 7.7 1.5 7.4 5.8-.2 3.5-1.8 7.7-.5 11.1 1 2.7 3.6 2.8 5 .2 1.6-3.1 0-8.3-.4-11.6-.4-4.2-.2-7 1.8-10.8 0 0-.1.1-.1.2-.2.4-.3.7-.4.8v.1c-.1.2-.1.2 0 0v-.1l.4-.8c0-.1.1-.1.1-.2.2-.4.5-.8.8-1.2V0H0zM282.7 3.4z"></path>
+    </svg>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="bn-why">
+  <div class="container">
+    <div class="bn-section-header center">
+      <span class="bn-eyebrow-dark">Kāpēc izvēlēties mūs</span>
+      <h2>Mūsu priekšrocības</h2>
+    </div>
+    <div class="bn-why-grid">
+      <div class="bn-why-card">
+        <div class="bn-why-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h4>Augsta kvalitāte</h4>
+        <p>440 g/m² PVC materiāls ar UV izturīgu druku un metāla gredzenīšiem.</p>
+      </div>
+      <div class="bn-why-card">
+        <div class="bn-why-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h4>Ātra izpilde</h4>
+        <p>Standarta pasūtījumi gatavi 2–3 darba dienās pēc maketa apstiprināšanas.</p>
+      </div>
+      <div class="bn-why-card">
+        <div class="bn-why-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <h4>Dizaina palīdzība</h4>
+        <p>Palīdzam sagatavot maketu no nulles vai pārbaudām jūsu failu drukai.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="bn-contact" id="bn-contact">
+  <div class="container">
+    <div class="bn-contact-inner">
+      <div class="bn-contact-copy">
+        <span class="bn-eyebrow-dark">Sazināties</span>
+        <h2>Saņem piedāvājumu</h2>
+        <p>Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.</p>
+        <div class="bn-contact-tips">
+          <div class="bn-tip">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Norādiet bannera izmēru un tirāžu
+          </div>
+          <div class="bn-tip">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Vai nepieciešams PVC vai Roll-Up banneris
+          </div>
+          <div class="bn-tip">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Vai ir gatavs dizains vai nepieciešama izstrāde
+          </div>
+          <div class="bn-tip">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Pievienojiet dizaina failu, ja ir
+          </div>
+        </div>
+        <div class="bn-contact-phones">
+          <a href="tel:+37129109703" class="bn-phone-link">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +371 29 109 703
+          </a>
+          <a href="mailto:dp@ml.lv" class="bn-phone-link">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            dp@ml.lv
+          </a>
+        </div>
+      </div>
+
+      <% if (it.success) { %>
+        <div class="vk-success">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <div>
+            <strong>Ziņa veiksmīgi nosūtīta!</strong>
+            <span>Sazināsimies ar jums pēc iespējas ātrāk.</span>
+          </div>
+        </div>
+      <% } else { %>
+        <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="bn-form">
+          <input type="hidden" name="returnTo" value="/baneri">
+          <div class="bn-form-row">
+            <div class="form-group">
+              <label class="bn-label">Vārds <span class="required">*</span></label>
+              <input type="text" name="name" class="bn-input" required placeholder="Jānis Bērziņš">
+            </div>
+            <div class="form-group">
+              <label class="bn-label">E-pasts <span class="required">*</span></label>
+              <input type="email" name="email" class="bn-input" required placeholder="janis@example.lv">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="bn-label">Tālrunis</label>
+            <input type="tel" name="phone" class="bn-input" placeholder="+371 2X XXX XXX">
+          </div>
+          <div class="form-group">
+            <label class="bn-label">Jūsu ziņa <span class="required">*</span></label>
+            <textarea name="message" class="bn-input bn-textarea" required maxlength="180" data-message-input placeholder="Bannera izmērs, tirāža, vai ir dizains..."></textarea>
+            <div style="text-align:right;font-size:12px;color:#a099cc;margin-top:4px;"><span data-message-count>0</span> / 180</div>
+          </div>
+          <div class="form-group">
+            <label class="bn-label">Dizaina fails</label>
+            <label class="upload-dropzone">
+              <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
+              <span class="upload-dropzone-copy">
+                <strong>Pievienot dizaina failu</strong>
+                <small data-file-label>PDF, AI, EPS, JPG, PNG, SVG</small>
+              </span>
+            </label>
+          </div>
+          <button type="submit" class="bn-btn-primary bn-btn-full">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Nosūtīt pieprasījumu
+          </button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</section>

@@ -26,7 +26,12 @@
       </table>
       <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gray-200);display:flex;justify-content:space-between;">
         <span style="font-weight:700;">Kopā ar PVN</span>
-        <span style="font-size:18px;font-weight:800;color:var(--accent);"><%= (Number(it.order.total) * 1.21).toFixed(2) %> EUR</span>
+        <%
+          const isOmniva = it.order.note && it.order.note.includes('Omniva')
+          const cartSubtotal = Number(it.order.total) - (isOmniva ? 3.5 : 0)
+          const adminTotal = cartSubtotal * 1.21 + (isOmniva ? 3.5 : 0)
+        %>
+        <span style="font-size:18px;font-weight:800;color:var(--accent);"><%= adminTotal.toFixed(2) %> EUR</span>
       </div>
     </div>
 

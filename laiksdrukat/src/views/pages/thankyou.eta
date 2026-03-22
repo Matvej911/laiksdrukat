@@ -75,11 +75,26 @@
             <strong class="thankyou-order-item-price"><%= (Number(item.price) * item.quantity * 1.21).toFixed(2) %> €</strong>
           </div>
         <% } %>
-      </div>
+
+
+          <% if (it.order.note && it.order.note.includes('Omniva')) { %>
+              <div class="thankyou-order-row">
+                <div class="thankyou-order-item-info">
+                  <span class="thankyou-order-item-name">Piegāde — Omniva pakomāts</span>
+                  <span class="thankyou-order-item-qty">Latvija</span>
+                </div>
+                <strong class="thankyou-order-item-price">3,50 €</strong>
+              </div>
+            <% } %>
+          </div>
 
       <div class="thankyou-order-total">
-        <span>Kopā ar PVN</span>
-        <strong><%= (Number(it.order.total) * 1.21).toFixed(2) %> €</strong>
+        <span>Kopā</span>
+        <%
+          const cartSubtotal = Number(it.order.total) - (it.order.note && it.order.note.includes('Omniva') ? 3.5 : 0)
+          const displayTotal = cartSubtotal * 1.21 + (it.order.note && it.order.note.includes('Omniva') ? 3.5 : 0)
+        %>
+        <strong><%= displayTotal.toFixed(2) %> €</strong>
       </div>
     </div>
     <% } %>

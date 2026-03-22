@@ -4,8 +4,7 @@ import fp from 'fastify-plugin'
 // session.cart = [ { lineId, productId, name, price, quantity, image, options } ]
 
 function deriveExtraPrice(options = {}) {
-  const delivery = String(options['Preces saņemšana'] || '').toLowerCase()
-  return delivery.includes('pakom') ? 3 : 0
+  return 0
 }
 
 function buildLineId(productId, optionKey, extraPrice) {

@@ -119,7 +119,7 @@
                   <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
                 </div>
                 <div>
-                  <strong>Omniva pakomāts <span class="co-delivery-price">+ 3,00 €</span></strong>
+                  <strong>Omniva pakomāts <span class="co-delivery-price">+ 3,50 €</span></strong>
                   <span>Piegāde uz jebkuru Omniva pakomātu Latvijā.</span>
                 </div>
                 <div class="co-payment-check">
@@ -248,7 +248,21 @@
               <div class="co-item-price"><%= (Number(item.price) * item.quantity * 1.21).toFixed(2) %> €</div>
             </div>
           <% } %>
+
+          <div class="co-item" id="co-delivery-item" style="display:none">
+            <div class="co-item-img" style="display:flex;align-items:center;justify-content:center;background:#f4f2fd;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5f4bd8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <div class="co-item-info">
+              <div class="co-item-name">Piegāde — Omniva pakomāts</div>
+              <div class="co-item-qty">Latvija</div>
+            </div>
+            <div class="co-item-price">3,50 €</div>
+          </div>
         </div>
+        
+
+
         <div class="co-totals">
           <div class="co-total-row">
             <span>Bez PVN</span>
@@ -260,7 +274,7 @@
           </div>
           <div class="co-total-row" id="co-delivery-row" style="display:none">
             <span>Piegāde (Omniva)</span>
-            <span>+ 3,00 €</span>
+            <span>+ 3,50 €</span>
           </div>
           <div class="co-total-final">
             <span>Kopā</span>
@@ -295,26 +309,58 @@
 
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const baseTotal = <%= totalWithVat.toFixed(2) %>
-  const deliveryFee = 3.00
-  const totalEl = document.getElementById('co-total-display')
-  const deliveryRow = document.getElementById('co-delivery-row')
+function toggleDelivery(value) {
+  console.log('toggleDelivery called with:', value)
+  console.log('addressSection:', document.getElementById('addressSection'))
+  console.log('deliveryItem:', document.getElementById('co-delivery-item'))
+  var addressSection = document.getElementById('addressSection')
+  var addressInputs = addressSection.querySelectorAll('input, select')
 
-  function updateTotal(deliveryType) {
-    const extra = deliveryType === 'omniva' ? deliveryFee : 0
-    const newTotal = (baseTotal + extra).toFixed(2)
-    if (totalEl) totalEl.textContent = newTotal + ' €'
-    if (deliveryRow) {
-      deliveryRow.style.display = deliveryType === 'omniva' ? 'flex' : 'none'
-    }
+  if (value === 'omniva') {
+    addressSection.style.display = 'block'
+    addressInputs.forEach(function(input) {
+      if (['address','city','zip'].includes(input.name)) input.required = true
+    })
+  } else {
+    addressSection.style.display = 'none'
+    addressInputs.forEach(function(input) { input.required = false })
   }
 
-  document.querySelectorAll('input[name="deliveryType"]').forEach(radio => {
-    radio.addEventListener('change', () => updateTotal(radio.value))
+  var basePreVat = <%= Number(it.total).toFixed(2) %>;
+  var deliveryFee = 3.50
+  var extra = value === 'omniva' ? deliveryFee : 0
+  var vat = basePreVat * 0.21
+  var newTotal = basePreVat + vat + extra
+
+  var subtotalEl = document.getElementById('co-subtotal-display')
+  var vatEl = document.getElementById('co-vat-display')
+  var totalEl = document.getElementById('co-total-display')
+  var deliveryRow = document.getElementById('co-delivery-row')
+  var deliveryItem = document.getElementById('co-delivery-item')
+
+  if (subtotalEl) subtotalEl.textContent = basePreVat.toFixed(2) + ' €'
+  if (vatEl) vatEl.textContent = vat.toFixed(2) + ' €'
+  if (totalEl) totalEl.textContent = newTotal.toFixed(2) + ' €'
+  if (deliveryRow) deliveryRow.style.display = value === 'omniva' ? 'flex' : 'none'
+  if (deliveryItem) deliveryItem.style.display = value === 'omniva' ? 'flex' : 'none'
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM loaded')
+  console.log('payment options found:', document.querySelectorAll('.co-payment-option').length)
+  console.log('delivery item found:', document.getElementById('co-delivery-item'))
+  console.log('selected radio:', document.querySelector('input[name="deliveryType"]:checked'))
+
+  document.querySelectorAll('.co-payment-option').forEach(function(label) {
+    console.log('attaching click to label:', label)
+    label.addEventListener('click', function() {
+      var radio = label.querySelector('input[name="deliveryType"]')
+      console.log('label clicked, radio:', radio, 'value:', radio ? radio.value : 'none')
+      if (radio) setTimeout(function() { toggleDelivery(radio.value) }, 0)
+    })
   })
 
-  const selected = document.querySelector('input[name="deliveryType"]:checked')
-  if (selected) updateTotal(selected.value)
+  var selected = document.querySelector('input[name="deliveryType"]:checked')
+  if (selected) toggleDelivery(selected.value)
 })
 </script>

@@ -3854,6 +3854,14 @@ body:has(.cart-section) .header-waves {
   stroke-linecap: round;
 }
 
+.co-delivery-item-hidden {
+  display: none !important;
+}
+
+.co-delivery-row-hidden {
+  display: none !important;
+}
+
 /* ── RESPONSIVE ───────────────────────────────── */
 @media (max-width: 900px) {
   .checkout-grid {
@@ -5129,9 +5137,7 @@ body:has(.cart-section) .header-waves {
 
 .vr-type-img img {
   width: 100%;
-  border-radius: 20px;
-  object-fit: cover;
-  height: 340px;
+  height: 400px;
 }
 
 /* PROCESS */
@@ -5644,8 +5650,9 @@ body:has(.cart-section) .header-waves {
 
 .vk-why-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 50px;
+  justify-content: center
 }
 
 .vk-why-card {

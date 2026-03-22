@@ -36,7 +36,7 @@ async function checkoutRoutes(fastify) {
     return reply.view('pages/checkout', {
       title: 'Checkout | Laiks Drukāt',
       cart,
-      total: await fastify.validatedCartTotal(request),
+      total: await fastify.validatedCartTotal(request), //
     })
   })
 
@@ -81,7 +81,7 @@ async function checkoutRoutes(fastify) {
     }
 
     const cartTotal = await fastify.validatedCartTotal(request)
-    const deliveryFee = deliveryType === 'omniva' ? 3.00 : 0
+    const deliveryFee = deliveryType === 'omniva' ? 3.50 : 0
     const total = cartTotal + deliveryFee
     const name = `${String(firstName).trim()} ${String(lastName).trim()}`.trim()
     const noteParts = [note]
@@ -90,7 +90,7 @@ async function checkoutRoutes(fastify) {
       noteParts.unshift(`Maksājuma veids: ${paymentMethod}`)
     }
     if (deliveryType === 'omniva') {
-      noteParts.unshift(`Piegāde: Omniva pakomāts (+3.00 €) — ${address}, ${city}, ${zip}`)
+      noteParts.unshift(`Piegāde: Omniva pakomāts (+3.50 €) — ${address}, ${city}, ${zip}`)
     } else {
       noteParts.unshift(`Piegāde: Saņem birojā (Asteru iela 16A, Jelgava)`)
     }

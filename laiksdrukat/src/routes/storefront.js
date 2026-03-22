@@ -239,6 +239,18 @@ async function storefrontRoutes(fastify) {
         })
       }
 
+      if (route.service.path === '/druka') {
+        const success = request.session.contactFormSent === true
+        delete request.session.contactFormSent
+        return reply.view('pages/services/druka', {
+          title: 'Druka | Laiks Drukāt',
+          description: route.service.teaser,
+          service: route.service,
+          cart: fastify.getCart(request),
+          success,
+        })
+      }
+
       // all other services use service-page
       return reply.view('partials/service-page', {
         title: `${route.service.title} | Laiks Drukāt`,

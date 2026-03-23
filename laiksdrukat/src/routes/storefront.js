@@ -8,6 +8,51 @@ function sanitizeFilename(filename) {
   return filename.replace(/[^a-zA-Z0-9._-]/g, '-')
 }
 
+
+function validateUploadBuffer(buffer, ext) {
+  if (buffer.length < 4) return false
+
+  switch (ext) {
+    case '.jpg':
+    case '.jpeg':
+      return buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF
+
+    case '.png':
+      return buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47
+
+    case '.webp':
+      return buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+             buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50
+
+    case '.gif':
+      return buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46
+
+    case '.svg': {
+      const start = buffer.slice(0, 64).toString('utf8').trimStart()
+      return start.startsWith('<svg') || start.startsWith('<?xml') || start.startsWith('<!DOCTYPE svg')
+    }
+
+    case '.pdf':
+      return buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46
+
+    case '.doc':
+      return buffer[0] === 0xD0 && buffer[1] === 0xCF && buffer[2] === 0x11 && buffer[3] === 0xE0
+
+    case '.docx':
+      return buffer[0] === 0x50 && buffer[1] === 0x4B && buffer[2] === 0x03 && buffer[3] === 0x04
+
+    case '.eps':
+    case '.ai': {
+      const start = buffer.slice(0, 32).toString('utf8')
+      return start.startsWith('%!PS') || start.startsWith('%PDF')
+    }
+
+    default:
+      return false
+  }
+}
+
+
 async function collectContactForm(request) {
   if (!request.isMultipart || !request.isMultipart()) {
     return { fields: request.body || {}, uploadedFile: null }
@@ -22,13 +67,18 @@ async function collectContactForm(request) {
     if (part.type === 'file') {
       if (!part.filename) continue
 
-      const ext = extname(part.filename) || '.bin'
-      const safeName = sanitizeFilename(part.filename)
-      const filename = `${Date.now()}-${randomUUID()}-${safeName}${safeName.endsWith(ext) ? '' : ext}`
+      const ext = extname(part.filename).toLowerCase()
       const buffer = await part.toBuffer()
 
       if (buffer.length === 0) continue
 
+      if (!validateUploadBuffer(buffer, ext)) {
+        fastify.log.warn(`Rejected contact upload: ${part.filename}`)
+        continue
+      }
+
+      const safeName = sanitizeFilename(part.filename)
+      const filename = `${Date.now()}-${randomUUID()}-${safeName}${safeName.endsWith(ext) ? '' : ext}`
       const filepath = join(uploadDir, filename)
       await writeFile(filepath, buffer)
 
@@ -44,6 +94,8 @@ async function collectContactForm(request) {
 
   return { fields, uploadedFile }
 }
+
+
 
 async function storefrontRoutes(fastify) {
   // Homepage

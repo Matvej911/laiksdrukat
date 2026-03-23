@@ -16,8 +16,8 @@ import {
 import { isMailConfigured } from '../../lib/mailer.js'
 
 
-const LOGIN_RATE_LIMIT_WINDOW_MS = 2 * 60 * 1000 // 15 minutes
-const LOGIN_RATE_LIMIT_MAX = 2
+const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
+const LOGIN_RATE_LIMIT_MAX = 4
 const loginAttempts = new Map()
 
 function getLoginRateLimitState(ip) {
@@ -35,6 +35,29 @@ function recordLoginAttempt(ip) {
   const attempts = (loginAttempts.get(ip) || []).filter(t => now - t < LOGIN_RATE_LIMIT_WINDOW_MS)
   attempts.push(now)
   loginAttempts.set(ip, attempts)
+}
+
+function getImageMimeFromBuffer(buffer) {
+  if (buffer.length < 4) return null
+
+  // JPEG: FF D8 FF
+  if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) return 'image/jpeg'
+
+  // PNG: 89 50 4E 47
+  if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) return 'image/png'
+
+  // WebP: RIFF....WEBP
+  if (buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+      buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50) return 'image/webp'
+
+  // GIF: GIF87a or GIF89a
+  if (buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46) return 'image/gif'
+
+  // SVG: starts with < (XML)
+  const start = buffer.slice(0, 64).toString('utf8').trimStart()
+  if (start.startsWith('<svg') || start.startsWith('<?xml') || start.startsWith('<!DOCTYPE svg')) return 'image/svg+xml'
+
+  return null
 }
 
 function sanitizeFilename(filename) {
@@ -546,6 +569,14 @@ async function adminRoutes(fastify) {
         if (buffer.length === 0) continue
         const ext = extname(part.filename).toLowerCase()
         if (!IMAGE_EXTENSIONS.has(ext)) continue
+
+        // check magic bytes
+        const mime = getImageMimeFromBuffer(buffer)
+        if (!mime) {
+          fastify.log.warn(`Rejected gallery upload with invalid magic bytes: ${part.filename}`)
+          continue
+        }
+
         const filename = `${Date.now()}-${randomUUID()}${ext}`
         await writeFile(join(gallery.dir, filename), buffer)
       }

@@ -6,6 +6,7 @@ import FastifyMultipart from '@fastify/multipart'
 import FastifyCookie from '@fastify/cookie'
 import FastifySession from '@fastify/session'
 import FastifyCsrf from '@fastify/csrf-protection'
+
 import { Eta } from 'eta'
 import { fileURLToPath } from 'url'
 import { join, dirname } from 'path'

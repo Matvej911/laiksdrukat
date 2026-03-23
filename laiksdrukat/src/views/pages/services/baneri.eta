@@ -238,14 +238,20 @@
       </div>
 
       <% if (it.success) { %>
-        <div class="vk-success">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <div class="vr-success">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#255f31" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <div>
             <strong>Ziņa veiksmīgi nosūtīta!</strong>
             <span>Sazināsimies ar jums pēc iespējas ātrāk.</span>
           </div>
         </div>
       <% } else { %>
+        <% if (it.error) { %>
+          <div class="vr-error">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <%= it.error %>
+          </div>
+        <% } %>
         <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="bn-form">
           <input type="hidden" name="returnTo" value="/baneri">
           <div class="bn-form-row">

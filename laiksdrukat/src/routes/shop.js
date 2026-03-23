@@ -1,3 +1,5 @@
+import sanitizeHtml from 'sanitize-html'
+
 async function shopRoutes(fastify) {
   const buildShopFilters = (query = {}) => {
     const q = typeof query.q === 'string' ? query.q.trim() : ''
@@ -44,6 +46,7 @@ async function shopRoutes(fastify) {
         orderBy: { name: 'asc' },
       }),
     ])
+
 
     return reply.view('pages/shop/index', {
       title: 'Veikals | Laiks Drukāt',
@@ -128,13 +131,24 @@ async function shopRoutes(fastify) {
       take: 4,
     })
 
+    
     if (product.description) {
-      product.description = product.description
-        .replace(/\s*data-draftjs-conductor-fragment=(?:"[^"]*"|&quot;.*?&quot;)/g, '')
-        .replace(/<div>\s*<\/div>/g, '')
-        .replace(/\n{3,}/g, '\n\n')
-        .trim()
-    }
+        product.description = sanitizeHtml(
+          product.description
+            .replace(/\s*data-draftjs-conductor-fragment=(?:"[^"]*"|&quot;.*?&quot;)/g, '')
+            .replace(/<div>\s*<\/div>/g, '')
+            .trim(),
+          {
+            allowedTags: ['b', 'i', 'em', 'strong', 'p', 'br', 'ul', 'ol', 'li', 'a', 'h2', 'h3', 'h4', 'span', 'div'],
+            allowedAttributes: {
+              'a': ['href', 'target', 'rel'],
+              'span': ['style'],
+              'div': ['style'],
+            },
+            allowedSchemes: ['http', 'https', 'mailto'],
+          }
+        )
+      }
 
     return reply.view('pages/shop/product', {
       title: `${product.name} | Laiks Drukāt`,

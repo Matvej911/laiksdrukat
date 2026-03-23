@@ -8,6 +8,25 @@ function sanitizeFilename(filename) {
   return filename.replace(/[^a-zA-Z0-9._-]/g, '-')
 }
 
+const CONTACT_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
+const CONTACT_RATE_LIMIT_MAX = 5
+const contactAttempts = new Map()
+
+function getContactRateLimitState(ip) {
+  const now = Date.now()
+  const attempts = (contactAttempts.get(ip) || []).filter(t => now - t < CONTACT_RATE_LIMIT_WINDOW_MS)
+  contactAttempts.set(ip, attempts)
+  return {
+    limited: attempts.length >= CONTACT_RATE_LIMIT_MAX,
+  }
+}
+
+function recordContactAttempt(ip) {
+  const now = Date.now()
+  const attempts = (contactAttempts.get(ip) || []).filter(t => now - t < CONTACT_RATE_LIMIT_WINDOW_MS)
+  attempts.push(now)
+  contactAttempts.set(ip, attempts)
+}
 
 function validateUploadBuffer(buffer, ext) {
   if (buffer.length < 4) return false
@@ -147,6 +166,16 @@ async function storefrontRoutes(fastify) {
     const { name, email, phone, message } = fields
     const normalizedMessage = String(message || '').trim()
 
+    const rateLimit = getContactRateLimitState(request.ip)
+    if (rateLimit.limited) {
+      return reply.view('pages/kontakti', {
+        title: 'Kontakti | Laiks Drukāt',
+        description: 'Laiks Drukāt kontakti.',
+        cart: fastify.getCart(request),
+        error: 'Pārāk daudz ziņu. Lūdzu mēģiniet vēlreiz pēc 15 minūtēm.',
+        formData: fields,
+      })
+    }
     if (!name || !email || !normalizedMessage) {
       return reply.view('pages/kontakti', {
         title: 'Kontakti | Laiks Drukāt',
@@ -202,7 +231,7 @@ async function storefrontRoutes(fastify) {
     } catch (error) {
       fastify.log.error(error, 'Failed to send contact notification email')
     }
-
+    recordContactAttempt(request.ip)
     request.session.contactFormSent = true
     return reply.redirect('/kontakti')
   })
@@ -221,7 +250,7 @@ async function storefrontRoutes(fastify) {
             category: { slug: 'zimogi' },
           },
           include: { category: true },
-          orderBy: { name: 'asc' },
+          orderBy: { sortOrder: 'asc' },
         })
 
         return reply.view('pages/services/zimogi', {
@@ -230,21 +259,33 @@ async function storefrontRoutes(fastify) {
           service: route.service,
           products,
           cart: fastify.getCart(request),
+          site: getSiteContent(),
         })
       }
 
+      
       if (route.service.path === '/vides-reklama') {
-            return reply.view('pages/services/vides-reklama', {
-              title: `Vides reklāma | Laiks Drukāt`,
-              description: route.service.teaser,
-              service: route.service,
-              cart: fastify.getCart(request),
-            })
-          }
+        const success = request.session.contactFormSent === true
+        const error = request.session.contactFormError || null
+        delete request.session.contactFormSent
+        delete request.session.contactFormError
+
+        return reply.view('pages/services/vides-reklama', {
+          title: 'Vides reklāma | Laiks Drukāt',
+          description: route.service.teaser,
+          service: route.service,
+          cart: fastify.getCart(request),
+          success,
+          error,
+          site: getSiteContent(),
+        })
+      }
 
       if (route.service.path === '/vizitkartes') {
         const success = request.session.contactFormSent === true
+        const error = request.session.contactFormError || null
         delete request.session.contactFormSent
+        delete request.session.contactFormError
 
         return reply.view('pages/services/vizitkartes', {
           title: 'Vizītkartes | Laiks Drukāt',
@@ -252,56 +293,73 @@ async function storefrontRoutes(fastify) {
           service: route.service,
           cart: fastify.getCart(request),
           success,
+          error,
           site: getSiteContent(),
         })
       }
 
       if (route.service.path === '/baneri') {
         const success = request.session.contactFormSent === true
+        const error = request.session.contactFormError || null
         delete request.session.contactFormSent
+        delete request.session.contactFormError
+
         return reply.view('pages/services/baneri', {
           title: 'Banneri | Laiks Drukāt',
           description: route.service.teaser,
           service: route.service,
           cart: fastify.getCart(request),
           success,
+          error,
         })
       }
 
       if (route.service.path === '/auto-aplimesana') {
         const success = request.session.contactFormSent === true
+        const error = request.session.contactFormError || null
         delete request.session.contactFormSent
+        delete request.session.contactFormError
+
         return reply.view('pages/services/auto-aplimesana', {
           title: 'Auto aplīmēšana | Laiks Drukāt',
           description: route.service.teaser,
           service: route.service,
           cart: fastify.getCart(request),
           success,
+          error,
           site: getSiteContent(),
         })
       }
 
       if (route.service.path === '/uzlimes') {
         const success = request.session.contactFormSent === true
+        const error = request.session.contactFormError || null
         delete request.session.contactFormSent
+        delete request.session.contactFormError
+
         return reply.view('pages/services/uzlimes', {
           title: 'Uzlīmes | Laiks Drukāt',
           description: route.service.teaser,
           service: route.service,
           cart: fastify.getCart(request),
           success,
+          error,
         })
       }
 
       if (route.service.path === '/druka') {
         const success = request.session.contactFormSent === true
+        const error = request.session.contactFormError || null
         delete request.session.contactFormSent
+        delete request.session.contactFormError
+
         return reply.view('pages/services/druka', {
           title: 'Druka | Laiks Drukāt',
           description: route.service.teaser,
           service: route.service,
           cart: fastify.getCart(request),
           success,
+          error,
         })
       }
 
@@ -322,23 +380,21 @@ async function storefrontRoutes(fastify) {
     const normalizedMessage = String(message || '').trim()
     const redirectPage = returnTo || '/kontakti'
 
-    // find the service for re-rendering if needed
-    const serviceRoute = serviceRouteEntries.find(r => r.service.path === redirectPage)
-    const service = serviceRoute?.service
-
-    const viewName = service ? `pages/services${redirectPage}` : 'pages/kontakti'
-    const viewData = {
-      title: service ? `${service.title} | Laiks Drukāt` : 'Kontakti | Laiks Drukāt',
-      service,
-      cart: fastify.getCart(request),
+    // rate limit check
+    const rateLimit = getContactRateLimitState(request.ip)
+    if (rateLimit.limited) {
+      request.session.contactFormError = 'Pārāk daudz ziņu. Lūdzu mēģiniet vēlreiz pēc 15 minūtēm.'
+      return reply.redirect(redirectPage)
     }
 
     if (!name || !email || !normalizedMessage) {
-      return reply.view(viewName, { ...viewData, error: 'Lūdzu aizpildiet vārdu, e-pastu un ziņu.', formData: fields })
+      request.session.contactFormError = 'Lūdzu aizpildiet vārdu, e-pastu un ziņu.'
+      return reply.redirect(redirectPage)
     }
 
     if (normalizedMessage.length > 180) {
-      return reply.view(viewName, { ...viewData, error: 'Ziņa nedrīkst pārsniegt 180 rakstzīmes.', formData: fields })
+      request.session.contactFormError = 'Ziņa nedrīkst pārsniegt 180 rakstzīmes.'
+      return reply.redirect(redirectPage)
     }
 
     const submissionsDir = join(process.cwd(), 'data', 'contact-submissions')
@@ -370,7 +426,9 @@ async function storefrontRoutes(fastify) {
       fastify.log.error(error, 'Failed to send notification')
     }
 
-    return reply.view(viewName, { ...viewData, success: true })
+    recordContactAttempt(request.ip)
+    request.session.contactFormSent = true
+    return reply.redirect(redirectPage)
   })
 
 }

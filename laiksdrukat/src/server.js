@@ -6,7 +6,7 @@ import FastifyMultipart from '@fastify/multipart'
 import FastifyCookie from '@fastify/cookie'
 import FastifySession from '@fastify/session'
 import FastifyCsrf from '@fastify/csrf-protection'
-
+import FastifyHelmet from '@fastify/helmet'
 import { Eta } from 'eta'
 import { fileURLToPath } from 'url'
 import { join, dirname } from 'path'
@@ -41,6 +41,10 @@ await fastify.register(FastifyView, {
     currentYear: new Date().getFullYear(),
     site: siteContent,
   },
+})
+
+await fastify.register(FastifyHelmet, {
+  contentSecurityPolicy: false // disable CSP for now — it can break your styles/scripts
 })
 
 // Static files

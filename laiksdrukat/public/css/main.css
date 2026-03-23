@@ -1455,6 +1455,32 @@ p {
 }
 
 /* ── FORM BLOCK ───────────────────────────────── */
+
+.contact-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.contact-alert-success {
+  background: #d1fae5;
+  border: 1px solid rgba(6,95,70,0.15);
+  color: #065f46;
+}
+
+.contact-alert-error {
+  background: #ffe3e3;
+  border: 1px solid rgba(226,75,74,0.2);
+  color: #912b2b;
+}
+
+
 .contact-form-block {
   background: #f9f8fe;
   border: 1px solid rgba(95, 75, 216, 0.1);
@@ -5176,6 +5202,31 @@ body:has(.cart-section) .header-waves {
 .vr-btn-outline:hover {
   background: rgba(255,255,255,0.1);
   border-color: #fff;
+}
+
+.vr-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: #ffe3e3;
+  border: 1px solid rgba(226,75,74,0.2);
+  border-radius: 14px;
+  color: #912b2b;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.vr-error svg {
+  width: 18px;
+  height: 18px;
+  stroke: #912b2b;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
 }
 
 .vr-hero-img {

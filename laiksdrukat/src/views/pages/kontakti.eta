@@ -91,10 +91,16 @@
       <p>Atbildēsim pēc iespējas ātrāk.</p>
 
       <% if (it.success) { %>
-        <div class="contact-success">Ziņa veiksmīgi nosūtīta. Sazināsimies ar jums pēc iespējas ātrāk.</div>
+        <div class="contact-alert contact-alert-success">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#255f31" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Ziņa veiksmīgi nosūtīta. Sazināsimies ar jums pēc iespējas ātrāk.
+        </div>
       <% } %>
       <% if (it.error) { %>
-        <div class="form-error"><%= it.error %></div>
+        <div class="contact-alert contact-alert-error">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#912b2b" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <%= it.error %>
+        </div>
       <% } %>
 
       <form action="/kontakti" method="POST" enctype="multipart/form-data" class="contact-form">

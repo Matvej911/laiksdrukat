@@ -129,14 +129,19 @@ export async function sendContactNotification(submission) {
 }
 
 function getOrderSummaries({ order, cart }) {
-  const totalVat = Number(order.total) * 0.21
-  const totalWithVat = Number(order.total) + totalVat
+  const isOmniva = order.note?.includes('Omniva')
+  const shipping = isOmniva ? 3.5 : 0
+
+  const subtotal = Number(order.total) - shipping
+
+  const totalVat = subtotal * 0.21
+  const totalWithVat = subtotal + totalVat + shipping
   const lines = cart.map((item) => {
     const options = formatOrderOptions(item.options)
 
     return [
       `${item.name} x ${item.quantity}`,
-      `Cena bez PVN: ${(Number(item.price) * item.quantity).toFixed(2)} EUR`,
+      `Cena bez PVN: ${(Number(item.price) * item.quantity * 1.21).toFixed(2)} EUR`,
       options,
     ]
       .filter(Boolean)
@@ -153,7 +158,7 @@ function getOrderSummaries({ order, cart }) {
       return `
         <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e7e2db;">
           <div><strong>${item.name}</strong> × ${item.quantity}</div>
-          <div>Cena bez PVN: ${(Number(item.price) * item.quantity).toFixed(2)} EUR</div>
+          <div>Cena bez PVN: ${(Number(item.price) * item.quantity * 1.21).toFixed(2)} EUR</div>
           ${options}
         </div>
       `
@@ -161,6 +166,8 @@ function getOrderSummaries({ order, cart }) {
     .join('')
 
   return {
+    subtotal,
+    shipping,
     totalVat,
     totalWithVat,
     lines,
@@ -183,7 +190,8 @@ export async function sendOwnerOrderNotification({ order, cart }) {
     'Preces:',
     lines.join('\n\n'),
     '',
-    `Bez PVN: ${Number(order.total).toFixed(2)} EUR`,
+    `Bez PVN: ${subtotal.toFixed(2)} EUR`,
+    `Piegāde: ${shipping.toFixed(2)} EUR`
     `PVN 21%: ${totalVat.toFixed(2)} EUR`,
     `Kopā ar PVN: ${totalWithVat.toFixed(2)} EUR`,
     '',
@@ -211,7 +219,7 @@ export async function sendOwnerOrderNotification({ order, cart }) {
 
 export async function sendCustomerOrderConfirmation({ order, cart }) {
   const orderReference = order.publicId || String(order.id)
-  const { totalVat, totalWithVat, htmlItems } = getOrderSummaries({ order, cart })
+  const { subtotal, shipping, totalVat, totalWithVat, htmlItems } = getOrderSummaries({ order, cart })
   const subject = `Paldies par pasūtījumu #${orderReference}`
   const text = [
     `Paldies par jūsu pasūtījumu #${orderReference}.`,
@@ -221,8 +229,9 @@ export async function sendCustomerOrderConfirmation({ order, cart }) {
     'Pasūtījuma kopsavilkums:',
     ...cart.map((item) => `${item.name} x ${item.quantity} — ${(Number(item.price) * item.quantity * 1.21).toFixed(2)} EUR ar PVN`),
     '',
-    `Bez PVN: ${Number(order.total).toFixed(2)} EUR`,
+    `Bez PVN: ${subtotal.toFixed(2)} EUR`,
     `PVN 21%: ${totalVat.toFixed(2)} EUR`,
+    `Piegāde: ${shipping.toFixed(2)} EUR`,
     `Kopā ar PVN: ${totalWithVat.toFixed(2)} EUR`,
     '',
     'Ja jums rodas jautājumi, atbildiet uz šo e-pastu vai sazinieties ar mums pa tālruni.',
@@ -233,7 +242,8 @@ export async function sendCustomerOrderConfirmation({ order, cart }) {
     <p>Esam saņēmuši jūsu pasūtījumu un drīzumā sazināsimies, lai apstiprinātu detaļas.</p>
     <h3>Pasūtījuma kopsavilkums</h3>
     ${htmlItems}
-    <p><strong>Bez PVN:</strong> ${Number(order.total).toFixed(2)} EUR</p>
+    <p><strong>Bez PVN:</strong> ${subtotal.toFixed(2)} EUR</p>
+    <p><strong>Piegāde:</strong> ${shipping.toFixed(2)} EUR</p>
     <p><strong>PVN 21%:</strong> ${totalVat.toFixed(2)} EUR</p>
     <p><strong>Kopā ar PVN:</strong> ${totalWithVat.toFixed(2)} EUR</p>
     <p>Ja jums rodas jautājumi, atbildiet uz šo e-pastu vai sazinieties ar mums pa tālruni.</p>

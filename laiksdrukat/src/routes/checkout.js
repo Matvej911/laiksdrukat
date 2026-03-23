@@ -37,11 +37,12 @@ async function checkoutRoutes(fastify) {
       title: 'Checkout | Laiks Drukāt',
       cart,
       total: await fastify.validatedCartTotal(request), //
+      csrf: await reply.generateCsrf(),
     })
   })
 
   // Place order
-  fastify.post('/', async (request, reply) => {
+  fastify.post('/', { preHandler: fastify.csrfProtection }, async (request, reply) => {
     const cart = await fastify.getValidatedCart(request)
     if (cart.length === 0) return reply.redirect('/grozs')
 
@@ -66,6 +67,7 @@ async function checkoutRoutes(fastify) {
         total: await fastify.validatedCartTotal(request),
         error: 'Lūdzu aizpildiet visus obligātos laukus.',
         formData: request.body,
+        csrf: await reply.generateCsrf(),
       })
     }
 
@@ -77,6 +79,7 @@ async function checkoutRoutes(fastify) {
         total: await fastify.validatedCartTotal(request),
         error: 'Pārāk daudz pasūtījumu no šīs IP adreses. Lūdzu mēģiniet vēlreiz pēc stundas.',
         formData: request.body,
+        csrf: await reply.generateCsrf(),
       })
     }
 

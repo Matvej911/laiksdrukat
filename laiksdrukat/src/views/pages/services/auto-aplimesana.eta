@@ -271,6 +271,7 @@
           </div>
         <% } %>
         <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="au-form">
+          <input type="hidden" name="_csrf" value="<%= it.csrf %>">
           <input type="hidden" name="returnTo" value="/auto-aplimesana">
           <div class="au-form-row">
             <div class="form-group">

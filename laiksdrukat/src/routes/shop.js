@@ -58,6 +58,7 @@ async function shopRoutes(fastify) {
       q: filters.q,
       sort: filters.sort,
       cart: fastify.getCart(request),
+      csrf: await reply.generateCsrf(),
     })
   })
 
@@ -100,6 +101,7 @@ async function shopRoutes(fastify) {
       q: filters.q,
       sort: filters.sort,
       cart: fastify.getCart(request),
+      csrf: await reply.generateCsrf(),
     })
   })
 
@@ -159,6 +161,7 @@ async function shopRoutes(fastify) {
       related,
       isStampProduct,
       cart: fastify.getCart(request),
+      csrf: await reply.generateCsrf(),
     })
   })
 }

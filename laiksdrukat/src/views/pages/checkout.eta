@@ -55,6 +55,7 @@
       <% } %>
 
       <form action="/checkout" method="POST" class="checkout-form-new">
+        <input type="hidden" name="_csrf" value="<%= it.csrf %>">
 
         <!-- CONTACT -->
         <div class="checkout-form-section">

@@ -1,8 +1,21 @@
 import nodemailer from 'nodemailer'
+import { Eta } from 'eta'
 
+const viewsPath = path.join(process.cwd(), 'src/views')
 import { getNotificationRecipients } from './notification-recipients.js'
+console.log('ETA VIEWS PATH:', viewsPath)
+import path from 'path'
+const eta = new Eta({ views: viewsPath })
+
+const templatePath = path.join(
+  process.cwd(),
+  'src/views/emails/customer-order.eta'
+)
+
+console.log('EXPECTED TEMPLATE PATH:', templatePath)
 
 function getMailConfig() {
+  console.log('OWNER EMAIL START')
   const host = process.env.SMTP_HOST
   const port = Number(process.env.SMTP_PORT || 587)
   const user = process.env.SMTP_USER
@@ -44,6 +57,7 @@ async function createTransporter() {
 }
 
 async function sendMail({ to, subject, text, html, attachments = [] }) {
+  console.log('OWNER EMAIL START')
   const config = getMailConfig()
   const transporter = await createTransporter()
 
@@ -64,6 +78,7 @@ async function sendMail({ to, subject, text, html, attachments = [] }) {
 }
 
 async function sendOwnerNotificationMail({ subject, text, html, attachments = [] }) {
+  console.log('OWNER EMAIL START')
   const recipients = await getNotificationRecipients()
 
   if (recipients.length === 0) {
@@ -92,6 +107,7 @@ function formatOrderOptions(options = {}) {
 }
 
 export async function sendContactNotification(submission) {
+  console.log('sendContactNotification')
   const subject = `Jauna kontaktforma: ${submission.name}`
   const text = [
     'Saņemta jauna kontaktformas ziņa.',
@@ -129,6 +145,7 @@ export async function sendContactNotification(submission) {
 }
 
 function getOrderSummaries({ order, cart }) {
+  console.log('getOrderSummaries')
   const isOmniva = order.note?.includes('Omniva')
   const shipping = isOmniva ? 3.5 : 0
 
@@ -176,8 +193,9 @@ function getOrderSummaries({ order, cart }) {
 }
 
 export async function sendOwnerOrderNotification({ order, cart }) {
+  console.log('sendOwnerOrderNotification')
   const orderReference = order.publicId || String(order.id)
-  const { totalVat, totalWithVat, lines, htmlItems } = getOrderSummaries({ order, cart })
+  const { subtotal, shipping, totalVat, totalWithVat, lines, htmlItems, } = getOrderSummaries({ order, cart })
   const subject = `Jauns pasūtījums #${orderReference} - ${order.name}`
   const text = [
     `Saņemts jauns pasūtījums #${orderReference}.`,
@@ -191,7 +209,7 @@ export async function sendOwnerOrderNotification({ order, cart }) {
     lines.join('\n\n'),
     '',
     `Bez PVN: ${subtotal.toFixed(2)} EUR`,
-    `Piegāde: ${shipping.toFixed(2)} EUR`
+    `Piegāde: ${shipping.toFixed(2)} EUR`,
     `PVN 21%: ${totalVat.toFixed(2)} EUR`,
     `Kopā ar PVN: ${totalWithVat.toFixed(2)} EUR`,
     '',
@@ -208,7 +226,8 @@ export async function sendOwnerOrderNotification({ order, cart }) {
     <p><strong>Adrese:</strong> ${order.address || '-'}${order.city ? `, ${order.city}` : ''}${order.zip ? `, ${order.zip}` : ''}</p>
     <h3>Preces</h3>
     ${htmlItems}
-    <p><strong>Bez PVN:</strong> ${Number(order.total).toFixed(2)} EUR</p>
+    <p><strong>Bez PVN:</strong> ${subtotal.toFixed(2)} EUR</p>
+    <p><strong>Piegāde:</strong> ${shipping.toFixed(2)} EUR</p>
     <p><strong>PVN 21%:</strong> ${totalVat.toFixed(2)} EUR</p>
     <p><strong>Kopā ar PVN:</strong> ${totalWithVat.toFixed(2)} EUR</p>
     ${order.note ? `<p><strong>Piezīmes:</strong><br>${order.note.replace(/\n/g, '<br>')}</p>` : ''}
@@ -218,41 +237,68 @@ export async function sendOwnerOrderNotification({ order, cart }) {
 }
 
 export async function sendCustomerOrderConfirmation({ order, cart }) {
+  console.log('sendCustomerOrderConfirmation')
   const orderReference = order.publicId || String(order.id)
-  const { subtotal, shipping, totalVat, totalWithVat, htmlItems } = getOrderSummaries({ order, cart })
-  const subject = `Paldies par pasūtījumu #${orderReference}`
-  const text = [
-    `Paldies par jūsu pasūtījumu #${orderReference}.`,
-    '',
-    'Esam saņēmuši jūsu pasūtījumu un drīzumā sazināsimies, lai apstiprinātu detaļas.',
-    '',
-    'Pasūtījuma kopsavilkums:',
-    ...cart.map((item) => `${item.name} x ${item.quantity} — ${(Number(item.price) * item.quantity * 1.21).toFixed(2)} EUR ar PVN`),
-    '',
-    `Bez PVN: ${subtotal.toFixed(2)} EUR`,
-    `PVN 21%: ${totalVat.toFixed(2)} EUR`,
-    `Piegāde: ${shipping.toFixed(2)} EUR`,
-    `Kopā ar PVN: ${totalWithVat.toFixed(2)} EUR`,
-    '',
-    'Ja jums rodas jautājumi, atbildiet uz šo e-pastu vai sazinieties ar mums pa tālruni.',
-  ].join('\n')
 
-  const html = `
-    <h2>Paldies par jūsu pasūtījumu #${orderReference}</h2>
-    <p>Esam saņēmuši jūsu pasūtījumu un drīzumā sazināsimies, lai apstiprinātu detaļas.</p>
-    <h3>Pasūtījuma kopsavilkums</h3>
-    ${htmlItems}
-    <p><strong>Bez PVN:</strong> ${subtotal.toFixed(2)} EUR</p>
-    <p><strong>Piegāde:</strong> ${shipping.toFixed(2)} EUR</p>
-    <p><strong>PVN 21%:</strong> ${totalVat.toFixed(2)} EUR</p>
-    <p><strong>Kopā ar PVN:</strong> ${totalWithVat.toFixed(2)} EUR</p>
-    <p>Ja jums rodas jautājumi, atbildiet uz šo e-pastu vai sazinieties ar mums pa tālruni.</p>
-  `
+  const {
+    subtotal,
+    shipping,
+    totalVat,
+    totalWithVat
+  } = getOrderSummaries({ order, cart })
+
+  const subject = `Paldies par pasūtījumu #${orderReference}`
+
+  // ✅ CLEAN TEXT VERSION (fallback)
+  const text = `
+Paldies par pasūtījumu #${orderReference}
+
+Esam saņēmuši jūsu pasūtījumu un drīzumā sazināsimies.
+
+--- Pasūtījums ---
+${cart.map(item =>
+  `${item.name} x ${item.quantity} — ${(Number(item.price) * item.quantity * 1.21).toFixed(2)} €`
+).join('\n')}
+
+--- Kopsumma ---
+Bez PVN: ${subtotal.toFixed(2)} €
+Piegāde: ${shipping.toFixed(2)} €
+PVN (21%): ${totalVat.toFixed(2)} €
+Kopā: ${totalWithVat.toFixed(2)} €
+
+Ja jums ir jautājumi — vienkārši atbildiet uz šo e-pastu.
+`.trim()
+   
+
+  // ✅ HTML FROM ETA TEMPLATE
+  let html
+
+  try {
+    html = await eta.renderAsync('admin/customer-order', {
+      order,
+      orderReference,
+      cart,
+      subtotal,
+      shipping,
+      totalVat,
+      totalWithVat
+    })
+  } catch (err) {
+    console.error('EMAIL TEMPLATE ERROR:', err)
+
+    // ✅ fallback so email STILL sends
+    html = `
+      <h2>Paldies par pasūtījumu #${orderReference}</h2>
+      <p>Kopā: ${totalWithVat.toFixed(2)} €</p>
+    `
+
+  }
 
   return sendMail({
     to: order.email,
     subject,
     text,
-    html,
+    html
   })
+
 }

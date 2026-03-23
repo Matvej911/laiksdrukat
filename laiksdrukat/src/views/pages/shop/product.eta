@@ -61,6 +61,7 @@
 
         <% if (it.isStampProduct) { %>
           <form action="/grozs/add" method="POST" enctype="multipart/form-data" class="product-form">
+            <input type="hidden" name="_csrf" value="<%= it.csrf %>">
             <input type="hidden" name="productId" value="<%= it.product.id %>">
 
             <div class="product-form-row">
@@ -110,6 +111,7 @@
 
         <% } else { %>
           <form action="/grozs/add" method="POST" class="product-form">
+            <input type="hidden" name="_csrf" value="<%= it.csrf %>">
             <input type="hidden" name="productId" value="<%= it.product.id %>">
             <div class="product-buy-row">
               <div class="product-qty-wrap">
@@ -209,6 +211,7 @@
           </a>
           <div class="shop-product-actions">
             <form action="/grozs/add" method="POST">
+              <input type="hidden" name="_csrf" value="<%= it.csrf %>">
               <input type="hidden" name="productId" value="<%= p.id %>">
               <input type="hidden" name="quantity" value="1">
               <button type="submit" class="shop-add-btn">

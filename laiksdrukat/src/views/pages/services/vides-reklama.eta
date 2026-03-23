@@ -222,7 +222,8 @@
 
     <% } else { %>
       <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="vr-form">
-       <input type="hidden" name="returnTo" value="/vides-reklama">
+        <input type="hidden" name="_csrf" value="<%= it.csrf %>">
+        <input type="hidden" name="returnTo" value="/vides-reklama">
         <div class="vr-form-row">
           <div class="form-group">
             <label class="vr-label">Vārds <span class="required">*</span></label>

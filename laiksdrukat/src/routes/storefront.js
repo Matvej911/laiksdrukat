@@ -1,12 +1,14 @@
-import { appendFile, mkdir, writeFile } from 'fs/promises'
+import { appendFile, mkdir } from 'fs/promises'
 import { randomUUID } from 'crypto'
-import { extname, join } from 'path'
+import { basename, join } from 'path'
 import { serviceRouteEntries, getSiteContent } from '../content/site.js'
+import { hasValidSessionCsrf } from '../lib/csrf.js'
 import { sendContactNotification } from '../lib/mailer.js'
-
-function sanitizeFilename(filename) {
-  return filename.replace(/[^a-zA-Z0-9._-]/g, '-')
-}
+import {
+  persistUpload,
+  sendStoredFile,
+  validateDocumentOrImageUpload,
+} from '../lib/uploads.js'
 
 const CONTACT_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const CONTACT_RATE_LIMIT_MAX = 5
@@ -28,95 +30,82 @@ function recordContactAttempt(ip) {
   contactAttempts.set(ip, attempts)
 }
 
-function validateUploadBuffer(buffer, ext) {
-  if (buffer.length < 4) return false
-
-  switch (ext) {
-    case '.jpg':
-    case '.jpeg':
-      return buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF
-
-    case '.png':
-      return buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47
-
-    case '.webp':
-      return buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
-             buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50
-
-    case '.gif':
-      return buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46
-
-    case '.svg': {
-      const start = buffer.slice(0, 64).toString('utf8').trimStart()
-      return start.startsWith('<svg') || start.startsWith('<?xml') || start.startsWith('<!DOCTYPE svg')
-    }
-
-    case '.pdf':
-      return buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46
-
-    case '.doc':
-      return buffer[0] === 0xD0 && buffer[1] === 0xCF && buffer[2] === 0x11 && buffer[3] === 0xE0
-
-    case '.docx':
-      return buffer[0] === 0x50 && buffer[1] === 0x4B && buffer[2] === 0x03 && buffer[3] === 0x04
-
-    case '.eps':
-    case '.ai': {
-      const start = buffer.slice(0, 32).toString('utf8')
-      return start.startsWith('%!PS') || start.startsWith('%PDF')
-    }
-
-    default:
-      return false
-  }
-}
-
-
 async function collectContactForm(request) {
   if (!request.isMultipart || !request.isMultipart()) {
-    return { fields: request.body || {}, uploadedFile: null }
+    const fields = request.body || {}
+    return {
+      fields,
+      uploadedFile: null,
+      invalidCsrf: !hasValidSessionCsrf(request, fields._csrf),
+    }
   }
 
   const fields = {}
   let uploadedFile = null
-  const uploadDir = join(process.cwd(), 'public', 'uploads', 'contact-attachments')
-  await mkdir(uploadDir, { recursive: true })
+  const pendingFiles = []
 
   for await (const part of request.parts()) {
     if (part.type === 'file') {
       if (!part.filename) continue
 
-      const ext = extname(part.filename).toLowerCase()
+      const ext = part.filename.includes('.') ? part.filename.slice(part.filename.lastIndexOf('.')).toLowerCase() : ''
       const buffer = await part.toBuffer()
 
       if (buffer.length === 0) continue
 
-      if (!validateUploadBuffer(buffer, ext)) {
-        fastify.log.warn(`Rejected contact upload: ${part.filename}`)
+      if (!validateDocumentOrImageUpload(buffer, ext)) {
+        request.server.log.warn({ filename: part.filename }, 'Rejected contact upload')
         continue
       }
 
-      const safeName = sanitizeFilename(part.filename)
-      const filename = `${Date.now()}-${randomUUID()}-${safeName}${safeName.endsWith(ext) ? '' : ext}`
-      const filepath = join(uploadDir, filename)
-      await writeFile(filepath, buffer)
-
-      uploadedFile = {
+      pendingFiles.push({
         originalName: part.filename,
-        path: filepath,
-        url: `/uploads/contact-attachments/${filename}`,
-      }
+        buffer,
+      })
     } else {
       fields[part.fieldname] = part.value
     }
   }
 
-  return { fields, uploadedFile }
+  if (!hasValidSessionCsrf(request, fields._csrf)) {
+    return { fields, uploadedFile: null, invalidCsrf: true }
+  }
+
+  for (const file of pendingFiles) {
+    const stored = await persistUpload({
+      subdir: 'contact-attachments',
+      originalName: file.originalName,
+      buffer: file.buffer,
+      urlPrefix: '/admin/contact-attachments',
+    })
+
+    uploadedFile = {
+      originalName: file.originalName,
+      path: stored.filepath,
+      url: stored.url,
+    }
+  }
+
+  return { fields, uploadedFile, invalidCsrf: false }
 }
 
 
 
 async function storefrontRoutes(fastify) {
+  fastify.get('/media/admin-products/:filename', async (request, reply) => {
+    const filename = basename(String(request.params.filename || ''))
+    const filepath = join(process.cwd(), 'data', 'uploads', 'admin-product-images', filename)
+
+    try {
+      return await sendStoredFile(reply, filepath, filename)
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return reply.code(404).send('File not found')
+      }
+      throw error
+    }
+  })
+
   // Homepage
   fastify.get('/', async (request, reply) => {
     const [products, categories] = await Promise.all([
@@ -158,11 +147,16 @@ async function storefrontRoutes(fastify) {
         'Laiks Drukāt kontakti Jelgavā: adrese, tālruņi, e-pasts un Facebook saziņai.',
       cart: fastify.getCart(request),
       success,
+      csrf: await reply.generateCsrf(),
     })
   })
 
   fastify.post('/kontakti', async (request, reply) => {
-    const { fields, uploadedFile } = await collectContactForm(request)
+    const { fields, uploadedFile, invalidCsrf } = await collectContactForm(request)
+    if (invalidCsrf) {
+      return reply.code(403).send('Invalid CSRF token')
+    }
+
     const { name, email, phone, message } = fields
     const normalizedMessage = String(message || '').trim()
 
@@ -174,6 +168,7 @@ async function storefrontRoutes(fastify) {
         cart: fastify.getCart(request),
         error: 'Pārāk daudz ziņu. Lūdzu mēģiniet vēlreiz pēc 15 minūtēm.',
         formData: fields,
+        csrf: await reply.generateCsrf(),
       })
     }
     if (!name || !email || !normalizedMessage) {
@@ -184,6 +179,7 @@ async function storefrontRoutes(fastify) {
         cart: fastify.getCart(request),
         error: 'Lūdzu aizpildiet vārdu, e-pastu un ziņu.',
         formData: fields,
+        csrf: await reply.generateCsrf(),
       })
     }
 
@@ -195,6 +191,7 @@ async function storefrontRoutes(fastify) {
         cart: fastify.getCart(request),
         error: 'Ziņa nedrīkst pārsniegt 180 rakstzīmes.',
         formData: fields,
+        csrf: await reply.generateCsrf(),
       })
     }
 
@@ -278,6 +275,7 @@ async function storefrontRoutes(fastify) {
           success,
           error,
           site: getSiteContent(),
+          csrf: await reply.generateCsrf(),
         })
       }
 
@@ -295,6 +293,7 @@ async function storefrontRoutes(fastify) {
           success,
           error,
           site: getSiteContent(),
+          csrf: await reply.generateCsrf(),
         })
       }
 
@@ -311,6 +310,7 @@ async function storefrontRoutes(fastify) {
           cart: fastify.getCart(request),
           success,
           error,
+          csrf: await reply.generateCsrf(),
         })
       }
 
@@ -328,6 +328,7 @@ async function storefrontRoutes(fastify) {
           success,
           error,
           site: getSiteContent(),
+          csrf: await reply.generateCsrf(),
         })
       }
 
@@ -344,6 +345,7 @@ async function storefrontRoutes(fastify) {
           cart: fastify.getCart(request),
           success,
           error,
+          csrf: await reply.generateCsrf(),
         })
       }
 
@@ -360,6 +362,7 @@ async function storefrontRoutes(fastify) {
           cart: fastify.getCart(request),
           success,
           error,
+          csrf: await reply.generateCsrf(),
         })
       }
 
@@ -375,7 +378,11 @@ async function storefrontRoutes(fastify) {
 
 // Generic service contact form — handles POST from any service page
   fastify.post('/pakalpojumi-kontakts', async (request, reply) => {
-    const { fields, uploadedFile } = await collectContactForm(request)
+    const { fields, uploadedFile, invalidCsrf } = await collectContactForm(request)
+    if (invalidCsrf) {
+      return reply.code(403).send('Invalid CSRF token')
+    }
+
     const { name, email, phone, message, returnTo } = fields
     const normalizedMessage = String(message || '').trim()
     const redirectPage = returnTo || '/kontakti'

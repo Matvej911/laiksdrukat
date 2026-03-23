@@ -1,94 +1,130 @@
 <% layout('layout') %>
 
-<div class="admin-page-header">
-  <h1>Pasutijums #<%= it.order.id %></h1>
-  <a href="/admin/orders" class="btn btn-outline btn-sm">Atpakal</a>
+<div class="admin-page-header admin-header-modern">
+  <div>
+    <h1>Pasūtījums #<%= it.order.id %></h1>
+    <span class="admin-subtle">
+      Izveidots: <%= new Date(it.order.createdAt).toLocaleString('lv-LV') %>
+    </span>
+  </div>
+
+  <a href="/admin/orders" class="btn btn-outline btn-sm">Atpakaļ</a>
 </div>
 
-<div class="admin-detail-grid">
-  <div>
-    <div class="admin-card" style="margin-bottom:24px;">
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;">Preces</h3>
-      <table class="admin-table">
-        <thead>
-          <tr><th>Prece</th><th>Cena</th><th>Daudzums</th><th>Kopā</th></tr>
-        </thead>
-        <tbody>
-          <% for (const item of it.order.items) { %>
-            <tr>
-              <td><%= item.name %></td>
-              <td><%= Number(item.price).toFixed(2) %> EUR</td>
-              <td><%= item.quantity %></td>
-              <td style="font-weight:600;"><%= (Number(item.price) * item.quantity).toFixed(2) %> EUR</td>
-            </tr>
-          <% } %>
-        </tbody>
-      </table>
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gray-200);display:flex;justify-content:space-between;">
-        <span style="font-weight:700;">Kopā ar PVN</span>
-        <%
-          const isOmniva = it.order.note && it.order.note.includes('Omniva')
-          const cartSubtotal = Number(it.order.total) - (isOmniva ? 3.5 : 0)
-          const adminTotal = cartSubtotal * 1.21 + (isOmniva ? 3.5 : 0)
-        %>
-        <span style="font-size:18px;font-weight:800;color:var(--accent);"><%= adminTotal.toFixed(2) %> EUR</span>
+<div class="admin-layout">
+
+  <!-- LEFT -->
+  <div class="admin-main">
+
+    <!-- PRODUCTS -->
+    <div class="admin-card admin-card-modern">
+      <h3>Preces</h3>
+
+      <% for (const item of it.order.items) { %>
+        <div class="admin-product">
+
+          <div class="admin-product-info">
+            <strong><%= item.name %></strong>
+
+            <!-- FILE -->
+            <% if (item.options && item.options['Faila saite']) { %>
+              <div class="admin-file">
+                <span>Pievienots fails</span>
+                <a href="<%= item.options['Faila saite'] %>" target="_blank">
+                  <%= item.options['Fails'] %>
+                </a>
+              </div>
+            <% } %>
+          </div>
+
+          <div class="admin-product-meta">
+            <div><%= item.quantity %> ×</div>
+            <div><%= Number(item.price).toFixed(2) %> €</div>
+            <div class="admin-product-total">
+              <%= (Number(item.price) * item.quantity).toFixed(2) %> €
+            </div>
+          </div>
+
+        </div>
+      <% } %>
+
+      <!-- TOTAL -->
+      <%
+        const isOmniva = it.order.note && it.order.note.includes('Omniva')
+        const cartSubtotal = Number(it.order.total) - (isOmniva ? 3.5 : 0)
+        const adminTotal = cartSubtotal * 1.21 + (isOmniva ? 3.5 : 0)
+      %>
+
+      <div class="admin-total-box">
+        <span>Kopā ar PVN</span>
+        <strong><%= adminTotal.toFixed(2) %> €</strong>
       </div>
     </div>
 
-    <div class="admin-card">
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;">Klienta informacija</h3>
+    <!-- CUSTOMER -->
+    <div class="admin-card admin-card-modern">
+      <h3>Klienta informācija</h3>
+
       <div class="admin-meta-grid">
         <div>
-          <div class="admin-meta-label">Vards</div>
-          <div class="admin-meta-value"><%= it.order.name %></div>
+          <span>Vārds</span>
+          <strong><%= it.order.name %></strong>
         </div>
         <div>
-          <div class="admin-meta-label">E-pasts</div>
-          <div class="admin-meta-value"><%= it.order.email %></div>
+          <span>E-pasts</span>
+          <strong><%= it.order.email %></strong>
         </div>
         <div>
-          <div class="admin-meta-label">Talrunis</div>
-          <div class="admin-meta-value"><%= it.order.phone || '-' %></div>
+          <span>Tālrunis</span>
+          <strong><%= it.order.phone || '-' %></strong>
         </div>
         <div>
-          <div class="admin-meta-label">Adrese</div>
-          <div class="admin-meta-value">
+          <span>Adrese</span>
+          <strong>
             <%= it.order.address || '-' %>
             <% if (it.order.city) { %>, <%= it.order.city %><% } %>
             <% if (it.order.zip) { %>, <%= it.order.zip %><% } %>
-          </div>
+          </strong>
         </div>
       </div>
 
       <% if (it.order.note) { %>
-        <div style="margin-top:20px;">
-          <div class="admin-meta-label">Piezime</div>
-          <div class="admin-message-box"><%= it.order.note %></div>
+        <div class="admin-note">
+          <strong>Piezīme</strong>
+          <p><%= it.order.note %></p>
         </div>
       <% } %>
     </div>
+
   </div>
 
-  <div class="admin-card">
-    <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;">Statuss</h3>
-    <div style="margin-bottom:16px;">
-      <span class="badge badge-<%= it.order.status.toLowerCase() %>" style="font-size:14px;padding:6px 14px;">
-        <%= it.order.status %>
-      </span>
+  <!-- RIGHT -->
+  <div class="admin-side">
+
+    <div class="admin-card admin-card-modern">
+      <h3>Statuss</h3>
+
+      <div class="admin-status">
+        <span class="badge badge-<%= it.order.status.toLowerCase() %>">
+          <%= it.order.status %>
+        </span>
+      </div>
+
+      <form action="/admin/orders/<%= it.order.id %>/status" method="POST">
+        <input type="hidden" name="_csrf" value="<%= it.csrf %>">
+
+        <select name="status" class="form-input">
+          <option value="PENDING" <%= it.order.status === 'PENDING' ? 'selected' : '' %>>PENDING</option>
+          <option value="CONFIRMED" <%= it.order.status === 'CONFIRMED' ? 'selected' : '' %>>CONFIRMED</option>
+          <option value="SHIPPED" <%= it.order.status === 'SHIPPED' ? 'selected' : '' %>>SHIPPED</option>
+          <option value="DONE" <%= it.order.status === 'DONE' ? 'selected' : '' %>>DONE</option>
+          <option value="CANCELLED" <%= it.order.status === 'CANCELLED' ? 'selected' : '' %>>CANCELLED</option>
+        </select>
+
+        <button class="btn btn-primary btn-full">Mainīt statusu</button>
+      </form>
     </div>
-    <form action="/admin/orders/<%= it.order.id %>/status" method="POST">
-      <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-      <select name="status" class="form-input" style="margin-bottom:12px;">
-        <option value="PENDING" <%= it.order.status === 'PENDING' ? 'selected' : '' %>>PENDING</option>
-        <option value="CONFIRMED" <%= it.order.status === 'CONFIRMED' ? 'selected' : '' %>>CONFIRMED</option>
-        <option value="SHIPPED" <%= it.order.status === 'SHIPPED' ? 'selected' : '' %>>SHIPPED</option>
-        <option value="DONE" <%= it.order.status === 'DONE' ? 'selected' : '' %>>DONE</option>
-        <option value="CANCELLED" <%= it.order.status === 'CANCELLED' ? 'selected' : '' %>>CANCELLED</option>
-      </select>
-      <button type="submit" class="btn btn-primary btn-full btn-sm">Mainit statusu</button>
-    </form>
-    <div style="margin-top:16px;font-size:13px;color:var(--gray-400);">
-      Izveidots: <%= new Date(it.order.createdAt).toLocaleString('lv-LV') %>
-    </div>
+
   </div>
+
 </div>

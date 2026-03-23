@@ -61,6 +61,7 @@
               <div class="cart-item-price"><%= item.price.toFixed(2) %> €</div>
 
               <form action="/grozs/update" method="POST" class="cart-item-qty">
+                <input type="hidden" name="_csrf" value="<%= it.csrf %>">
                 <input type="hidden" name="lineId" value="<%= item.lineId %>">
                 <button type="button" class="qty-btn" onclick="this.nextElementSibling.stepDown();this.form.submit()">−</button>
                 <input type="number" name="quantity" value="<%= item.quantity %>" min="1" class="qty-input">
@@ -70,6 +71,7 @@
               <div class="cart-item-total"><%= (item.price * item.quantity).toFixed(2) %> €</div>
 
               <form action="/grozs/remove" method="POST" class="cart-item-remove">
+                <input type="hidden" name="_csrf" value="<%= it.csrf %>">
                 <input type="hidden" name="lineId" value="<%= item.lineId %>">
                 <button type="submit" class="cart-remove-btn" title="Noņemt">
                   <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>

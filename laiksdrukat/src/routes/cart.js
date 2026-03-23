@@ -1,53 +1,86 @@
-import { mkdir, writeFile } from 'fs/promises'
-import { randomUUID } from 'crypto'
-import { extname, join } from 'path'
+import { basename, extname, join } from 'path'
 
-function formatPrice(value) {
-  return Number(value).toFixed(2)
-}
-
-function sanitizeFilename(filename) {
-  return filename.replace(/[^a-zA-Z0-9._-]/g, '-')
-}
+import { hasValidSessionCsrf } from '../lib/csrf.js'
+import {
+  persistUpload,
+  sendStoredFile,
+  validateDocumentOrImageUpload,
+} from '../lib/uploads.js'
 
 async function collectCartForm(request) {
   if (!request.isMultipart || !request.isMultipart()) {
-    return { fields: request.body || {}, uploadedFile: null }
+    const fields = request.body || {}
+    return {
+      fields,
+      uploadedFile: null,
+      invalidCsrf: !hasValidSessionCsrf(request, fields._csrf),
+    }
   }
 
   const fields = {}
   let uploadedFile = null
-  const uploadDir = join(process.cwd(), 'public', 'uploads', 'stamp-files')
-  await mkdir(uploadDir, { recursive: true })
+  const pendingFiles = []
 
   for await (const part of request.parts()) {
     if (part.type === 'file') {
       if (!part.filename) continue
 
-      const ext = extname(part.filename) || '.bin'
-      const safeName = sanitizeFilename(part.filename)
-      const filename = `${Date.now()}-${randomUUID()}-${safeName}${safeName.endsWith(ext) ? '' : ext}`
+      const ext = extname(part.filename).toLowerCase() || '.bin'
       const buffer = await part.toBuffer()
 
       if (buffer.length === 0) continue
 
-      const filepath = join(uploadDir, filename)
-      request.server.log.info({ filepath }, 'Saving uploaded stamp file')
-      await writeFile(filepath, buffer)
-
-      uploadedFile = {
-        originalName: part.filename,
-        url: `/uploads/stamp-files/${filename}`,
+      if (!validateDocumentOrImageUpload(buffer, ext)) {
+        request.server.log.warn({ filename: part.filename }, 'Rejected invalid stamp upload')
+        continue
       }
+
+      pendingFiles.push({
+        originalName: part.filename,
+        buffer,
+      })
     } else {
       fields[part.fieldname] = part.value
     }
   }
 
-  return { fields, uploadedFile }
+  if (!hasValidSessionCsrf(request, fields._csrf)) {
+    return { fields, uploadedFile: null, invalidCsrf: true }
+  }
+
+  for (const file of pendingFiles) {
+    const stored = await persistUpload({
+      subdir: 'stamp-files',
+      originalName: file.originalName,
+      buffer: file.buffer,
+      urlPrefix: '/grozs/stamp-files',
+    })
+
+    uploadedFile = {
+      originalName: file.originalName,
+      path: stored.filepath,
+      url: stored.url,
+    }
+  }
+
+  return { fields, uploadedFile, invalidCsrf: false }
 }
 
 async function cartRoutes(fastify) {
+  fastify.get('/stamp-files/:filename', async (request, reply) => {
+    const filename = basename(String(request.params.filename || ''))
+    const filepath = join(process.cwd(), 'data', 'uploads', 'stamp-files', filename)
+
+    try {
+      return await sendStoredFile(reply, filepath, filename)
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return reply.code(404).send('File not found')
+      }
+      throw error
+    }
+  })
+
   // View cart
   fastify.get('/', async (request, reply) => {
     const cart = await fastify.getValidatedCart(request)
@@ -56,12 +89,17 @@ async function cartRoutes(fastify) {
       title: 'Grozs | Laiks Drukāt',
       cart,
       total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      csrf: await reply.generateCsrf(),
     })
   })
 
   // Add to cart
   fastify.post('/add', async (request, reply) => {
-    const { fields, uploadedFile } = await collectCartForm(request)
+    const { fields, uploadedFile, invalidCsrf } = await collectCartForm(request)
+    if (invalidCsrf) {
+      return reply.code(403).send('Invalid CSRF token')
+    }
+
     const {
       productId,
       quantity = 1,
@@ -128,14 +166,14 @@ async function cartRoutes(fastify) {
   })
 
   // Update quantity
-  fastify.post('/update', async (request, reply) => {
+  fastify.post('/update', { preHandler: fastify.csrfProtection }, async (request, reply) => {
     const { lineId, quantity } = request.body
     fastify.updateCartQuantity(request, lineId, Number(quantity))
     return reply.redirect('/grozs')
   })
 
   // Remove item
-  fastify.post('/remove', async (request, reply) => {
+  fastify.post('/remove', { preHandler: fastify.csrfProtection }, async (request, reply) => {
     const { lineId } = request.body
     fastify.removeFromCart(request, lineId)
     return reply.redirect('/grozs')

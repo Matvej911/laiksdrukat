@@ -13,7 +13,13 @@ import {
   deleteNotificationRecipient,
   getNotificationRecipients,
 } from '../../lib/notification-recipients.js'
+import { hasValidSessionCsrf } from '../../lib/csrf.js'
 import { isMailConfigured } from '../../lib/mailer.js'
+import {
+  persistUpload,
+  sendStoredFile,
+  validateImageUpload,
+} from '../../lib/uploads.js'
 
 
 const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
@@ -37,29 +43,6 @@ function recordLoginAttempt(ip) {
   loginAttempts.set(ip, attempts)
 }
 
-function getImageMimeFromBuffer(buffer) {
-  if (buffer.length < 4) return null
-
-  // JPEG: FF D8 FF
-  if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) return 'image/jpeg'
-
-  // PNG: 89 50 4E 47
-  if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) return 'image/png'
-
-  // WebP: RIFF....WEBP
-  if (buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
-      buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50) return 'image/webp'
-
-  // GIF: GIF87a or GIF89a
-  if (buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46) return 'image/gif'
-
-  // SVG: starts with < (XML)
-  const start = buffer.slice(0, 64).toString('utf8').trimStart()
-  if (start.startsWith('<svg') || start.startsWith('<?xml') || start.startsWith('<!DOCTYPE svg')) return 'image/svg+xml'
-
-  return null
-}
-
 function sanitizeFilename(filename) {
   return filename.replace(/[^a-zA-Z0-9._-]/g, '-')
 }
@@ -71,13 +54,17 @@ function normalizeOptionalText(value) {
 
 async function collectProductForm(request) {
   if (!request.isMultipart || !request.isMultipart()) {
-    return { fields: request.body || {}, uploads: {} }
+    const fields = request.body || {}
+    return {
+      fields,
+      uploads: {},
+      invalidCsrf: !hasValidSessionCsrf(request, fields._csrf),
+    }
   }
 
   const fields = {}
   const uploads = {}
-  const uploadDir = join(process.cwd(), 'public', 'images', 'products', 'admin')
-  await mkdir(uploadDir, { recursive: true })
+  const pendingFiles = []
 
   for await (const part of request.parts()) {
     if (part.type === 'file') {
@@ -86,17 +73,38 @@ async function collectProductForm(request) {
       const buffer = await part.toBuffer()
       if (buffer.length === 0) continue
 
-      const ext = extname(part.filename) || '.bin'
-      const safeName = sanitizeFilename(part.filename)
-      const filename = `${Date.now()}-${randomUUID()}-${safeName}${safeName.endsWith(ext) ? '' : ext}`
-      await writeFile(join(uploadDir, filename), buffer)
-      uploads[part.fieldname] = `/images/products/admin/${filename}`
+      const ext = extname(part.filename).toLowerCase() || '.bin'
+      if (!validateImageUpload(buffer, ext)) {
+        request.server.log.warn({ filename: part.filename }, 'Rejected invalid admin product upload')
+        continue
+      }
+
+      pendingFiles.push({
+        fieldname: part.fieldname,
+        originalName: part.filename,
+        buffer,
+      })
     } else {
       fields[part.fieldname] = part.value
     }
   }
 
-  return { fields, uploads }
+  if (!hasValidSessionCsrf(request, fields._csrf)) {
+    return { fields, uploads: {}, invalidCsrf: true }
+  }
+
+  for (const file of pendingFiles) {
+    const stored = await persistUpload({
+      subdir: 'admin-product-images',
+      originalName: file.originalName,
+      buffer: file.buffer,
+      urlPrefix: '/media/admin-products',
+    })
+
+    uploads[file.fieldname] = stored.url
+  }
+
+  return { fields, uploads, invalidCsrf: false }
 }
 
 function buildProductPayload(fields, uploads, existingProduct = null) {
@@ -146,11 +154,15 @@ async function adminRoutes(fastify) {
   // Login page
   fastify.get('/login', async (request, reply) => {
     if (request.session.adminId) return reply.redirect('/admin')
-    return reply.view('admin/login', { title: 'Admin | Laiks Drukāt', error: null })
+    return reply.view('admin/login', {
+      title: 'Admin | Laiks Drukāt',
+      error: null,
+      csrf: await reply.generateCsrf(),
+    })
   })
 
   // Login submit
-  fastify.post('/login', async (request, reply) => {
+  fastify.post('/login', { preHandler: fastify.csrfProtection }, async (request, reply) => {
   const { username, password } = request.body
 
   // check rate limit first
@@ -159,19 +171,28 @@ async function adminRoutes(fastify) {
     return reply.view('admin/login', {
       title: 'Admin',
       error: 'Pārāk daudz mēģinājumu. Lūdzu mēģiniet vēlreiz pēc 15 minūtēm.',
+      csrf: await reply.generateCsrf(),
     })
   }
 
   const user = await fastify.db.adminUser.findUnique({ where: { username } })
   if (!user) {
     recordLoginAttempt(request.ip) // record failed attempt
-    return reply.view('admin/login', { title: 'Admin', error: 'Nepareizs lietotājvārds vai parole.' })
+    return reply.view('admin/login', {
+      title: 'Admin',
+      error: 'Nepareizs lietotājvārds vai parole.',
+      csrf: await reply.generateCsrf(),
+    })
   }
 
   const valid = await bcrypt.compare(password, user.password)
   if (!valid) {
     recordLoginAttempt(request.ip) // record failed attempt
-    return reply.view('admin/login', { title: 'Admin', error: 'Nepareizs lietotājvārds vai parole.' })
+    return reply.view('admin/login', {
+      title: 'Admin',
+      error: 'Nepareizs lietotājvārds vai parole.',
+      csrf: await reply.generateCsrf(),
+    })
   }
 
   // successful login — do NOT record attempt
@@ -183,6 +204,20 @@ async function adminRoutes(fastify) {
   fastify.post('/logout', { preHandler: fastify.csrfProtection }, async (request, reply) => {
     request.session.destroy()
     return reply.redirect('/admin/login')
+  })
+
+  fastify.get('/contact-attachments/:filename', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const filename = basename(String(request.params.filename || ''))
+    const filepath = join(process.cwd(), 'data', 'uploads', 'contact-attachments', filename)
+
+    try {
+      return await sendStoredFile(reply, filepath, filename)
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return reply.code(404).send('File not found')
+      }
+      throw error
+    }
   })
 
   // Dashboard
@@ -237,8 +272,12 @@ async function adminRoutes(fastify) {
   })
 
 
-  fastify.post('/products/new', { preHandler: fastify.requireAdmin, }, async (request, reply) => {
-    const { fields, uploads } = await collectProductForm(request)
+  fastify.post('/products/new', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const { fields, uploads, invalidCsrf } = await collectProductForm(request)
+    if (invalidCsrf) {
+      return reply.code(403).send('Invalid CSRF token')
+    }
+
     const payload = buildProductPayload(fields, uploads)
 
     try {
@@ -253,6 +292,7 @@ async function adminRoutes(fastify) {
         product: fields,
         categories,
         error: 'Kļūda saglabājot produktu. Pārbaudiet vai slug ir unikāls.',
+        csrf: await reply.generateCsrf(),
       })
     }
   })
@@ -282,10 +322,14 @@ async function adminRoutes(fastify) {
     })
   })
 
-  fastify.post('/products/:id/edit', { preHandler: fastify.requireAdmin,  }, async (request, reply) => {
+  fastify.post('/products/:id/edit', { preHandler: fastify.requireAdmin }, async (request, reply) => {
     const productId = Number(request.params.id)
     const existingProduct = await fastify.db.product.findUnique({ where: { id: productId } })
-    const { fields, uploads } = await collectProductForm(request)
+    const { fields, uploads, invalidCsrf } = await collectProductForm(request)
+    if (invalidCsrf) {
+      return reply.code(403).send('Invalid CSRF token')
+    }
+
     const payload = buildProductPayload(fields, uploads, existingProduct)
 
     try {
@@ -307,6 +351,7 @@ async function adminRoutes(fastify) {
         },
         categories,
         error: 'Kļūda saglabājot produktu. Pārbaudiet vai slug ir unikāls.',
+        csrf: await reply.generateCsrf(),
       })
     }
   })
@@ -403,11 +448,12 @@ async function adminRoutes(fastify) {
         mailConfigured: isMailConfigured(),
         error: error.message || 'Neizdevās pievienot e-pasta adresi.',
         success: false,
+        csrf: await reply.generateCsrf(),
       })
     }
   })
 
-  fastify.post('/notification-emails/delete', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+  fastify.post('/notification-emails/delete', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
     await deleteNotificationRecipient(request.body.email)
     return reply.redirect('/admin/notification-emails?saved=1')
   })
@@ -423,7 +469,7 @@ async function adminRoutes(fastify) {
     })
   })
 
-  fastify.post('/settings/change-username', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+  fastify.post('/settings/change-username', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
   const { newUsername, password } = request.body
 
   if (newUsername.length < 4) {
@@ -431,6 +477,7 @@ async function adminRoutes(fastify) {
       title: 'Admin | Iestatījumi',
       error: 'Lietotājvārdam jābūt vismaz 4 rakstzīmes garam.',
       success: false,
+      csrf: await reply.generateCsrf(),
     })
   }
 
@@ -444,6 +491,7 @@ async function adminRoutes(fastify) {
       title: 'Admin | Iestatījumi',
       error: 'Parole nav pareiza.',
       success: false,
+      csrf: await reply.generateCsrf(),
     })
   }
 
@@ -456,6 +504,7 @@ async function adminRoutes(fastify) {
       title: 'Admin | Iestatījumi',
       error: 'Šāds lietotājvārds jau eksistē.',
       success: false,
+      csrf: await reply.generateCsrf(),
     })
   }
 
@@ -558,6 +607,7 @@ async function adminRoutes(fastify) {
     await mkdir(gallery.dir, { recursive: true })
 
     let csrfToken = null
+    const pendingFiles = []
 
     for await (const part of request.parts()) {
       if (part.type === 'field' && part.fieldname === '_csrf') {
@@ -571,15 +621,22 @@ async function adminRoutes(fastify) {
         if (!IMAGE_EXTENSIONS.has(ext)) continue
 
         // check magic bytes
-        const mime = getImageMimeFromBuffer(buffer)
-        if (!mime) {
+        if (!validateImageUpload(buffer, ext)) {
           fastify.log.warn(`Rejected gallery upload with invalid magic bytes: ${part.filename}`)
           continue
         }
 
-        const filename = `${Date.now()}-${randomUUID()}${ext}`
-        await writeFile(join(gallery.dir, filename), buffer)
+        pendingFiles.push({ buffer, ext })
       }
+    }
+
+    if (!hasValidSessionCsrf(request, csrfToken)) {
+      return reply.code(403).send('Invalid CSRF token')
+    }
+
+    for (const file of pendingFiles) {
+      const filename = `${Date.now()}-${randomUUID()}${file.ext}`
+      await writeFile(join(gallery.dir, filename), file.buffer)
     }
 
     return reply.redirect(`/admin/galleries/${gallery.slug}?success=1`)

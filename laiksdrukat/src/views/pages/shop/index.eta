@@ -106,6 +106,7 @@
             </a>
             <div class="shop-product-actions">
               <form action="/grozs/add" method="POST">
+                <input type="hidden" name="_csrf" value="<%= it.csrf %>">
                 <input type="hidden" name="productId" value="<%= p.id %>">
                 <input type="hidden" name="quantity" value="1">
               </form>

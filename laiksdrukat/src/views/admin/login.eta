@@ -20,6 +20,7 @@
         <div class="form-error"><%= it.error %></div>
       <% } %>
       <form action="/admin/login" method="POST">
+        <input type="hidden" name="_csrf" value="<%= it.csrf %>">
         <div class="form-group">
           <label class="form-label">Lietotajvards</label>
           <input type="text" name="username" class="form-input" autofocus required>

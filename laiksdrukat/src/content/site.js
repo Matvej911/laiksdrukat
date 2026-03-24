@@ -160,6 +160,8 @@ export function getSiteContent() {
       menuTitle: 'Vides reklāma',
       title: 'Vides reklāma',
       teaser: `⭐ Pamanāma vides reklāma jūsu uzņēmumam ${currentYear} – gaismas kastes, reklāmas burti un izkārtnes. Dizains, izgatavošana un montāža vienuviet. Sazinies ar mums!☎️`,
+      heroImage: '/images/web-design/gaismas-kaste.webp',
+      heroAlt: 'Gaismas kaste un vides reklāma',
     
     },
     {

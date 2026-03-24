@@ -13,7 +13,7 @@ import {
 const CONTACT_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const CONTACT_RATE_LIMIT_MAX = 5
 const contactAttempts = new Map()
-
+const currentYear = new Date().getFullYear()
 function getContactRateLimitState(ip) {
   const now = Date.now()
   const attempts = (contactAttempts.get(ip) || []).filter(t => now - t < CONTACT_RATE_LIMIT_WINDOW_MS)
@@ -126,9 +126,9 @@ async function storefrontRoutes(fastify) {
     ])
 
     return reply.view('pages/home', {
-      title: 'Laiks Drukāt | Poligrāfijas un reklāmas pakalpojumi',
+      title: 'Laiks Drukāt | Poligrāfijas un reklāmas pakalpojumi ✅',
       description:
-        'Drukas, reklāmas un zīmogu pakalpojumi Jelgavā ar ātrāku Fastify bāzētu mājaslapu.',
+        `Druka Jelgavā – piedāvājam zīmogus, banerus, uzlīmes, auto aplīmēšanu, kā arī vizītkartes un gaismas kastes | 1000+ projekti ⭐ Kvalitāte ✓ Ātra izpilde 🚀 ${currentYear}`,
       products,
       categories,
       cart: fastify.getCart(request),
@@ -142,9 +142,9 @@ async function storefrontRoutes(fastify) {
     delete request.session.contactFormSent
 
     return reply.view('pages/kontakti', {
-      title: 'Kontakti | Laiks Drukāt',
+      title: 'Kontakti | Laiks Drukāt – Druka un reklāma »',
       description:
-        'Laiks Drukāt kontakti Jelgavā: adrese, tālruņi, e-pasts un Facebook saziņai.',
+        `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
       cart: fastify.getCart(request),
       success,
       csrf: await reply.generateCsrf(),
@@ -163,8 +163,8 @@ async function storefrontRoutes(fastify) {
     const rateLimit = getContactRateLimitState(request.ip)
     if (rateLimit.limited) {
       return reply.view('pages/kontakti', {
-        title: 'Kontakti | Laiks Drukāt',
-        description: 'Laiks Drukāt kontakti.',
+        title: `Kontakti | Laiks Drukāt – Druka un reklāma »`,
+        description: `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
         cart: fastify.getCart(request),
         error: 'Pārāk daudz ziņu. Lūdzu mēģiniet vēlreiz pēc 15 minūtēm.',
         formData: fields,
@@ -173,9 +173,9 @@ async function storefrontRoutes(fastify) {
     }
     if (!name || !email || !normalizedMessage) {
       return reply.view('pages/kontakti', {
-        title: 'Kontakti | Laiks Drukāt',
+        title: `Kontakti | Laiks Drukāt – Druka un reklāma »`,
         description:
-          'Laiks Drukāt kontakti Jelgavā: adrese, tālruņi, e-pasts un Facebook saziņai.',
+          `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
         cart: fastify.getCart(request),
         error: 'Lūdzu aizpildiet vārdu, e-pastu un ziņu.',
         formData: fields,
@@ -185,9 +185,9 @@ async function storefrontRoutes(fastify) {
 
     if (normalizedMessage.length > 180) {
       return reply.view('pages/kontakti', {
-        title: 'Kontakti | Laiks Drukāt',
+        title: `Kontakti | Laiks Drukāt – Druka un reklāma »`,
         description:
-          'Laiks Drukāt kontakti Jelgavā: adrese, tālruņi, e-pasts un Facebook saziņai.',
+          `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
         cart: fastify.getCart(request),
         error: 'Ziņa nedrīkst pārsniegt 180 rakstzīmes.',
         formData: fields,
@@ -251,7 +251,7 @@ async function storefrontRoutes(fastify) {
         })
 
         return reply.view('pages/services/zimogi', {
-          title: `Zīmogi | Laiks Drukāt`,
+          title: `Zīmogu izgatavošana Jelgavā⚡Ātra izgatavošana | Laiks Drukāt`,
           description: route.service.teaser,
           service: route.service,
           products,
@@ -268,7 +268,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormError
 
         return reply.view('pages/services/vides-reklama', {
-          title: 'Vides reklāma | Laiks Drukāt',
+          title: '✨Izkārtnes, gaismas kastes un reklāmas burti | Vides reklāma',
           description: route.service.teaser,
           service: route.service,
           cart: fastify.getCart(request),
@@ -286,7 +286,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormError
 
         return reply.view('pages/services/vizitkartes', {
-          title: 'Vizītkartes | Laiks Drukāt',
+          title: 'Vizītkartes – sietspiede, standarta druka | Laiks Drukāt ✅',
           description: route.service.teaser,
           service: route.service,
           cart: fastify.getCart(request),
@@ -304,7 +304,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormError
 
         return reply.view('pages/services/baneri/', {
-          title: 'Banneri | Laiks Drukāt',
+          title: 'Baneri Jelgavā – Roll-up & PVC banneri | Laiks Drukāt⭐',
           description: route.service.teaser,
           service: route.service,
           cart: fastify.getCart(request),
@@ -321,7 +321,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormError
 
         return reply.view('pages/services/auto-aplimesana', {
-          title: 'Auto aplīmēšana | Laiks Drukāt',
+          title: 'Auto aplīmēšana Jelgavā – 3M & Oracal vinils | Laiks Drukāt⭐',
           description: route.service.teaser,
           service: route.service,
           cart: fastify.getCart(request),
@@ -339,7 +339,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormError
 
         return reply.view('pages/services/uzlimes', {
-          title: 'Uzlīmes | Laiks Drukāt',
+          title: 'Uzlīmju druka – ruļļu, UV un lielformāta | Laiks Drukāt ✅',
           description: route.service.teaser,
           service: route.service,
           cart: fastify.getCart(request),
@@ -356,7 +356,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormError
 
         return reply.view('pages/services/druka', {
-          title: 'Druka | Laiks Drukāt',
+          title: 'Reklāmas, poligrāfijas pakalpojumi⚡Bukleti, brošūras, plakāti',
           description: route.service.teaser,
           service: route.service,
           cart: fastify.getCart(request),

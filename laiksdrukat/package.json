@@ -25,6 +25,7 @@
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "eta": "^3.5.0",
+    "fast-xml-parser": "^5.5.9",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
     "nodemailer": "^8.0.3",

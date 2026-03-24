@@ -78,7 +78,7 @@ export function getSiteContent() {
     emailHref: 'mailto:dp@ml.lv',
     facebook: {
       label: 'Facebook',
-      url: 'https://www.facebook.com/people/Laiks-Druk%C4%81t/61573451316011/',
+      url: 'https://www.facebook.com/laiksdrukat/',
     },
   },
   home: {

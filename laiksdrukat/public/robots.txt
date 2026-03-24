@@ -1,0 +1,15 @@
+User-agent: *
+
+# Allow everything important
+Allow: /
+
+# Block private/admin areas
+Disallow: /admin
+Disallow: /grozs
+Disallow: /pasutijums
+
+# (optional but good)
+Disallow: /api
+
+# Sitemap
+Sitemap: https://www.laiksdrukat.lv/sitemap.xml

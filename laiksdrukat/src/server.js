@@ -18,6 +18,7 @@ import authPlugin from './plugins/auth.js'
 import { siteContent, getSiteContent } from './content/site.js'
 
 import storefrontRoutes from './routes/storefront.js'
+import sitemapRoutes from './routes/sitemap.js'
 import shopRoutes from './routes/shop.js'
 import cartRoutes from './routes/cart.js'
 import checkoutRoutes from './routes/checkout.js'
@@ -42,6 +43,8 @@ await fastify.register(FastifyView, {
     site: siteContent,
   },
 })
+
+await fastify.register(sitemapRoutes)
 
 await fastify.register(FastifyHelmet, {
   contentSecurityPolicy: false // disable CSP for now — it can break your styles/scripts

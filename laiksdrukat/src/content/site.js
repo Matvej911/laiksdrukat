@@ -171,7 +171,8 @@ export function getSiteContent() {
       menuTitle: 'Vizītkartes',
       title: 'Vizītkartes',
       teaser: `Vizītkartes⚡Piedāvājam reljefa, sietspiedes un standarta druku |📍Jelgavā | Dažādi formāti, augsta kvalitāte, profesionāls dizains un ātra izgatavošana ✓ ${currentYear}`,
- 
+      heroImage: '/images/web-design/vizitkarte-laiksdrukatwebpb.webp', 
+      heroAlt: 'Vizītkartes',
     },
     {
       slug: 'baneri',
@@ -180,7 +181,8 @@ export function getSiteContent() {
       menuTitle: 'Banneri',
       title: 'Banneri',
       teaser: `Roll-up un PVC baneri ⚡ Iekštelpām un āra apstākļiem | Dažādi izmēri, Košas krāsas, izturīgs 440 g/m² materiāls, ātra izgatavošana ✓ Pasūtiet tagad! ${currentYear}`,
-      
+      heroImage: '/images/web-design/Banner-LAIKSDR-webp.webp', 
+      heroAlt: 'PVC reklāmas banneri',
     },
     {
       slug: 'auto-aplimesana',
@@ -189,7 +191,8 @@ export function getSiteContent() {
       menuTitle: 'Auto aplīmēšana',
       title: 'Auto aplīmēšana',
       teaser: `Auto aplīmēšana Jelgavā sākot no €50 ⚡3M & Oracal vinila plēves – spilgtas krāsas, izturība un ilgstošs rezultāts | Nelieli dizaini tiek uzklāti 1–3h ✓ ${currentYear}`,
-      
+      heroImage: '/images/web-design/Van_wepp.webp', 
+      heroAlt: 'Auto aplīmēšana',
     },
     {
       slug: 'uzlimes',
@@ -198,6 +201,8 @@ export function getSiteContent() {
       menuTitle: 'Uzlīmes',
       title: 'Uzlīmes',
       teaser: `Ruļļu, UV un lielformāta uzlīmes⚡Piemērotas iepakojumam un reklāmai | Krāsaino uzlīmju cena no 19 €/m² ✓ Dažādi izmēri un tirāžas | Sazinies un saņem cenu ${currentYear}`,
+      heroImage: '/images/web-design/uzlimes_laiks_webp.webp', 
+      heroAlt: 'Uzlīmes un etiķetes',
     },
     {
       slug: 'druka',
@@ -206,6 +211,8 @@ export function getSiteContent() {
       menuTitle: 'Bukleti, brošūras, flajeri',
       title: 'Bukleti, brošūras, flajeri un citi drukas materiāli',
       teaser: 'Drukas pakalpojumi Jelgavā – bukleti, brošūras, plakāti ar pilnu dizaina izstrādi un failu sagatavošana drukai | No idejas līdz gatavam rezultātam ✓',
+      heroImage: 'images/web-design/reklamas-materialu-druka_small.webp', 
+      heroAlt: 'Bukleti un drukas materiāli',
       
     },
   ],

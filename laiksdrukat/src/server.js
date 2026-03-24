@@ -88,9 +88,19 @@ await fastify.register(authPlugin)
 
 // Routes
 await fastify.register(storefrontRoutes)
-await fastify.register(shopRoutes, { prefix: '/veikals' })
-await fastify.register(cartRoutes, { prefix: '/grozs' })
-await fastify.register(checkoutRoutes, { prefix: '/checkout' })
+await fastify.register(shopRoutes, {
+  prefix: '/veikals/',
+  includeListing: true,
+  includeCategory: false,
+  includeProduct: true,
+})
+await fastify.register(shopRoutes, {
+  includeListing: false,
+  includeCategory: true,
+  includeProduct: false,
+})
+await fastify.register(cartRoutes, { prefix: '/grozs/' })
+await fastify.register(checkoutRoutes, { prefix: '/pasutijums/' })
 await fastify.register(adminRoutes, { prefix: '/admin' })
 
 fastify.setNotFoundHandler(async (request, reply) => {

@@ -218,7 +218,7 @@
         <% } %>
         <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="vk-form">
           <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-          <input type="hidden" name="returnTo" value="/vizitkartes">
+          <input type="hidden" name="returnTo" value="/vizitkartes/">
           <div class="vk-form-row">
             <div class="form-group">
               <label class="vk-label">Vārds <span class="required">*</span></label>

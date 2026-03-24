@@ -5289,6 +5289,177 @@ body:has(.cart-section) .header-waves {
 }
 
 /* EXTRAS */
+
+.vr-hero-lightbox {
+  position: relative;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* REAL LIGHTBOX */
+.vr-lightbox-card {
+  position: relative;
+  width: 320px;
+  height: 190px;
+  border-radius: 18px;
+
+  /* dark housing */
+  background: #0a0820;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.7),
+    inset 0 0 60px rgba(255,255,255,0.04);
+
+  animation: vr-float 5s ease-in-out infinite;
+}
+
+.vr-lightbox-diffuse {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center,
+    rgba(255,212,0,0.25),
+    rgba(255,212,0,0.1) 40%,
+    transparent 75%
+  );
+  filter: blur(6px);
+}
+
+.vr-lightbox-glass {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(255,255,255,0.08),
+    transparent 40%
+  );
+  backdrop-filter: blur(2px);
+}
+
+.vr-lightbox-reflection {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+
+  background: linear-gradient(
+    135deg,
+    transparent,
+    rgba(255,255,255,0.15)
+  );
+
+  border-top-left-radius: 20px;
+}
+
+.vr-lightbox-card::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+
+  background: radial-gradient(circle,
+    rgba(255,212,0,0.25),
+    transparent 70%
+  );
+
+  filter: blur(20px);
+  z-index: 0;
+}
+
+.vr-lightbox-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffd400;
+
+  text-shadow:
+    0 0 4px rgba(255,212,0,0.9),
+    0 0 8px rgba(255,212,0,0.8),
+    0 0 16px rgba(255,212,0,0.6),
+    0 0 32px rgba(255,212,0,0.4);
+
+  animation: vr-flicker 3s infinite;
+}
+
+@keyframes vr-flicker {
+  0%, 100% { opacity: 1; }
+  48% { opacity: 0.95; }
+  50% { opacity: 0.85; }
+  52% { opacity: 1; }
+}
+
+
+
+
+/* TEXT */
+.vr-lightbox-content {
+  position: relative;
+  text-align: center;
+  z-index: 2;
+}
+
+.vr-lightbox-title {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffd400;
+
+  text-shadow:
+    0 0 4px rgba(255,212,0,0.9),
+    0 0 10px rgba(255,212,0,0.8),
+    0 0 20px rgba(255,212,0,0.6),
+    0 0 40px rgba(255,212,0,0.4);
+
+  animation: vr-flicker 3s infinite;
+}
+
+.vr-lightbox-sub {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+}
+
+/* EDGE GLOW */
+.vr-lightbox-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+}
+.vr-float {
+  position: absolute;   /* 🔥 REQUIRED */
+  padding: 6px 12px;
+  background: #ffd400;
+  color: #1a1464;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  animation: vr-float 3s ease-in-out infinite;
+  z-index: 5;
+}
+
+.vr-float-1 { top: 10px; left: 20px; }
+.vr-float-2 { bottom: 20px; right: 20px; }
+.vr-float-3 { top: 50%; right: -10px; }
+
+
+/* FLOAT */
+@keyframes vr-float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* LED GLOW */
+
 .vr-extras {
   padding: 80px 0;
   background: #fff;
@@ -9251,11 +9422,76 @@ body:has(.cart-section) .header-waves {
 
 /* ── DRUKA PAGE ───────────────────────────────── */
 
+/* ── Privatuma politika PAGE ───────────────────────────────── */
+/* HERO */
+
+
+.pp-hero {
+  padding: 20px 0;
+  background: #5f4bd8;
+  color: #fff;
+  text-align: center;
+}
 
 
 
+.pp-hero h1 {
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
 
+.pp-hero p {
+  color: var(--gray-500);
+}
 
+/* CONTENT */
+.pp-content {
+  padding: 40px 0 80px;
+}
+
+.pp-section {
+  margin-bottom: 40px;
+  max-width: 800px;
+}
+
+.pp-section h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.pp-section p {
+  color: var(--gray-600);
+  line-height: 1.6;
+}
+
+.pp-section ul {
+  margin-top: 10px;
+  padding-left: 18px;
+}
+
+.pp-section li {
+  margin-bottom: 6px;
+  color: var(--gray-600);
+}
+
+/* HIGHLIGHT BOX */
+.pp-section.highlight {
+  background: rgba(95,75,216,0.08);
+  border-left: 4px solid var(--accent);
+  padding: 16px 20px;
+  border-radius: 10px;
+}
+
+/* CONTACT */
+.pp-section.contact {
+  margin-top: 60px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gray-200);
+}
+
+/* ── Privatuma politika PAGE ───────────────────────────────── */
 
 
 

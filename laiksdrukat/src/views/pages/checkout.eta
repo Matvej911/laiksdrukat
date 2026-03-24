@@ -9,7 +9,7 @@
     <div class="breadcrumb">
       <a href="/">Sākums</a>
       <span class="breadcrumb-sep">/</span>
-      <a href="/grozs">Grozs</a>
+      <a href="/grozs/">Grozs</a>
       <span class="breadcrumb-sep">/</span>
       <span>Pasūtījums</span>
     </div>
@@ -54,7 +54,7 @@
         </div>
       <% } %>
 
-      <form action="/checkout" method="POST" class="checkout-form-new">
+      <form action="/pasutijums/" method="POST" class="checkout-form-new">
         <input type="hidden" name="_csrf" value="<%= it.csrf %>">
 
         <!-- CONTACT -->
@@ -299,7 +299,7 @@
         </div>
       </div>
 
-      <a href="/grozs" class="co-back-link">
+      <a href="/grozs/" class="co-back-link">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         Atpakaļ uz grozu
       </a>

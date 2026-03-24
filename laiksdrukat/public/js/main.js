@@ -228,7 +228,8 @@ const portfolioTrack = document.querySelector('.portfolio-track');
 const portfolioSliderEl = portfolioTrack; // track IS the sliding element
 
 if (portfolioTrack) {
-  const gap = 11;
+  const style = window.getComputedStyle(portfolioTrack);
+  const gap = parseInt(style.gap || style.columnGap || 0);
 
   const portfolioOriginals = Array.from(portfolioTrack.children);
   portfolioOriginals.forEach(item => {
@@ -252,11 +253,34 @@ if (portfolioTrack) {
   }
 
   function portfolioSlide(direction) {
-    if (pTransitioning || !pStep) return;
-    pTransitioning = true;
+    if (pTransitioning) return;
 
-    pScroll += direction * pStep;
-    portfolioTrack.style.transition = 'transform 0.4s ease';
+    const items = portfolioTrack.children;
+
+    // find current visible index
+    let currentIndex = 0;
+    let accumulated = 0;
+
+    for (let i = 0; i < items.length; i++) {
+      const width = items[i].offsetWidth + gap;
+      if (accumulated + width > pScroll) {
+        currentIndex = i;
+        break;
+      }
+      accumulated += width;
+    }
+
+    // next item
+    const targetIndex = currentIndex + direction;
+
+    if (!items[targetIndex]) return;
+
+    const moveWidth = items[targetIndex].offsetWidth + gap;
+
+    pTransitioning = true;
+    pScroll += direction * moveWidth;
+
+    portfolioTrack.style.transition = 'transform 0.45s ease';
     portfolioTrack.style.transform = `translateX(${-pScroll}px)`;
   }
 

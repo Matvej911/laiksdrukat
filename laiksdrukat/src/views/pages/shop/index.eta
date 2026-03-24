@@ -22,13 +22,13 @@
 <section class="shop-categories-section">
   <div class="container">
     <div class="shop-categories">
-      <a href="/veikals" class="shop-cat-pill <%= !it.activeCategory ? 'active' : '' %>">
+      <a href="/veikals/" class="shop-cat-pill <%= !it.activeCategory ? 'active' : '' %>">
         Visas preces
         <span class="shop-cat-count"><%= it.products.length %></span>
       </a>
       <% for (const categoryInfo of it.site.shop.categories) { %>
         <% const dbCategory = it.categories.find((c) => c.slug === categoryInfo.slug) %>
-        <a href="/veikals/kategorija/<%= categoryInfo.slug %>" class="shop-cat-pill <%= it.activeCategory === categoryInfo.slug ? 'active' : '' %>">
+        <a href="/kategorija/<%= categoryInfo.slug %>/" class="shop-cat-pill <%= it.activeCategory === categoryInfo.slug ? 'active' : '' %>">
           <%= categoryInfo.title %>
           <span class="shop-cat-count"><%= dbCategory ? dbCategory._count.products : 0 %></span>
         </a>
@@ -42,7 +42,7 @@
   <div class="container">
 
     <!-- TOOLBAR -->
-    <form action="<%= it.activeCategory ? ('/veikals/kategorija/' + it.activeCategory) : '/veikals' %>" method="GET" class="shop-toolbar-new">
+    <form action="<%= it.activeCategory ? ('/kategorija/' + it.activeCategory + '/') : '/veikals/' %>" method="GET" class="shop-toolbar-new">
       <div class="shop-search-wrap">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="search" name="q" value="<%= it.q || '' %>" class="shop-search-input" placeholder="Meklēt produktu...">
@@ -55,7 +55,7 @@
         </select>
         <button type="submit" class="shop-search-btn">Meklēt</button>
         <% if (it.q) { %>
-          <a href="<%= it.activeCategory ? ('/veikals/kategorija/' + it.activeCategory) : '/veikals' %>" class="shop-clear-btn">Notīrīt</a>
+          <a href="<%= it.activeCategory ? ('/kategorija/' + it.activeCategory + '/') : '/veikals/' %>" class="shop-clear-btn">Notīrīt</a>
         <% } %>
       </div>
     </form>
@@ -76,7 +76,7 @@
         </div>
         <h2>Nekas netika atrasts</h2>
         <p>Mēģiniet citu meklēšanas vārdu vai sazinieties ar mums.</p>
-        <a href="/kontakti" class="btn btn-primary">Sazināties</a>
+        <a href="/kontakti/" class="btn btn-primary">Sazināties</a>
       </div>
 
     <% } else { %>
@@ -85,7 +85,7 @@
       <div class="shop-grid">
         <% for (const p of it.products) { %>
           <article class="shop-product-card">
-            <a href="/veikals/<%= p.slug %>" class="shop-product-link">
+            <a href="/veikals/<%= p.slug %>/" class="shop-product-link">
               <div class="shop-product-img">
                 <% if (p.image) { %>
                   <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy">

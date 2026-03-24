@@ -137,7 +137,7 @@ async function storefrontRoutes(fastify) {
   })
 
   // Contact page
-  fastify.get('/kontakti', async (request, reply) => {
+  fastify.get('/kontakti/', async (request, reply) => {
     const success = request.session.contactFormSent === true
     delete request.session.contactFormSent
 
@@ -151,7 +151,7 @@ async function storefrontRoutes(fastify) {
     })
   })
 
-  fastify.post('/kontakti', async (request, reply) => {
+  fastify.post('/kontakti/', async (request, reply) => {
     const { fields, uploadedFile, invalidCsrf } = await collectContactForm(request)
     if (invalidCsrf) {
       return reply.code(403).send('Invalid CSRF token')
@@ -230,7 +230,7 @@ async function storefrontRoutes(fastify) {
     }
     recordContactAttempt(request.ip)
     request.session.contactFormSent = true
-    return reply.redirect('/kontakti')
+    return reply.redirect('/kontakti/')
   })
 
   for (const route of serviceRouteEntries) {
@@ -240,7 +240,7 @@ async function storefrontRoutes(fastify) {
       }
 
       // ← special case for zimogi
-      if (route.service.path === '/zimogi') {
+      if (route.service.path === '/zimogs/') {
         const products = await fastify.db.product.findMany({
           where: {
             active: true,
@@ -261,7 +261,7 @@ async function storefrontRoutes(fastify) {
       }
 
       
-      if (route.service.path === '/vides-reklama') {
+      if (route.service.path === '/vides-reklama/') {
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
@@ -279,7 +279,7 @@ async function storefrontRoutes(fastify) {
         })
       }
 
-      if (route.service.path === '/vizitkartes') {
+      if (route.service.path === '/vizitkartes/') {
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
@@ -297,13 +297,13 @@ async function storefrontRoutes(fastify) {
         })
       }
 
-      if (route.service.path === '/baneri') {
+      if (route.service.path === '/baneri/') {
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
         delete request.session.contactFormError
 
-        return reply.view('pages/services/baneri', {
+        return reply.view('pages/services/baneri/', {
           title: 'Banneri | Laiks Drukāt',
           description: route.service.teaser,
           service: route.service,
@@ -314,7 +314,7 @@ async function storefrontRoutes(fastify) {
         })
       }
 
-      if (route.service.path === '/auto-aplimesana') {
+      if (route.service.path === '/auto-aplimesana/') {
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
@@ -332,7 +332,7 @@ async function storefrontRoutes(fastify) {
         })
       }
 
-      if (route.service.path === '/uzlimes') {
+      if (route.service.path === '/uzlimes/') {
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
@@ -349,7 +349,7 @@ async function storefrontRoutes(fastify) {
         })
       }
 
-      if (route.service.path === '/druka') {
+      if (route.service.path === '/druka/') {
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
@@ -376,6 +376,14 @@ async function storefrontRoutes(fastify) {
     })
   }
 
+  fastify.get('/privatuma-politika/', async (request, reply) => {
+    return reply.view('pages/privatuma-politika', {
+      title: 'Privātuma politika | Laiks Drukāt',
+      description: 'Privātuma politika un personas datu apstrāde.',
+      cart: fastify.getCart(request),
+    })
+  })
+
 // Generic service contact form — handles POST from any service page
   fastify.post('/pakalpojumi-kontakts', async (request, reply) => {
     const { fields, uploadedFile, invalidCsrf } = await collectContactForm(request)
@@ -385,7 +393,7 @@ async function storefrontRoutes(fastify) {
 
     const { name, email, phone, message, returnTo } = fields
     const normalizedMessage = String(message || '').trim()
-    const redirectPage = returnTo || '/kontakti'
+    const redirectPage = returnTo || '/kontakti/'
 
     // rate limit check
     const rateLimit = getContactRateLimitState(request.ip)

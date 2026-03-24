@@ -162,21 +162,21 @@ async function cartRoutes(fastify) {
       extraPrice,
       displayName,
     })
-    return reply.redirect('/grozs')
+    return reply.redirect('/grozs/')
   })
 
   // Update quantity
   fastify.post('/update', { preHandler: fastify.csrfProtection }, async (request, reply) => {
     const { lineId, quantity } = request.body
     fastify.updateCartQuantity(request, lineId, Number(quantity))
-    return reply.redirect('/grozs')
+    return reply.redirect('/grozs/')
   })
 
   // Remove item
   fastify.post('/remove', { preHandler: fastify.csrfProtection }, async (request, reply) => {
     const { lineId } = request.body
     fastify.removeFromCart(request, lineId)
-    return reply.redirect('/grozs')
+    return reply.redirect('/grozs/')
   })
 }
 

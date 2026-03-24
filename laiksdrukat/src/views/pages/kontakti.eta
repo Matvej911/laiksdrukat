@@ -103,7 +103,7 @@
         </div>
       <% } %>
 
-      <form action="/kontakti" method="POST" enctype="multipart/form-data" class="contact-form">
+      <form action="/kontakti/" method="POST" enctype="multipart/form-data" class="contact-form">
         <input type="hidden" name="_csrf" value="<%= it.csrf %>">
         <div class="contact-form-row">
           <div class="form-group">

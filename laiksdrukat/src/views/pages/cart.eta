@@ -18,7 +18,7 @@
         </div>
         <h2>Grozs ir tukšs</h2>
         <p>Pievienojiet preces no mūsu veikala un tās parādīsies šeit.</p>
-        <a href="/veikals" class="btn btn-primary">Doties uz veikalu</a>
+        <a href="/veikals/" class="btn btn-primary">Doties uz veikalu</a>
       </div>
 
     <% } else { %>
@@ -82,7 +82,7 @@
           <% } %>
 
           <div class="cart-continue">
-            <a href="/veikals" class="cart-back-link">
+            <a href="/veikals/" class="cart-back-link">
               <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
               Turpināt iepirkties
             </a>
@@ -114,7 +114,7 @@
               <span class="cart-total-price"><%= (it.total * 1.21).toFixed(2) %> €</span>
             </div>
 
-            <a href="/checkout" class="btn btn-primary btn-full cart-checkout-btn">
+            <a href="/pasutijums/" class="btn btn-primary btn-full cart-checkout-btn">
               Noformēt pasūtījumu
               <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
             </a>

@@ -26,16 +26,28 @@
           <div class="admin-product-info">
             <strong><%= item.name %></strong>
 
-            <!-- FILE -->
-            <% if (item.options && item.options['Faila saite']) { %>
-              <div class="admin-file">
-                <span>Pievienots fails</span>
-                <a href="<%= item.options['Faila saite'] %>" target="_blank">
-                  <%= item.options['Fails'] %>
-                </a>
-              </div>
-            <% } %>
-          </div>
+              <% if (item.options) { %>
+                <div style="margin-top:6px;font-size:13px;color:#6b6490;">
+
+                  <% for (const [key, value] of Object.entries(item.options)) { %>
+
+                    <% if (key === 'Faila saite') { %>
+                      <div>
+                        📎 
+                        <a href="<%= value %>" target="_blank" style="color:#5f4bd8;font-weight:600;">
+                          Atvērt failu
+                        </a>
+                      </div>
+
+                    <% } else if (key !== 'Fails') { %>
+                      <div><strong><%= key %>:</strong> <%= value %></div>
+                    <% } %>
+
+                  <% } %>
+
+                </div>
+              <% } %>
+            </div>
 
           <div class="admin-product-meta">
             <div><%= item.quantity %> ×</div>

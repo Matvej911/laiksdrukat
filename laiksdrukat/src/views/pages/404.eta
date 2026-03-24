@@ -26,13 +26,13 @@
       <p>Izskatās, ka mēs šo lapu neesam izspieduši. Iespējams, adrese ir ievadīta nepareizi vai arī lapa vairs nepastāv.</p>
       <div class="page-404-actions">
         <a href="/" class="btn-404-primary">Uz sākumlapu</a>
-        <a href="/veikals" class="btn-404-outline">Atvērt veikalu</a>
+        <a href="/veikals/" class="btn-404-outline">Atvērt veikalu</a>
       </div>
       <div class="page-404-links">
         <span>Vai meklējāt:</span>
-        <a href="/kontakti">Kontakti</a>
-        <a href="/veikals/kategorija/zimogi">Zīmogi</a>
-        <a href="/grozs">Grozs</a>
+        <a href="/kontakti/">Kontakti</a>
+        <a href="/kategorija/zimogi/">Zīmogi</a>
+        <a href="/grozs/">Grozs</a>
       </div>
     </div>
 

@@ -31,7 +31,7 @@ async function checkoutRoutes(fastify) {
   // Checkout form
   fastify.get('/', async (request, reply) => {
     const cart = await fastify.getValidatedCart(request)
-    if (cart.length === 0) return reply.redirect('/grozs')
+    if (cart.length === 0) return reply.redirect('/grozs/')
 
     return reply.view('pages/checkout', {
       title: 'Checkout | Laiks Drukāt',
@@ -44,7 +44,7 @@ async function checkoutRoutes(fastify) {
   // Place order
   fastify.post('/', { preHandler: fastify.csrfProtection }, async (request, reply) => {
     const cart = await fastify.getValidatedCart(request)
-    if (cart.length === 0) return reply.redirect('/grozs')
+    if (cart.length === 0) return reply.redirect('/grozs/')
 
     const {
       firstName,
@@ -112,13 +112,16 @@ async function checkoutRoutes(fastify) {
         items: {
           create: cart.map(item => ({
             productId: item.productId,
-            name: item.displayName || item.name,
+            name: item.name,
             price: item.price,
-            quantity: item.quantity,
+            quantity: item.quantity, 
+            options: item.options || {},
           })),
         },
       },
     })
+    console.log('ORDER ITEMS FROM DB:')
+    console.log(JSON.stringify(order.items, null, 2)) 
     recordCheckoutAttempt(request.ip)
 
     try {
@@ -145,14 +148,14 @@ async function checkoutRoutes(fastify) {
 
     fastify.clearCart(request)
 
-    return reply.redirect(`/checkout/paldies/${order.publicId}`)
+    return reply.redirect(`/pasutijums/paldies/${order.publicId}`)
   })
 
   // Legacy thank you redirect
-  fastify.get('/paldies', async (request, reply) => {
+  fastify.get('/paldies/', async (request, reply) => {
     const { order: orderId } = request.query
     if (!orderId) {
-      return reply.redirect('/veikals')
+      return reply.redirect('/veikals/')
     }
 
     const numericId = Number.parseInt(orderId, 10)
@@ -167,10 +170,10 @@ async function checkoutRoutes(fastify) {
     })
 
     if (!order) {
-      return reply.redirect('/veikals')
+      return reply.redirect('/veikals/')
     }
 
-    return reply.redirect(`/checkout/paldies/${order.publicId}`)
+    return reply.redirect(`/pasutijums/paldies/${order.publicId}`)
   })
 
   // Thank you page
@@ -181,7 +184,7 @@ async function checkoutRoutes(fastify) {
     })
 
     if (!order) {
-      return reply.redirect('/veikals')
+      return reply.redirect('/veikals/')
     }
 
     return reply.view('pages/thankyou', {

@@ -17,8 +17,8 @@
         <h1>${it.service.title}</h1>
         <p>${it.service.intro}</p>
         <div class="hero-actions">
-          <a href="/kontakti" class="btn btn-primary">Pieprasīt piedāvājumu</a>
-          <a href="/veikals" class="btn btn-outline">Skatīt e-veikalu</a>
+          <a href="/kontakti/" class="btn btn-primary">Pieprasīt piedāvājumu</a>
+          <a href="/veikals/" class="btn btn-outline">Skatīt e-veikalu</a>
         </div>
       </div>
 
@@ -112,7 +112,7 @@
     <div class="contact-points">
       <a href="${it.site.contact.phones[0].href}" class="contact-pill">${it.site.contact.phones[0].label}</a>
       <a href="${it.site.contact.emailHref}" class="contact-pill">${it.site.contact.email}</a>
-      <a href="/kontakti" class="btn btn-primary">Atvērt kontaktus</a>
+      <a href="/kontakti/" class="btn btn-primary">Atvērt kontaktus</a>
     </div>
   </div>
 </section>

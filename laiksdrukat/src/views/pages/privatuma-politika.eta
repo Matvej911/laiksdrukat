@@ -1,0 +1,133 @@
+<% layout('../partials/layout', { bodyClass: 'page-home' }) %>
+
+<section class="pp-hero">
+  <div class="container">
+    <h1>Privātuma politika</h1>
+    <p>Mēs rūpējamies par Jūsu datu drošību un caurspīdīgu apstrādi.</p>
+  </div>
+</section>
+
+<section class="pp-content">
+  <div class="container">
+
+    <!-- SECTION -->
+    <div class="pp-section">
+      <h2>1. Vispārīgā informācija</h2>
+      <p>
+        Šī privātuma politika apraksta, kā IU Creative Media (reģ. Nr. 41702000348),
+        Jelgava, Latvija apstrādā personas datus vietnē <strong>laiksdrukat.lv</strong>.
+      </p>
+    </div>
+
+    <!-- SECTION -->
+    <div class="pp-section">
+      <h2>2. Kādus datus mēs apstrādājam</h2>
+      <ul>
+        <li>Vārds, uzvārds</li>
+        <li>E-pasts un tālrunis</li>
+        <li>Adrese un piegādes informācija</li>
+        <li>Pasūtījuma dati</li>
+        <li>Augšupielādētie faili (piemēram, dizaini)</li>
+        <li>IP adrese un pārlūka dati</li>
+      </ul>
+    </div>
+
+    <!-- SECTION -->
+    <div class="pp-section">
+      <h2>3. Kā mēs iegūstam datus</h2>
+      <p>Dati tiek iegūti, kad:</p>
+      <ul>
+        <li>Jūs aizpildāt formu</li>
+        <li>Veicat pasūtījumu</li>
+        <li>Augšupielādējat failus</li>
+        <li>Apmeklējat mūsu mājaslapu</li>
+      </ul>
+    </div>
+
+    <!-- SECTION -->
+    <div class="pp-section highlight">
+      <h2>4. Failu augšupielāde</h2>
+      <p>
+        Augšupielādētie faili tiek izmantoti tikai pasūtījuma izpildei.
+        Tie netiek publiski izplatīti un netiek nodoti trešajām personām,
+        izņemot gadījumus, kas nepieciešami produkcijas izgatavošanai.
+      </p>
+    </div>
+
+    <!-- SECTION -->
+    <div class="pp-section">
+      <h2>5. Sīkdatnes (Cookies)</h2>
+      <p>
+        Mēs izmantojam sīkdatnes, lai nodrošinātu vietnes darbību,
+        analizētu lietotāju uzvedību un uzlabotu pieredzi.
+      </p>
+    </div>
+
+    <!-- SECTION -->
+    <div class="pp-section">
+      <h2>6. Trešo pušu rīki</h2>
+      <ul>
+        <li>Google Analytics</li>
+        <li>Google Ads</li>
+        <li>Microsoft Clarity</li>
+        <li>Google Tag Manager</li>
+      </ul>
+      <p>
+        Šie rīki var vākt anonīmus lietošanas datus, piemēram IP adresi,
+        ierīces informāciju un lietotāja darbības.
+      </p>
+    </div>
+
+    <!-- SECTION -->
+    <div class="pp-section">
+      <h2>7. Datu izmantošanas mērķi</h2>
+      <ul>
+        <li>Pasūtījumu apstrāde</li>
+        <li>Klientu apkalpošana</li>
+        <li>Komunikācija</li>
+        <li>Vietnes uzlabošana</li>
+        <li>Drošība</li>
+      </ul>
+    </div>
+
+    <!-- SECTION -->
+    <div class="pp-section">
+      <h2>8. Datu nodošana</h2>
+      <p>
+        Personas dati var tikt nodoti piegādes partneriem,
+        IT pakalpojumu sniedzējiem un analītikas platformām.
+      </p>
+    </div>
+
+    <!-- SECTION -->
+    <div class="pp-section">
+      <h2>9. Datu glabāšana</h2>
+      <p>
+        Dati tiek glabāti tikai tik ilgi, cik nepieciešams
+        pakalpojuma nodrošināšanai vai likuma prasību izpildei.
+      </p>
+    </div>
+
+    <!-- SECTION -->
+    <div class="pp-section">
+      <h2>10. Jūsu tiesības</h2>
+      <ul>
+        <li>Piekļūt saviem datiem</li>
+        <li>Labot datus</li>
+        <li>Dzēst datus</li>
+        <li>Ierobežot apstrādi</li>
+        <li>Iesniegt sūdzību Datu valsts inspekcijā</li>
+      </ul>
+    </div>
+
+    <!-- SECTION -->
+    <div class="pp-section contact">
+      <h2>11. Kontakti</h2>
+      <p>
+        Ja Jums ir jautājumi par datu apstrādi, sazinieties ar mums:
+      </p>
+      <p><strong>E-pasts:</strong> dp@ml.lv</p>
+    </div>
+
+  </div>
+</section>

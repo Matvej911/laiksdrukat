@@ -111,7 +111,7 @@ export function getSiteContent() {
   services: [
     {
       slug: 'zimogi',
-      path: '/zimogi',
+      path: '/zimogs/',
       aliases: ['/zimogs'],
       menuTitle: 'Zīmogi un spiedogi',
       title: 'Zīmogi un spiedogi',
@@ -155,7 +155,7 @@ export function getSiteContent() {
     },
     {
       slug: 'vides-reklama',
-      path: '/vides-reklama',
+      path: '/vides-reklama/',
       aliases: [],
       menuTitle: 'Vides reklāma',
       title: 'Vides reklāma',
@@ -199,7 +199,7 @@ export function getSiteContent() {
     },
     {
       slug: 'vizitkartes',
-      path: '/vizitkartes',
+      path: '/vizitkartes/',
       aliases: [],
       menuTitle: 'Vizītkartes',
       title: 'Vizītkartes',
@@ -242,7 +242,7 @@ export function getSiteContent() {
     },
     {
       slug: 'baneri',
-      path: '/baneri',
+      path: '/baneri/',
       aliases: [],
       menuTitle: 'Banneri',
       title: 'Banneri',
@@ -285,7 +285,7 @@ export function getSiteContent() {
     },
     {
       slug: 'auto-aplimesana',
-      path: '/auto-aplimesana',
+      path: '/auto-aplimesana/',
       aliases: [],
       menuTitle: 'Auto aplīmēšana',
       title: 'Auto aplīmēšana',
@@ -330,7 +330,7 @@ export function getSiteContent() {
     },
     {
       slug: 'uzlimes',
-      path: '/uzlimes',
+      path: '/uzlimes/',
       aliases: [],
       menuTitle: 'Uzlīmes',
       title: 'Uzlīmes',
@@ -374,7 +374,7 @@ export function getSiteContent() {
     },
     {
       slug: 'druka',
-      path: '/druka',
+      path: '/druka/',
       aliases: ['/poligrafija'],
       menuTitle: 'Bukleti, brošūras, flajeri',
       title: 'Bukleti, brošūras, flajeri un citi drukas materiāli',

@@ -284,7 +284,7 @@
         <% } %>
         <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="dr-form">
           <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-          <input type="hidden" name="returnTo" value="/druka">
+          <input type="hidden" name="returnTo" value="/druka/">
           <div class="dr-form-row">
             <div class="form-group">
               <label class="dr-label">Vārds <span class="required">*</span></label>

@@ -156,10 +156,17 @@ function getOrderSummaries({ order, cart }) {
   const lines = cart.map((item) => {
     const options = formatOrderOptions(item.options)
 
+    let fileLine = ''
+
+    if (item.options?.['Faila saite']) {
+      fileLine = `Fails: ${item.options['Faila saite']}`
+    }
+
     return [
       `${item.name} x ${item.quantity}`,
       `Cena bez PVN: ${(Number(item.price) * item.quantity * 1.21).toFixed(2)} EUR`,
       options,
+      fileLine,
     ]
       .filter(Boolean)
       .join('\n')
@@ -168,28 +175,39 @@ function getOrderSummaries({ order, cart }) {
   const htmlItems = cart
     .map((item) => {
       const options = Object.entries(item.options || {})
-        .filter(([key]) => key !== 'Faila saite')
-        .map(([key, value]) => `<div><strong>${key}:</strong> ${value}</div>`)
+        .map(([key, value]) => {
+
+          // ✅ FILE LINK (button)
+          if (key === 'Faila saite') {
+            return `
+              <div style="margin-top:8px;">
+                <a href="${value}" target="_blank"
+                  style="display:inline-block;padding:8px 14px;background:#5f4bd8;color:#fff;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;">
+                  📎 Atvērt failu
+                </a>
+              </div>
+            `
+          }
+
+          // ❌ skip duplicate filename
+          if (key === 'Fails') return ''
+
+          // ✅ normal options
+          return `<div><strong>${key}:</strong> ${value}</div>`
+        })
         .join('')
 
       return `
         <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e7e2db;">
-          <div><strong>${item.name}</strong> × ${item.quantity}</div>
-          <div>Cena bez PVN: ${(Number(item.price) * item.quantity * 1.21).toFixed(2)} EUR</div>
+          <div style="font-weight:700;font-size:14px;">${item.name} × ${item.quantity}</div>
+          <div style="color:#6b6490;font-size:13px;margin-bottom:6px;">
+            Cena: ${(Number(item.price) * item.quantity * 1.21).toFixed(2)} EUR
+          </div>
           ${options}
         </div>
       `
     })
     .join('')
-
-  return {
-    subtotal,
-    shipping,
-    totalVat,
-    totalWithVat,
-    lines,
-    htmlItems,
-  }
 }
 
 export async function sendOwnerOrderNotification({ order, cart }) {

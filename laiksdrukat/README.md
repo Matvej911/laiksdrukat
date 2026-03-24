@@ -6,14 +6,14 @@ Full rewrite of laiksdrukat.lv in Node.js using Fastify, Prisma ORM, MySQL, and 
 
 ## Tech Stack
 
-| Layer | Tool |
-|---|---|
-| Server | Fastify 4 |
-| Database | MySQL + Prisma ORM |
-| Templates | Eta (HTML templating) |
-| Sessions/Cart | @fastify/session |
-| Auth | bcrypt + session |
-| Static files | @fastify/static |
+| Layer         | Tool                  |
+| ------------- | --------------------- |
+| Server        | Fastify 4             |
+| Database      | MySQL + Prisma ORM    |
+| Templates     | Eta (HTML templating) |
+| Sessions/Cart | @fastify/session      |
+| Auth          | bcrypt + session      |
+| Static files  | @fastify/static       |
 
 ---
 
@@ -114,33 +114,34 @@ Site is live at: **http://localhost:3000**
 Admin panel at: **http://localhost:3000/admin**
 
 Default admin login:
+
 - Username: `admin`
-- Password: `admin123`  ← **change this immediately!**
+- Password: `admin123` ← **change this immediately!**
 
 ---
 
 ## Pages
 
-| URL | Page |
-|---|---|
-| `/` | Homepage |
-| `/veikals` | Shop listing |
-| `/veikals/:slug` | Product detail |
-| `/veikals/kategorija/:slug` | Category filter |
-| `/grozs` | Cart |
-| `/checkout` | Checkout |
-| `/checkout/paldies` | Order confirmation |
-| `/kontakti` | Contact |
-| `/zimogs` | Stamps service |
-| `/baneri` | Banners service |
-| `/auto-aplimesana` | Car wrap service |
-| `/vizitkartes` | Business cards service |
-| `/uzlimes` | Stickers service |
-| `/vides-reklama` | Outdoor ads service |
-| `/druka` | Print service |
-| `/admin` | Admin dashboard |
-| `/admin/products` | Manage products |
-| `/admin/orders` | Manage orders |
+| URL                    | Page                   |
+| ---------------------- | ---------------------- |
+| `/`                    | Homepage               |
+| `/veikals/`            | Shop listing           |
+| `/veikals/:slug/`      | Product detail         |
+| `/kategorija/:slug/`   | Category filter        |
+| `/grozs/`              | Cart                   |
+| `/pasutijums/`         | Checkout               |
+| `/pasutijums/paldies/` | Order confirmation     |
+| `/kontakti/`           | Contact                |
+| `/zimogs/`             | Stamps service         |
+| `/baneri/`             | Banners service        |
+| `/auto-aplimesana/`    | Car wrap service       |
+| `/vizitkartes/`        | Business cards service |
+| `/uzlimes/`            | Stickers service       |
+| `/vides-reklama/`      | Outdoor ads service    |
+| `/druka/`              | Print service          |
+| `/admin`               | Admin dashboard        |
+| `/admin/products`      | Manage products        |
+| `/admin/orders`        | Manage orders          |
 
 ---
 

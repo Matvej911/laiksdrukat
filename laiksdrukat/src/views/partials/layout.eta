@@ -44,12 +44,12 @@
             <% } %>
           </div>
         </div>
-        <a href="/veikals" class="nav-link">Veikals</a>
-        <a href="/kontakti" class="nav-link">Kontakti</a>
+        <a href="/veikals/" class="nav-link">Veikals</a>
+        <a href="/kontakti/" class="nav-link">Kontakti</a>
        
       </div>
 
-      <a href="/grozs" class="nav-cart" aria-label="Skatīt grozu">
+      <a href="/grozs/" class="nav-cart" aria-label="Skatīt grozu">
         <span>Grozs</span>
         <% const cartCount = (it.cart || []).reduce((sum, item) => sum + item.quantity, 0) %>
         <% if (cartCount > 0) { %>
@@ -99,10 +99,10 @@
       <div>
         <h4>E-veikals</h4>
         <ul class="footer-links">
-          <li><a href="/veikals">Visas preces</a></li>
-          <li><a href="/veikals/kategorija/zimogi">Zīmogi</a></li>
-          <li><a href="/veikals/kategorija/zimogu-tintes">Zīmogu tintes</a></li>
-          <li><a href="/grozs">Grozs</a></li>
+          <li><a href="/veikals/">Visas preces</a></li>
+          <li><a href="/kategorija/zimogi/">Zīmogi</a></li>
+          <li><a href="/kategorija/zimogu-tintes">Zīmogu tintes</a></li>
+          <li><a href="/grozs/">Grozs</a></li>
         </ul>
       </div>
 

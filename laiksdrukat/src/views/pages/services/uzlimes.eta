@@ -275,7 +275,7 @@
         <% } %>
         <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="uz-form">
           <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-          <input type="hidden" name="returnTo" value="/uzlimes">
+          <input type="hidden" name="returnTo" value="/uzlimes/">
           <div class="uz-form-row">
             <div class="form-group">
               <label class="uz-label">Vārds <span class="required">*</span></label>

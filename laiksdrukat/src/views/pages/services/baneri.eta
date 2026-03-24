@@ -254,7 +254,7 @@
         <% } %>
         <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="bn-form">
           <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-          <input type="hidden" name="returnTo" value="/baneri">
+          <input type="hidden" name="returnTo" value="/baneri/">
           <div class="bn-form-row">
             <div class="form-group">
               <label class="bn-label">Vārds <span class="required">*</span></label>

@@ -3,7 +3,7 @@ import { extname, join } from 'path'
 import { fileURLToPath } from 'url'
 
 const contactAddress = 'Asteru iela 16A, Jelgava, LV-3001'
-
+const currentYear = new Date().getFullYear()
 const portfolioImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.svg'])
 
 function prettifyPortfolioName(filename) {
@@ -58,7 +58,7 @@ export function getSiteContent() {
   meta: {
     title: 'Laiks Drukāt',
     description:
-      'Drukas, reklāmas un zīmogu pakalpojumi Jelgavā. Zīmogi, banneri, auto aplīmēšana, uzlīmes, vizītkartes un citi drukas darbi.',
+      `Druka Jelgavā – piedāvājam zīmogus, banerus, uzlīmes, auto aplīmēšanu, kā arī vizītkartes un gaismas kastes | 1000+ projekti ⭐ Kvalitāte ✓ Ātra izpilde 🚀 ${currentYear}`,
   },
   company: {
     name: 'Laiks Drukāt',
@@ -115,7 +115,7 @@ export function getSiteContent() {
       aliases: ['/zimogs'],
       menuTitle: 'Zīmogi un spiedogi',
       title: 'Zīmogi un spiedogi',
-      teaser: 'COLOP automātiskie zīmogi, datuma zīmogi un populārākās tintes vienuviet.',
+      teaser: `Izgatavojam individuālus zīmogus uzņēmumiem un privātpersonām ⏱ Ātra izpilde un pielāgojami dizaini ✓ Pasūtiet online vai klātienē – ērti un ātri. ${currentYear}`,
       intro:
         'Izgatavojam zīmogus uzņēmumiem, birojiem un ikdienas dokumentu apritei. Piedāvājam populārākos COLOP modeļus, maketa sagatavošanu un iespēju pasūtīt arī tintes.',
       heroImage: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/col9p-300x300.png',
@@ -159,43 +159,8 @@ export function getSiteContent() {
       aliases: [],
       menuTitle: 'Vides reklāma',
       title: 'Vides reklāma',
-      teaser: 'Plāksnes, gaismas kastes, norādes un fasādes vizuālie risinājumi.',
-      intro:
-        'Veidojam noturīgus vides reklāmas risinājumus uzņēmumu fasādēm, telpām un apkārtējai videi. No vienkāršām plāksnēm līdz gaismas kastēm un norāžu sistēmām.',
-      heroImage: '/images/web-design/gaismas-kaste.webp',
-      heroAlt: 'Gaismas kaste un vides reklāma',
-      highlights: [
-        { value: 'Fasādes', label: 'plāksnes un uzraksti' },
-        { value: 'Norādes', label: 'iekšdarbiem un ārā' },
-        { value: 'Gaismas kastes', label: 'redzamībai dienā un vakarā' },
-      ],
-      offerings: [
-        {
-          title: 'Fasādes plāksnes',
-          text: 'Kompozītmateriāla, PVC vai citu materiālu plāksnes ar uzņēmuma nosaukumu un darba laiku.',
-        },
-        {
-          title: 'Gaismas kastes',
-          text: 'Risinājumi veikalu skatlogiem un fasādēm, lai uzņēmums būtu labi pamanāms arī tumšajā laikā.',
-        },
-        {
-          title: 'Norāžu sistēmas',
-          text: 'Kabinetu, stāvu, teritoriju un apkalpošanas punktu marķējumi skaidrai orientācijai.',
-        },
-      ],
-      details: [
-        'Palīdzam piemeklēt materiālu atbilstoši novietojumam un ekspluatācijas apstākļiem.',
-        'Pieskaņojam dizainu esošajai zīmolvedībai un telpas arhitektūrai.',
-        'Atsevišķos projektos iespējams apvienot plāksnes, uzlīmes un drukas materiālus vienotā sistēmā.',
-      ],
-      pricing: [
-        { title: 'Projekta cena', text: 'Cena ir atkarīga no izmēra, materiāla, stiprinājuma un montāžas sarežģītības.' },
-      ],
-      gallery: [
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/483989033_122109836724781710_5683284030057054303_n.jpg',
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/IMG_1668-scaled.jpg',
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/1756443787080-scaled.jpg',
-      ],
+      teaser: `⭐ Pamanāma vides reklāma jūsu uzņēmumam ${currentYear} – gaismas kastes, reklāmas burti un izkārtnes. Dizains, izgatavošana un montāža vienuviet. Sazinies ar mums!☎️`,
+    
     },
     {
       slug: 'vizitkartes',
@@ -203,42 +168,8 @@ export function getSiteContent() {
       aliases: [],
       menuTitle: 'Vizītkartes',
       title: 'Vizītkartes',
-      teaser: 'Standarta, laminētas un izteiksmīgas vizītkartes ar piemērotu apdari.',
-      intro:
-        'Izgatavojam vizītkartes dažādām vajadzībām, sākot no vienkāršām ikdienas kartēm līdz premium variantiem ar lamināciju vai īpašu papīru.',
-      heroImage: '/images/web-design/vizitkarte-laiksdrukatwebpb.webp',
-      heroAlt: 'Vizītkartes',
-      highlights: [
-        { value: '1 vai 2 puses', label: 'drukas iespējas' },
-        { value: 'Matēts / glancēts / soft-touch', label: 'laminācijas varianti' },
-        { value: 'Standarta un premium', label: 'papīra izvēles' },
-      ],
-      offerings: [
-        {
-          title: 'Standarta vizītkartes',
-          text: 'Klasiski izmēri un skaidra informācijas struktūra ikdienas lietošanai.',
-        },
-        {
-          title: 'Premium materiāli',
-          text: 'Teksturēts papīrs, krāsaināks iespaids un niansēta apdare reprezentablākam rezultātam.',
-        },
-        {
-          title: 'Pēcapstrāde',
-          text: 'Pieejamas laminācijas un citi apdares risinājumi, lai karte kalpotu ilgāk un izskatītos pārliecinošāk.',
-        },
-      ],
-      details: [
-        'Vizītkartes varam sagatavot vienpusējas vai abpusējas.',
-        'Palīdzam salikt informāciju tā, lai karte būtu viegli nolasāma un profesionāla.',
-        'Ja vajag, vienlaikus varam pieskaņot arī uzlīmes, plāksnes un citus drukas materiālus.',
-      ],
-      pricing: [
-        { title: 'Cena pēc tirāžas', text: 'Vizītkaršu cenu nosaka tirāža, papīrs, apdare un maketa sarežģītība.' },
-      ],
-      gallery: [
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/skrejjjj.png',
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/uiig_pages-to-jpg-0001-scaled.jpg',
-      ],
+      teaser: `Vizītkartes⚡Piedāvājam reljefa, sietspiedes un standarta druku |📍Jelgavā | Dažādi formāti, augsta kvalitāte, profesionāls dizains un ātra izgatavošana ✓ ${currentYear}`,
+ 
     },
     {
       slug: 'baneri',
@@ -246,42 +177,8 @@ export function getSiteContent() {
       aliases: [],
       menuTitle: 'Banneri',
       title: 'Banneri',
-      teaser: 'PVC banneri, reklāmas audumi un gatavie risinājumi āra un iekštelpu reklāmai.',
-      intro:
-        'Drukājam bannerus uzņēmumu fasādēm, akcijām, pasākumiem un informācijas izvietošanai. Piedāvājam piemērotu materiālu, apmales un stiprinājumu risinājumus.',
-      heroImage: '/images/web-design/Banner-LAIKSDR-webp.webp',
-      heroAlt: 'PVC reklāmas banneri',
-      highlights: [
-        { value: 'PVC un citi materiāli', label: 'pielāgoti izmēram un vietai' },
-        { value: 'Iekštelpām un ārā', label: 'īslaicīgiem un ilgtermiņa darbiem' },
-        { value: 'Apdare un stiprinājumi', label: 'gatavs uzstādīšanai' },
-      ],
-      offerings: [
-        {
-          title: 'Akciju un veikalu banneri',
-          text: 'Skatlogiem, tirdzniecības vietām un sezonas piedāvājumiem.',
-        },
-        {
-          title: 'Pasākumu banneri',
-          text: 'Risinājumi izstādēm, sporta pasākumiem, koncertiem un prezentācijām.',
-        },
-        {
-          title: 'Lielformāta reklāma',
-          text: 'Banneri lielām sienām, fasādēm un nožogojumiem ar skaidri salasāmu ziņu.',
-        },
-      ],
-      details: [
-        'Izvēlamies piemērotu materiālu atkarībā no lietošanas vietas un apgaismojuma.',
-        'Palīdzam sagatavot maketu arī tad, ja ir tikai logo, teksts un aptuvena ideja.',
-        'Varam pieskaņot bannerus citām kampaņas vienībām, piemēram, uzlīmēm vai plāksnēm.',
-      ],
-      pricing: [
-        { title: 'Cena pēc izmēra', text: 'Banneru cenu galvenokārt nosaka izmērs, materiāls, apdare un nepieciešamā montāža.' },
-      ],
-      gallery: [
-        'https://www.laiksdrukat.lv/wp-content/uploads/slider/cache/a5c6479da819cb4d73ad077bca5799d5/averbaneri-scaled.jpg',
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/1756443787080-scaled.jpg',
-      ],
+      teaser: `Roll-up un PVC baneri ⚡ Iekštelpām un āra apstākļiem | Dažādi izmēri, Košas krāsas, izturīgs 440 g/m² materiāls, ātra izgatavošana ✓ Pasūtiet tagad! ${currentYear}`,
+      
     },
     {
       slug: 'auto-aplimesana',
@@ -289,44 +186,8 @@ export function getSiteContent() {
       aliases: [],
       menuTitle: 'Auto aplīmēšana',
       title: 'Auto aplīmēšana',
-      teaser: 'No vienkāršiem uzrakstiem līdz pilnai transporta reklāmas aplīmēšanai.',
-      intro:
-        'Piedāvājam auto aplīmēšanu ar reklāmas plēvēm, kas palīdz uzņēmumam būt pamanāmam ikdienā. Veidojam gan nelielus elementus, gan pilnus vizuālos risinājumus transportam.',
-      heroImage: '/images/web-design/Van_wepp.webp',
-      heroAlt: 'Auto aplīmēšana',
-      highlights: [
-        { value: '3M / Oracal', label: 'plēves materiāli' },
-        { value: 'No pāris stundām', label: 'vienkāršiem darbiem' },
-        { value: '50 EUR+', label: 'maziem uzrakstiem un elementiem' },
-      ],
-      offerings: [
-        {
-          title: 'Daļēja aplīmēšana',
-          text: 'Logo, kontaktinformācija, sānu uzraksti, logu elementi un citi mērķēti reklāmas punkti.',
-        },
-        {
-          title: 'Pilna aplīmēšana',
-          text: 'Plašāka vizuālā identitāte visam auto vai lielai tā daļai, lai reklāma būtu pamanāma no katra skatpunkta.',
-        },
-        {
-          title: 'Speciāli risinājumi',
-          text: 'Katram transportlīdzeklim pielāgots dizains un plēvju izvēle atkarībā no virsmas un lietojuma.',
-        },
-      ],
-      details: [
-        'Izmantojam kvalitatīvas 3M un Oracal plēves.',
-        'Vienkāršākus darbus iespējams izpildīt aptuveni 3-4 stundās.',
-        'Rūpīgi piemeklējam risinājumu, lai auto reklāma izskatītos precīza un profesionāla.',
-      ],
-      pricing: [
-        { title: 'Atsevišķi elementi', text: 'Mazāki uzraksti un atsevišķi elementi parasti sākas aptuveni no 50 EUR.' },
-        { title: 'Vieglie auto', text: 'Pilna vai plaša vieglā auto aplīmēšana bieži iekrīt aptuveni 300-650 EUR robežās.' },
-        { title: 'Kravas transports', text: 'Lielākiem transportlīdzekļiem budžets var sasniegt aptuveni 1000-2000 EUR atkarībā no apjoma.' },
-      ],
-      gallery: [
-        'https://www.laiksdrukat.lv/wp-content/uploads/2024/07/IMG_20240706_182833-scaled.jpg',
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/1745849318844-scaled.jpg',
-      ],
+      teaser: `Auto aplīmēšana Jelgavā sākot no €50 ⚡3M & Oracal vinila plēves – spilgtas krāsas, izturība un ilgstošs rezultāts | Nelieli dizaini tiek uzklāti 1–3h ✓ ${currentYear}`,
+      
     },
     {
       slug: 'uzlimes',
@@ -334,43 +195,7 @@ export function getSiteContent() {
       aliases: [],
       menuTitle: 'Uzlīmes',
       title: 'Uzlīmes',
-      teaser: 'Etiķetes, termouzlīmes, krāsainas un lielformāta uzlīmes dažādiem pielietojumiem.',
-      intro:
-        'Ražojam uzlīmes produktiem, iepakojumam, vitrīnām un reklāmai. Pieejamas gan vienkāršas termouzlīmes, gan izturīgākas materiālu etiķetes un lielformāta uzlīmes.',
-      heroImage: '/images/web-design/uzlimes_laiks_webp.webp',
-      heroAlt: 'Uzlīmes un etiķetes',
-      highlights: [
-        { value: '5-15 EUR', label: 'dizaina izstrāde vienkāršām etiķetēm' },
-        { value: '19-20 EUR/m²', label: 'krāsainas uzlīmes no plēves' },
-        { value: '28 EUR/m²', label: 'lielformāta UV druka' },
-      ],
-      offerings: [
-        {
-          title: 'Termouzlīmes ruļļos',
-          text: 'Pašlīmējošas termouzlīmes svaru, sastāvu, svītrkodu vai citu produktu datu norādei.',
-        },
-        {
-          title: 'Krāsainas uzlīmes',
-          text: 'Zīmola, logo un informatīvās uzlīmes no plēves vai citiem materiāliem.',
-        },
-        {
-          title: 'Lielformāta uzlīmes',
-          text: 'Vitrīnām, sienām, transportam un citiem reklāmas nesējiem ar izteiktu vizuālo efektu.',
-        },
-      ],
-      details: [
-        'Pieejami materiāli ar semigloss virsmu, ar roku aizpildāmiem laukumiem un izturīgāki wax-resin varianti.',
-        'Termouzlīmju lietošanas temperatūras diapazons atkarībā no materiāla var sasniegt aptuveni no -20 līdz +50 grādiem.',
-        'Vienkāršas uzlīmju dizaina izstrādes izmaksas parasti ir aptuveni 5-15 EUR.',
-      ],
-      pricing: [
-        { title: 'Krāsainas uzlīmes', text: 'Parastās krāsainās uzlīmes no plēves orientējoši sākas ap 19-20 EUR/m².' },
-        { title: 'UV lielformāts', text: 'Lielformāta uzlīmes ar UV druku orientējoši sākas ap 28 EUR/m².' },
-      ],
-      gallery: [
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/Uzlmes-jebkdam-mrim.png',
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/uzlimesa-png.webp',
-      ],
+      teaser: `Ruļļu, UV un lielformāta uzlīmes⚡Piemērotas iepakojumam un reklāmai | Krāsaino uzlīmju cena no 19 €/m² ✓ Dažādi izmēri un tirāžas | Sazinies un saņem cenu ${currentYear}`,
     },
     {
       slug: 'druka',
@@ -378,42 +203,8 @@ export function getSiteContent() {
       aliases: ['/poligrafija'],
       menuTitle: 'Bukleti, brošūras, flajeri',
       title: 'Bukleti, brošūras, flajeri un citi drukas materiāli',
-      teaser: 'No vienkāršiem flajeriem līdz biezākām brošūrām un plakātiem.',
-      intro:
-        'Piedāvājam dažādu drukas materiālu sagatavošanu un izgatavošanu reklāmai, prezentācijām un uzņēmuma ikdienas vajadzībām.',
-      heroImage: 'images/web-design/reklamas-materialu-druka_small.webp',
-      heroAlt: 'Bukleti un drukas materiāli',
-      highlights: [
-        { value: 'Bukleti', label: 'salokāmi un vienlapas risinājumi' },
-        { value: 'Brošūras', label: 'vairāku lapu materiāliem' },
-        { value: '18-30 EUR/h', label: 'dizaina un maketa darbiem' },
-      ],
-      offerings: [
-        {
-          title: 'Flajeri un bukleti',
-          text: 'Akcijām, informācijai, izdalāmiem materiāliem un regulārām kampaņām.',
-        },
-        {
-          title: 'Brošūras un katalogi',
-          text: 'Plašākai informācijai par uzņēmumu, pakalpojumiem, cenām un piedāvājumiem.',
-        },
-        {
-          title: 'Plakāti un citi materiāli',
-          text: 'Risinājumi redzamākai komunikācijai tirdzniecības vietās, birojos un pasākumos.',
-        },
-      ],
-      details: [
-        'Palīdzam piemeklēt formātu, papīru un tirāžu atbilstoši lietojumam.',
-        'Drukas materiālus varam apvienot vienā vizuālajā līnijā ar vizītkartēm, uzlīmēm un banneriem.',
-        'Maketa sagatavošanas darbi orientējoši tiek rēķināti aptuveni 18-30 EUR stundā atkarībā no sarežģītības.',
-      ],
-      pricing: [
-        { title: 'Cena pēc tirāžas un specifikācijas', text: 'Materiālu cenu nosaka formāts, papīrs, lapu skaits, krāsu skaits un pēcapstrāde.' },
-      ],
-      gallery: [
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/uiig_pages-to-jpg-0001-scaled.jpg',
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/skrejjjj.png',
-      ],
+      teaser: 'Drukas pakalpojumi Jelgavā – bukleti, brošūras, plakāti ar pilnu dizaina izstrādi un failu sagatavošana drukai | No idejas līdz gatavam rezultātam ✓',
+      
     },
   ],
    

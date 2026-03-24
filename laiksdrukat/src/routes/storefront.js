@@ -366,6 +366,8 @@ async function storefrontRoutes(fastify) {
         })
       }
 
+      
+
       // all other services use service-page
       return reply.view('partials/service-page', {
         title: `${route.service.title} | Laiks Drukāt`,

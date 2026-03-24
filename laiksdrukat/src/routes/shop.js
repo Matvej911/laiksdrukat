@@ -55,9 +55,9 @@ async function shopRoutes(fastify, opts = {}) {
       ])
 
       return reply.view('pages/shop/index', {
-        title: 'Veikals | Laiks Drukāt',
+        title: 'Zīmogi un zīmogu tintes | Laiks Drukāt veikals ✅',
         description:
-          'Laiks Drukāt e-veikals ar COLOP zīmogiem un zīmogu tintēm.',
+          'Zīmogi un zīmogu tintes COLOP ⚡ Izvēlies tieši savu zīmogu vai tinti | Dažādi veidi, augsta kvalitāte un ātra izgatavošana ✓ Pasūti tagad!',
         products,
         categories,
         activeCategory: filters.kategorija,
@@ -101,7 +101,7 @@ async function shopRoutes(fastify, opts = {}) {
       ])
 
       return reply.view('pages/shop/index', {
-        title: `${category.name} | Laiks Drukāt`,
+        title: `${category.name} | Laiks Drukāt ✅`,
         description: `${category.name} kategorija Laiks Drukāt e-veikalā.`,
         products,
         categories,

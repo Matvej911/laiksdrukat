@@ -136,7 +136,11 @@ const track  = document.querySelector('.products-slider-track');
 
 if (slider && track) {
   const gap          = 30;
-  const visibleCount = 3;
+  const getVisibleCount = () => {
+    if (window.innerWidth <= 640) return 1;
+    if (window.innerWidth <= 1024) return 2;
+    return 3;
+  };
 
   // clone cards for infinite loop
   const originalCards = Array.from(slider.children);
@@ -153,6 +157,7 @@ if (slider && track) {
 
   // calculate from track, not slider
   function setCardWidths() {
+    const visibleCount = getVisibleCount();
     const cardWidth = (track.offsetWidth - gap * (visibleCount - 1)) / visibleCount;
     Array.from(slider.children).forEach(card => {
       card.style.flex = `0 0 ${cardWidth}px`;

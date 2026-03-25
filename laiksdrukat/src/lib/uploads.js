@@ -135,8 +135,25 @@ export function resolveUploadPath(relativePath) {
   return join(getUploadsRootDir(), ...parts)
 }
 
-export async function sendStoredFile(reply, filepath, filename) {
+export async function sendStoredFile(reply, filepath, filename, options = {}) {
+  const { forceDownload = false } = options
   const buffer = await readFile(filepath)
-  reply.type(contentTypeFromFilename(filename))
+  let mimeType = contentTypeFromFilename(filename)
+
+  // For private downloads we must avoid inline rendering of potentially dangerous SVG content.
+  // Forcing a download + disabling sniffing reduces the risk dramatically.
+  if (forceDownload && extname(String(filename || '')).toLowerCase() === '.svg') {
+    mimeType = 'application/octet-stream'
+  }
+
+  reply.type(mimeType)
+
+  if (forceDownload) {
+    const safe = sanitizeFilename(filename)
+    reply.header('Content-Disposition', `attachment; filename="${safe}"`)
+    reply.header('X-Content-Type-Options', 'nosniff')
+    reply.header('Cache-Control', 'no-store')
+  }
+
   return reply.send(buffer)
 }

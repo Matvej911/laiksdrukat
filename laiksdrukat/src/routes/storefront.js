@@ -126,7 +126,7 @@ async function storefrontRoutes(fastify) {
     const filepath = resolveUploadPath(upload.relativePath)
 
     try {
-      return await sendStoredFile(reply, filepath, upload.originalName)
+      return await sendStoredFile(reply, filepath, upload.originalName, { forceDownload: true })
     } catch (error) {
       if (error.code === 'ENOENT') {
         return reply.code(404).send('File not found')

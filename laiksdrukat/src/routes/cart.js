@@ -77,7 +77,7 @@ async function cartRoutes(fastify) {
     const filepath = join(resolveUploadPath('stamp-files'), filename)
 
     try {
-      return await sendStoredFile(reply, filepath, filename)
+      return await sendStoredFile(reply, filepath, filename, { forceDownload: true })
     } catch (error) {
       if (error.code === 'ENOENT') {
         return reply.code(404).send('File not found')

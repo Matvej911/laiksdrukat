@@ -133,15 +133,41 @@ async function shopRoutes(fastify, opts = {}) {
       }
       const isStampProduct = product.category.slug === 'zimogi'
 
-      // Related products from same category
-      const related = await fastify.db.product.findMany({
-        where: {
-          active: true,
-          categoryId: product.categoryId,
-          NOT: { id: product.id },
-        },
-        take: 4,
-      })
+      // Recently viewed products (session-scoped)
+      const MAX_VIEWED = 8
+      const MAX_RECENT_RENDER = 6
+
+      const sessionViewed = Array.isArray(request.session.viewedProductIds)
+        ? request.session.viewedProductIds
+        : []
+
+      const currentId = Number(product.id)
+      const deduped = sessionViewed
+        .map((id) => Number(id))
+        .filter((id) => Number.isFinite(id) && id !== currentId)
+
+      deduped.unshift(currentId)
+      request.session.viewedProductIds = deduped.slice(0, MAX_VIEWED)
+
+      const recentlyViewedIds = request.session.viewedProductIds
+        .map((id) => Number(id))
+        .filter((id) => Number.isFinite(id) && id !== currentId)
+        .slice(0, MAX_RECENT_RENDER)
+
+      let recentlyViewed = []
+      if (recentlyViewedIds.length > 0) {
+        recentlyViewed = await fastify.db.product.findMany({
+          where: {
+            active: true,
+            id: { in: recentlyViewedIds },
+          },
+          include: { category: true },
+        })
+
+        // Prisma may not preserve the `in: [ids...]` order; reorder manually.
+        const orderIndex = new Map(recentlyViewedIds.map((id, i) => [id, i]))
+        recentlyViewed.sort((a, b) => (orderIndex.get(a.id) ?? 0) - (orderIndex.get(b.id) ?? 0))
+      }
 
       if (product.description) {
         product.description = sanitizeHtml(
@@ -167,7 +193,7 @@ async function shopRoutes(fastify, opts = {}) {
           product.description ||
           `${product.name} kategorijā ${product.category.name} Laiks Drukāt e-veikalā.`,
         product,
-        related,
+        recentlyViewed,
         isStampProduct,
         cart: fastify.getCart(request),
         csrf: await reply.generateCsrf(),

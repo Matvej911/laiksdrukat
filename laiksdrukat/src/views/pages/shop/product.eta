@@ -169,7 +169,7 @@
     </div>
     <div class="product-desc-content">
       <%~ it.product.description %>
-      <% if (it.product.imprintImage && !(it.product.description || '').includes(it.product.imprintImage)) { %>
+      <% if (it.product.imprintImage) { %>
         <div class="product-imprint-preview">
           <h3>Nospieduma paraugs</h3>
           <img src="<%= it.product.imprintImage %>" alt="Nospieduma paraugs" loading="lazy">
@@ -180,16 +180,16 @@
 </section>
 <% } %>
 
-<!-- RELATED -->
-<% if (it.related.length > 0) { %>
+<!-- RECENT -->
+<% if (it.recentlyViewed && it.recentlyViewed.length > 0) { %>
 <section class="product-related-section">
   <div class="container">
     <div class="product-related-header">
-      <span class="shop-eyebrow">Saistītās preces</span>
-      <h2>Līdzīgi produkti</h2>
+      <span class="shop-eyebrow">Nesen skatītie produkti</span>
+      <h2>Nesen skatītie produkti</h2>
     </div>
     <div class="shop-grid">
-      <% for (const p of it.related) { %>
+      <% for (const p of it.recentlyViewed) { %>
         <article class="shop-product-card">
           <a href="/veikals/<%= p.slug %>/" class="shop-product-link">
             <div class="shop-product-img">

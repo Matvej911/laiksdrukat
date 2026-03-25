@@ -2647,10 +2647,12 @@ body:has(.cart-section) .header-waves {
 
 .product-qty-wrap {
   flex-shrink: 0;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .product-qty-control {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   border: 1.5px solid rgba(95,75,216,0.2);
   border-radius: 12px;
@@ -2964,6 +2966,16 @@ body:has(.cart-section) .header-waves {
   .product-buy-row {
     flex-direction: column;
     align-items: stretch;
+  }
+  .product-qty-wrap {
+    width: auto;
+    align-self: flex-start;
+  }
+  .product-qty-control {
+    width: auto;
+  }
+  .product-add-btn {
+    width: 100%;
   }
 }
 

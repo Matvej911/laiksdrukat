@@ -94,6 +94,14 @@
       <input type="checkbox" name="active" id="active" <%= !it.product || it.product.active ? 'checked' : '' %> style="width:16px;height:16px;">
       <label for="active" style="font-size:14px;font-weight:500;cursor:pointer;">Aktīvs (redzams veikalā)</label>
     </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+      <input type="checkbox" name="featured" id="featured"
+        <%= it.product && it.product.featured ? 'checked' : '' %>
+        style="width:16px;height:16px;">
+      <label for="featured" style="font-size:14px;font-weight:500;cursor:pointer;">
+        ⭐ Rādīt kā populāru (homepage slider)
+      </label>
+    </div>
 
     <button type="submit" class="btn btn-primary">Saglabat</button>
   </form>

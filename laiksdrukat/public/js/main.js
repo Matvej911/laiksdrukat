@@ -131,29 +131,44 @@ if (fileInput && fileLabel) {
   })
 }
 
-const slider = document.querySelector('.products-slider');
-const track  = document.querySelector('.products-slider-track');
+const sliderWrapper = document.querySelector('.products-slider-wrapper');
+const slider = sliderWrapper?.querySelector('.products-slider');
+const track  = sliderWrapper?.querySelector('.products-slider-track');
 
-if (slider && track) {
+if (sliderWrapper && slider && track) {
   const gap          = 30;
+  const prevButton = sliderWrapper.querySelector('.slider-btn.left');
+  const nextButton = sliderWrapper.querySelector('.slider-btn.right');
   const getVisibleCount = () => {
     if (window.innerWidth <= 640) return 1;
     if (window.innerWidth <= 1024) return 2;
     return 3;
   };
-
-  // clone cards for infinite loop
   const originalCards = Array.from(slider.children);
-  originalCards.forEach(card => {
-    const clone = card.cloneNode(true);
-    clone.setAttribute('aria-hidden', 'true');
-    slider.appendChild(clone);
-  });
 
   const totalOriginal = originalCards.length;
   let step            = 0;
   let scrollAmount    = 0;
   let isTransitioning = false;
+  let loopingEnabled  = false;
+
+  function rebuildSlider() {
+    const visibleCount = getVisibleCount();
+    loopingEnabled = totalOriginal > visibleCount;
+
+    slider.replaceChildren(...originalCards);
+
+    if (loopingEnabled) {
+      originalCards.forEach(card => {
+        const clone = card.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        slider.appendChild(clone);
+      });
+    }
+
+    if (prevButton) prevButton.style.display = loopingEnabled ? '' : 'none';
+    if (nextButton) nextButton.style.display = loopingEnabled ? '' : 'none';
+  }
 
   // calculate from track, not slider
   function setCardWidths() {
@@ -167,7 +182,7 @@ if (slider && track) {
   }
 
   function scrollSlider(direction) {
-    if (isTransitioning || !step) return;
+    if (!loopingEnabled || isTransitioning || !step) return;
     isTransitioning = true;
 
     scrollAmount += direction * step;
@@ -194,6 +209,7 @@ if (slider && track) {
   });
 
   window.addEventListener('resize', () => {
+    rebuildSlider();
     setCardWidths();
     scrollAmount    = 0;
     isTransitioning = false;
@@ -203,8 +219,12 @@ if (slider && track) {
 
   // init — works whether DOMContentLoaded has fired or not
   if (document.readyState === 'loading') {
-    window.addEventListener('DOMContentLoaded', setCardWidths);
+    window.addEventListener('DOMContentLoaded', () => {
+      rebuildSlider();
+      setCardWidths();
+    });
   } else {
+    rebuildSlider();
     setCardWidths();
   }
 

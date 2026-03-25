@@ -29,8 +29,15 @@ if (!process.env.SESSION_SECRET) {
 }
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+const isProduction = process.env.NODE_ENV === 'production'
+const trustProxy = process.env.TRUST_PROXY
+  ? ['1', 'true', 'yes', 'on'].includes(process.env.TRUST_PROXY.toLowerCase())
+  : isProduction
 
-const fastify = Fastify({ logger: true })
+const fastify = Fastify({
+  logger: true,
+  trustProxy,
+})
 
 // Template engine (Eta)
 await fastify.register(FastifyView, {
@@ -41,6 +48,7 @@ await fastify.register(FastifyView, {
     siteName: siteContent.company.name,
     currentYear: new Date().getFullYear(),
     site: siteContent,
+    isProduction,
   },
 })
 

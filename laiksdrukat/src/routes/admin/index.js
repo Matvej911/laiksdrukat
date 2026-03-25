@@ -279,10 +279,14 @@ async function adminRoutes(fastify) {
     }
 
     const payload = buildProductPayload(fields, uploads)
+    const featured = fields.featured === 'on'
 
     try {
       await fastify.db.product.create({
-        data: payload,
+        data: {
+          ...payload,
+          featured,
+        }
       })
       return reply.redirect('/admin/products')
     } catch (err) {
@@ -331,11 +335,15 @@ async function adminRoutes(fastify) {
     }
 
     const payload = buildProductPayload(fields, uploads, existingProduct)
+    const featured = fields.featured === 'on'
 
     try {
       await fastify.db.product.update({
         where: { id: productId },
-        data: payload,
+        data: {
+          ...payload,
+          featured,
+        }
       })
       return reply.redirect('/admin/products')
     } catch (err) {
@@ -348,6 +356,7 @@ async function adminRoutes(fastify) {
           image: uploads.imageUpload || fields.image || existingProduct?.image,
           imprintImage: uploads.imprintImageUpload || fields.imprintImage || existingProduct?.imprintImage,
           active: fields.active === 'on',
+          featured: fields.featured === 'on',
         },
         categories,
         error: 'Kļūda saglabājot produktu. Pārbaudiet vai slug ir unikāls.',

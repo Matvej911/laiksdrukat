@@ -28,6 +28,8 @@ model Product {
   imprintImage String?
   stock       Int         @default(0)
   active      Boolean     @default(true)
+  featured     Boolean     @default(false) 
+
   sortOrder    Int         @default(0)
   category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  Int

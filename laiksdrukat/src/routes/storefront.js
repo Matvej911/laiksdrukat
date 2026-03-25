@@ -110,10 +110,9 @@ async function storefrontRoutes(fastify) {
   fastify.get('/', async (request, reply) => {
     const [products, categories] = await Promise.all([
       fastify.db.product.findMany({
-        where: { active: true },
-        take: 6,
-        orderBy: { createdAt: 'desc' },
+        where: { active: true, featured: true, },
         include: { category: true },
+        orderBy: { sortOrder: 'asc' },
       }),
       fastify.db.category.findMany({
         include: {
@@ -244,6 +243,7 @@ async function storefrontRoutes(fastify) {
         const products = await fastify.db.product.findMany({
           where: {
             active: true,
+            featured: true,
             category: { slug: 'zimogi' },
           },
           include: { category: true },

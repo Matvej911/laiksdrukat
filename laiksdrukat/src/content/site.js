@@ -118,40 +118,7 @@ export function getSiteContent() {
       teaser: `Izgatavojam individuālus zīmogus uzņēmumiem un privātpersonām ⏱ Ātra izpilde un pielāgojami dizaini ✓ Pasūtiet online vai klātienē – ērti un ātri. ${currentYear}`,
       intro:
         'Izgatavojam zīmogus uzņēmumiem, birojiem un ikdienas dokumentu apritei. Piedāvājam populārākos COLOP modeļus, maketa sagatavošanu un iespēju pasūtīt arī tintes.',
-      heroImage: 'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/col9p-300x300.png',
       heroAlt: 'COLOP automātiskais zīmogs',
-      highlights: [
-        { value: 'COLOP', label: 'populāri modeļi e-veikalā' },
-        { value: '6 EUR+', label: 'sākuma cenas vienkāršiem modeļiem' },
-        { value: 'Apaļi / datuma / kabatas', label: 'vairāki formāti' },
-      ],
-      offerings: [
-        {
-          title: 'Uzņēmumu zīmogi',
-          text: 'Automātiskie taisnstūra zīmogi ikdienas dokumentiem, rekvizītiem un parakstu laukumiem.',
-        },
-        {
-          title: 'Datuma un speciālie zīmogi',
-          text: 'Modeļi ar datumu, teksta laukiem vai individuāliem pielāgojumiem noliktavai un birojam.',
-        },
-        {
-          title: 'Tintes un piederumi',
-          text: 'Papildinām zīmogu pasūtījumus ar tintēm un spilventiņiem, lai sistēma būtu gatava darbam uzreiz.',
-        },
-      ],
-      details: [
-        'Sagatavojam vienkāršu maketu pēc jūsu rekvizītiem un logotipa.',
-        'Palīdzam izvēlēties izmēru pēc teksta daudzuma un paredzētā lietojuma.',
-        'Veikala sadaļa paredzēta biežāk pasūtītajiem zīmogu modeļiem un tintēm.',
-      ],
-      pricing: [
-        { title: 'Standarta modeļi', text: 'Populārākajiem zīmogu modeļiem cenas sākas aptuveni no 6 EUR un pieaug atkarībā no izmēra un mehānisma.' },
-        { title: 'Individuāli risinājumi', text: 'Apaļiem, lielākiem vai ar īpašu maketu sagatavotiem zīmogiem cenu precizējam pēc vajadzības.' },
-      ],
-      gallery: [
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/col9p-300x300.png',
-        'https://www.laiksdrukat.lv/wp-content/uploads/2026/02/1745849318844-scaled.jpg',
-      ],
     },
     {
       slug: 'vides-reklama',

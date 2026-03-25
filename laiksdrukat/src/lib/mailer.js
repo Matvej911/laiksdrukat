@@ -3,19 +3,10 @@ import { Eta } from 'eta'
 
 const viewsPath = path.join(process.cwd(), 'src/views')
 import { getNotificationRecipients } from './notification-recipients.js'
-console.log('ETA VIEWS PATH:', viewsPath)
 import path from 'path'
 const eta = new Eta({ views: viewsPath })
 
-const templatePath = path.join(
-  process.cwd(),
-  'src/views/emails/customer-order.eta'
-)
-
-console.log('EXPECTED TEMPLATE PATH:', templatePath)
-
 function getMailConfig() {
-  console.log('OWNER EMAIL START')
   const host = process.env.SMTP_HOST
   const port = Number(process.env.SMTP_PORT || 587)
   const user = process.env.SMTP_USER
@@ -57,7 +48,6 @@ async function createTransporter() {
 }
 
 async function sendMail({ to, subject, text, html, attachments = [] }) {
-  console.log('OWNER EMAIL START')
   const config = getMailConfig()
   const transporter = await createTransporter()
 
@@ -78,7 +68,6 @@ async function sendMail({ to, subject, text, html, attachments = [] }) {
 }
 
 async function sendOwnerNotificationMail({ subject, text, html, attachments = [] }) {
-  console.log('OWNER EMAIL START')
   const recipients = await getNotificationRecipients()
 
   if (recipients.length === 0) {
@@ -107,7 +96,6 @@ function formatOrderOptions(options = {}) {
 }
 
 export async function sendContactNotification(submission) {
-  console.log('sendContactNotification')
   const subject = `Jauna kontaktforma: ${submission.name}`
   const text = [
     'Saņemta jauna kontaktformas ziņa.',
@@ -145,7 +133,6 @@ export async function sendContactNotification(submission) {
 }
 
 function getOrderSummaries({ order, cart }) {
-  console.log('getOrderSummaries')
   const isOmniva = order.note?.includes('Omniva')
   const shipping = isOmniva ? 3.5 : 0
 
@@ -208,10 +195,18 @@ function getOrderSummaries({ order, cart }) {
       `
     })
     .join('')
+
+  return {
+    subtotal,
+    shipping,
+    totalVat,
+    totalWithVat,
+    lines,
+    htmlItems,
+  }
 }
 
 export async function sendOwnerOrderNotification({ order, cart }) {
-  console.log('sendOwnerOrderNotification')
   const orderReference = order.publicId || String(order.id)
   const { subtotal, shipping, totalVat, totalWithVat, lines, htmlItems, } = getOrderSummaries({ order, cart })
   const subject = `Jauns pasūtījums #${orderReference} - ${order.name}`
@@ -255,7 +250,6 @@ export async function sendOwnerOrderNotification({ order, cart }) {
 }
 
 export async function sendCustomerOrderConfirmation({ order, cart }) {
-  console.log('sendCustomerOrderConfirmation')
   const orderReference = order.publicId || String(order.id)
 
   const {

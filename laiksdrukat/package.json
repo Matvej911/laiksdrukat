@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Laiks Drukāt - Printing & Advertising Services",
   "type": "module",
-  "main": "src/server.mjs",
+  "main": "src/server.js",
   "scripts": {
     "dev": "node --watch src/server.js",
-    "start": "node src/server.mjs",
+    "start": "node src/server.js",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",

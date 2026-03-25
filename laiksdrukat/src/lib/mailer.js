@@ -6,6 +6,32 @@ import { getNotificationRecipients } from './notification-recipients.js'
 import path from 'path'
 const eta = new Eta({ views: viewsPath })
 
+function getAppUrl() {
+  const configuredUrl = process.env.APP_URL?.trim()
+
+  if (configuredUrl) {
+    return configuredUrl.replace(/\/+$/, '')
+  }
+
+  const host = process.env.HOST && process.env.HOST !== '0.0.0.0'
+    ? process.env.HOST
+    : 'localhost'
+  const port = process.env.PORT || '3000'
+
+  return `http://${host}:${port}`
+}
+
+function toAbsoluteUrl(value) {
+  if (!value) return value
+  if (/^https?:\/\//i.test(value)) return value
+
+  try {
+    return new URL(value, `${getAppUrl()}/`).toString()
+  } catch {
+    return value
+  }
+}
+
 function getMailConfig() {
   const host = process.env.SMTP_HOST
   const port = Number(process.env.SMTP_PORT || 587)
@@ -91,7 +117,10 @@ async function sendOwnerNotificationMail({ subject, text, html, attachments = []
 function formatOrderOptions(options = {}) {
   return Object.entries(options)
     .filter(([key]) => key !== 'Faila saite')
-    .map(([key, value]) => `- ${key}: ${value}`)
+    .map(([key, value]) => {
+      const optionValue = key === 'Faila saite' ? toAbsoluteUrl(value) : value
+      return `- ${key}: ${optionValue}`
+    })
     .join('\n')
 }
 
@@ -146,7 +175,7 @@ function getOrderSummaries({ order, cart }) {
     let fileLine = ''
 
     if (item.options?.['Faila saite']) {
-      fileLine = `Fails: ${item.options['Faila saite']}`
+      fileLine = `Fails: ${toAbsoluteUrl(item.options['Faila saite'])}`
     }
 
     return [
@@ -166,9 +195,10 @@ function getOrderSummaries({ order, cart }) {
 
           // ✅ FILE LINK (button)
           if (key === 'Faila saite') {
+            const fileUrl = toAbsoluteUrl(value)
             return `
               <div style="margin-top:8px;">
-                <a href="${value}" target="_blank"
+                <a href="${fileUrl}" target="_blank"
                   style="display:inline-block;padding:8px 14px;background:#5f4bd8;color:#fff;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;">
                   📎 Atvērt failu
                 </a>

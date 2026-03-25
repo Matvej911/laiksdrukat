@@ -23,9 +23,6 @@ import shopRoutes from './routes/shop.js'
 import cartRoutes from './routes/cart.js'
 import checkoutRoutes from './routes/checkout.js'
 import adminRoutes from './routes/admin/index.js'
-throw new Error('SERVER_JS_REACHED')
-
-
 if (!process.env.SESSION_SECRET) {
   throw new Error('SESSION_SECRET must be set in .env')
 }

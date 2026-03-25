@@ -43,7 +43,7 @@
                 <% if (item.options && Object.keys(item.options).length > 0) { %>
                   <div class="cart-item-options">
                     <% for (const [key, value] of Object.entries(item.options)) { %>
-                      <% if (key !== 'Faila saite') { %>
+                      <% if (key !== 'Faila saite' && !key.startsWith('__')) { %>
                         <span class="cart-item-option"><strong><%= key %>:</strong> <%= value %></span>
                       <% } %>
                     <% } %>

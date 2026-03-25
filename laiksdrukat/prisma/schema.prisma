@@ -67,6 +67,21 @@ model OrderItem {
   options   Json?
 }
 
+model Upload {
+  id           Int          @id @default(autoincrement())
+  token        String       @unique @default(uuid())
+  sourceType   UploadSource
+  sourceRef    String?
+  originalName String
+  storedName   String
+  subdir       String
+  relativePath String       @unique
+  mimeType     String?
+  size         Int
+  isPrivate    Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+}
+
 model AdminUser {
   id        Int      @id @default(autoincrement())
   username  String   @unique
@@ -80,4 +95,11 @@ enum OrderStatus {
   SHIPPED
   DONE
   CANCELLED
+}
+
+enum UploadSource {
+  STAMP_ORDER
+  CONTACT_FORM
+  ADMIN_PRODUCT
+  GALLERY
 }

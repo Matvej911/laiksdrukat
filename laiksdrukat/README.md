@@ -85,6 +85,7 @@ Edit `.env` with your MySQL credentials:
 DATABASE_URL="mysql://user:password@localhost:3306/laiksdrukat"
 SESSION_SECRET="your-long-random-secret-here"
 PORT=3000
+UPLOADS_DIR="./data/uploads"
 ```
 
 ### 3. Set up the database
@@ -167,6 +168,7 @@ Option 2 — Edit `prisma/seed.js` and re-run `npm run db:seed`
    ```
 6. Set up **Nginx** as reverse proxy on port 80/443
 7. Add SSL with **Certbot** (Let's Encrypt — free)
+8. Set `UPLOADS_DIR` to a persistent directory outside release folders, for example `/home/USERNAME/laiksdrukat-data/uploads`
 
 ---
 

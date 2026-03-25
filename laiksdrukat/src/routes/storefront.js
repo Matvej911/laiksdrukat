@@ -5,7 +5,9 @@ import { serviceRouteEntries, getSiteContent } from '../content/site.js'
 import { hasValidSessionCsrf } from '../lib/csrf.js'
 import { sendContactNotification } from '../lib/mailer.js'
 import {
+  contentTypeFromFilename,
   persistUpload,
+  resolveUploadPath,
   sendStoredFile,
   validateDocumentOrImageUpload,
 } from '../lib/uploads.js'
@@ -76,13 +78,28 @@ async function collectContactForm(request) {
       subdir: 'contact-attachments',
       originalName: file.originalName,
       buffer: file.buffer,
-      urlPrefix: '/admin/contact-attachments',
+      urlPrefix: '/fails',
+    })
+
+    const upload = await request.server.db.upload.create({
+      data: {
+        sourceType: 'CONTACT_FORM',
+        sourceRef: null,
+        originalName: file.originalName,
+        storedName: stored.filename,
+        subdir: 'contact-attachments',
+        relativePath: stored.relativePath,
+        mimeType: contentTypeFromFilename(file.originalName),
+        size: stored.size,
+        isPrivate: true,
+      },
     })
 
     uploadedFile = {
       originalName: file.originalName,
       path: stored.filepath,
-      url: stored.url,
+      url: `/fails/${upload.token}`,
+      token: upload.token,
     }
   }
 
@@ -92,6 +109,32 @@ async function collectContactForm(request) {
 
 
 async function storefrontRoutes(fastify) {
+  fastify.get('/fails/:token', async (request, reply) => {
+    const token = String(request.params.token || '')
+    if (!token) {
+      return reply.code(404).send('File not found')
+    }
+
+    const upload = await fastify.db.upload.findUnique({
+      where: { token },
+    })
+
+    if (!upload || !upload.isPrivate) {
+      return reply.code(404).send('File not found')
+    }
+
+    const filepath = resolveUploadPath(upload.relativePath)
+
+    try {
+      return await sendStoredFile(reply, filepath, upload.originalName)
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return reply.code(404).send('File not found')
+      }
+      throw error
+    }
+  })
+
   fastify.get('/media/admin-products/:filename', async (request, reply) => {
     const filename = basename(String(request.params.filename || ''))
     const filepath = join(process.cwd(), 'data', 'uploads', 'admin-product-images', filename)

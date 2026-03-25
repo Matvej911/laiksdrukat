@@ -39,7 +39,7 @@
                         </a>
                       </div>
 
-                    <% } else if (key !== 'Fails') { %>
+                    <% } else if (key !== 'Fails' && !key.startsWith('__')) { %>
                       <div><strong><%= key %>:</strong> <%= value %></div>
                     <% } %>
 

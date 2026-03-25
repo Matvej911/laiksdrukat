@@ -238,7 +238,7 @@
                 <% if (item.options && Object.keys(item.options).length > 0) { %>
                   <div class="co-item-options">
                     <% for (const [key, value] of Object.entries(item.options)) { %>
-                      <% if (key !== 'Faila saite') { %>
+                      <% if (key !== 'Faila saite' && !key.startsWith('__')) { %>
                         <span><%= key %>: <%= value %></span>
                       <% } %>
                     <% } %>

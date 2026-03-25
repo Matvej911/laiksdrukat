@@ -116,7 +116,7 @@ async function sendOwnerNotificationMail({ subject, text, html, attachments = []
 
 function formatOrderOptions(options = {}) {
   return Object.entries(options)
-    .filter(([key]) => key !== 'Faila saite')
+    .filter(([key]) => key !== 'Faila saite' && !key.startsWith('__'))
     .map(([key, value]) => {
       const optionValue = key === 'Faila saite' ? toAbsoluteUrl(value) : value
       return `- ${key}: ${optionValue}`
@@ -208,6 +208,7 @@ function getOrderSummaries({ order, cart }) {
 
           // ❌ skip duplicate filename
           if (key === 'Fails') return ''
+          if (key.startsWith('__')) return ''
 
           // ✅ normal options
           return `<div><strong>${key}:</strong> ${value}</div>`

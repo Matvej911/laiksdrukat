@@ -17,6 +17,7 @@ import { hasValidSessionCsrf } from '../../lib/csrf.js'
 import { isMailConfigured } from '../../lib/mailer.js'
 import {
   persistUpload,
+  resolveUploadPath,
   sendStoredFile,
   validateImageUpload,
 } from '../../lib/uploads.js'
@@ -208,7 +209,7 @@ async function adminRoutes(fastify) {
 
   fastify.get('/contact-attachments/:filename', { preHandler: fastify.requireAdmin }, async (request, reply) => {
     const filename = basename(String(request.params.filename || ''))
-    const filepath = join(process.cwd(), 'data', 'uploads', 'contact-attachments', filename)
+    const filepath = join(resolveUploadPath('contact-attachments'), filename)
 
     try {
       return await sendStoredFile(reply, filepath, filename)

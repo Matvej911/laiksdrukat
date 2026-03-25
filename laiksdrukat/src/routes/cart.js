@@ -2,7 +2,9 @@ import { basename, extname, join } from 'path'
 
 import { hasValidSessionCsrf } from '../lib/csrf.js'
 import {
+  contentTypeFromFilename,
   persistUpload,
+  resolveUploadPath,
   sendStoredFile,
   validateDocumentOrImageUpload,
 } from '../lib/uploads.js'
@@ -53,12 +55,15 @@ async function collectCartForm(request) {
       subdir: 'stamp-files',
       originalName: file.originalName,
       buffer: file.buffer,
-      urlPrefix: '/grozs/stamp-files',
+      urlPrefix: '/fails',
     })
 
     uploadedFile = {
       originalName: file.originalName,
+      filename: stored.filename,
       path: stored.filepath,
+      relativePath: stored.relativePath,
+      size: stored.size,
       url: stored.url,
     }
   }
@@ -67,9 +72,9 @@ async function collectCartForm(request) {
 }
 
 async function cartRoutes(fastify) {
-  fastify.get('/stamp-files/:filename', async (request, reply) => {
+  fastify.get('/stamp-files/:filename', { preHandler: fastify.requireAdmin }, async (request, reply) => {
     const filename = basename(String(request.params.filename || ''))
-    const filepath = join(process.cwd(), 'data', 'uploads', 'stamp-files', filename)
+    const filepath = join(resolveUploadPath('stamp-files'), filename)
 
     try {
       return await sendStoredFile(reply, filepath, filename)
@@ -146,13 +151,28 @@ async function cartRoutes(fastify) {
     }
 
     if (uploadedFile) {
+      const upload = await fastify.db.upload.create({
+        data: {
+          sourceType: 'STAMP_ORDER',
+          sourceRef: `session:${request.session.sessionId || 'unknown'}`,
+          originalName: uploadedFile.originalName,
+          storedName: uploadedFile.filename,
+          subdir: 'stamp-files',
+          relativePath: uploadedFile.relativePath,
+          mimeType: contentTypeFromFilename(uploadedFile.originalName),
+          size: uploadedFile.size,
+          isPrivate: true,
+        },
+      })
+
       options['Fails'] = uploadedFile.originalName
-      options['Faila saite'] = uploadedFile.url
+      options['Faila saite'] = `/fails/${upload.token}`
+      options['__uploadToken'] = upload.token
     }
 
     const displayName = Object.keys(options).length > 0
       ? `${product.name} — ${Object.entries(options)
-          .filter(([key]) => key !== 'Faila saite')
+          .filter(([key]) => key !== 'Faila saite' && !key.startsWith('__'))
           .map(([key, value]) => `${key}: ${value}`)
           .join('; ')}`
       : product.name

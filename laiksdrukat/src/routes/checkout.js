@@ -119,9 +119,24 @@ async function checkoutRoutes(fastify) {
           })),
         },
       },
+      include: {
+        items: true,
+      },
     })
-    console.log('ORDER ITEMS FROM DB:')
-    console.log(JSON.stringify(order.items, null, 2)) 
+
+    for (const item of order.items) {
+      const uploadToken = item.options && typeof item.options === 'object'
+        ? item.options.__uploadToken
+        : null
+
+      if (typeof uploadToken === 'string' && uploadToken.trim()) {
+        await fastify.db.upload.updateMany({
+          where: { token: uploadToken },
+          data: { sourceRef: `orderItem:${item.id}` },
+        })
+      }
+    }
+
     recordCheckoutAttempt(request.ip)
 
     try {

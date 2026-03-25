@@ -93,12 +93,26 @@ export function contentTypeFromFilename(filename) {
   }
 }
 
+export function getUploadsRootDir() {
+  const configured = String(process.env.UPLOADS_DIR || '').trim()
+  if (!configured) {
+    return join(process.cwd(), 'data', 'uploads')
+  }
+
+  if (/^[A-Za-z]:[\\/]/.test(configured) || configured.startsWith('/')) {
+    return configured
+  }
+
+  return join(process.cwd(), configured)
+}
+
 export async function persistUpload({ subdir, originalName, buffer, urlPrefix }) {
   const ext = extname(String(originalName || '')).toLowerCase() || '.bin'
   const safeName = sanitizeFilename(originalName)
   const filename = `${Date.now()}-${randomUUID()}-${safeName}${safeName.endsWith(ext) ? '' : ext}`
-  const baseDir = join(process.cwd(), 'data', 'uploads', subdir)
+  const baseDir = join(getUploadsRootDir(), subdir)
   const filepath = join(baseDir, filename)
+  const relativePath = join(subdir, filename)
 
   await mkdir(baseDir, { recursive: true })
   await writeFile(filepath, buffer)
@@ -106,8 +120,15 @@ export async function persistUpload({ subdir, originalName, buffer, urlPrefix })
   return {
     filename,
     filepath,
+    relativePath,
+    subdir,
+    size: buffer.length,
     url: `${urlPrefix}/${filename}`,
   }
+}
+
+export function resolveUploadPath(relativePath) {
+  return join(getUploadsRootDir(), relativePath)
 }
 
 export async function sendStoredFile(reply, filepath, filename) {

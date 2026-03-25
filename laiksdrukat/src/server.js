@@ -189,6 +189,7 @@ try {
   })
   console.log(`\n🚀 Laiks Drukāt server running on ${publicAppUrl}\n`)
 } catch (err) {
+  console.error(err)
   fastify.log.error(err)
   process.exit(1)
 }

@@ -154,7 +154,7 @@ Option 2 — Edit `prisma/seed.js` and re-run `npm run db:seed`
 
 ---
 
-## Deploying to Production
+## Deploying to Product
 
 1. Set up MySQL on your server (or use PlanetScale / Railway for hosted MySQL)
 2. Install Node.js 18+ on server
@@ -172,7 +172,6 @@ Option 2 — Edit `prisma/seed.js` and re-run `npm run db:seed`
 
 ---
 
-## Next Steps
 
 - [ ] Add image upload for products (use @fastify/multipart)
 - [ ] Add email notifications for new orders (nodemailer)

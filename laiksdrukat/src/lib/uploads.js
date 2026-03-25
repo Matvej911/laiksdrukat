@@ -112,7 +112,9 @@ export async function persistUpload({ subdir, originalName, buffer, urlPrefix })
   const filename = `${Date.now()}-${randomUUID()}-${safeName}${safeName.endsWith(ext) ? '' : ext}`
   const baseDir = join(getUploadsRootDir(), subdir)
   const filepath = join(baseDir, filename)
-  const relativePath = join(subdir, filename)
+  // Store relative paths with forward slashes so they work cross-platform
+  // (Hostinger typically runs Linux, where Windows backslashes would break lookups).
+  const relativePath = `${String(subdir).replace(/\\/g, '/')}/${filename}`
 
   await mkdir(baseDir, { recursive: true })
   await writeFile(filepath, buffer)
@@ -128,7 +130,9 @@ export async function persistUpload({ subdir, originalName, buffer, urlPrefix })
 }
 
 export function resolveUploadPath(relativePath) {
-  return join(getUploadsRootDir(), relativePath)
+  const normalized = String(relativePath || '').replace(/\\/g, '/')
+  const parts = normalized.split('/').filter(Boolean)
+  return join(getUploadsRootDir(), ...parts)
 }
 
 export async function sendStoredFile(reply, filepath, filename) {

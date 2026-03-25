@@ -3,6 +3,7 @@ import {
   sendCustomerOrderConfirmation,
   sendOwnerOrderNotification,
 } from '../lib/mailer.js'
+import { resolveUploadPath } from '../lib/uploads.js'
 
 const CHECKOUT_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000
 const CHECKOUT_RATE_LIMIT_MAX = 5
@@ -140,9 +141,37 @@ async function checkoutRoutes(fastify) {
     recordCheckoutAttempt(request.ip)
 
     try {
+      const uploadTokens = new Set()
+      for (const item of cart) {
+        const token = item?.options && typeof item.options === 'object'
+          ? item.options.__uploadToken
+          : null
+        if (typeof token === 'string' && token.trim()) {
+          uploadTokens.add(token.trim())
+        }
+      }
+
+      const attachments = []
+      const seenAttachmentTokens = new Set()
+      for (const token of uploadTokens) {
+        if (seenAttachmentTokens.has(token)) continue
+
+        const upload = await fastify.db.upload.findUnique({ where: { token } })
+        if (!upload || !upload.isPrivate) continue
+
+        const filepath = resolveUploadPath(upload.relativePath)
+        attachments.push({
+          filename: upload.originalName,
+          path: filepath,
+        })
+
+        seenAttachmentTokens.add(token)
+      }
+
       const ownerResult = await sendOwnerOrderNotification({
         order,
         cart,
+        attachments,
       })
 
       if (!ownerResult.sent) {

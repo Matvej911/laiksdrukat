@@ -9866,10 +9866,6 @@ body:has(.cart-section) .header-waves {
     margin-left: auto;
   }
 
-  .section {
-    padding: 72px 0;
-  }
-
   .header-waves svg,
   .footer-waves svg {
     height: 140px;
@@ -10034,10 +10030,6 @@ body:has(.cart-section) .header-waves {
 @media (max-width: 640px) {
   .container {
     padding: 0 20px;
-  }
-
-  .section {
-    padding: 60px 0;
   }
 
   .nav-logo {

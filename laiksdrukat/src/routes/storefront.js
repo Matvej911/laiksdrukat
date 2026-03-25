@@ -137,7 +137,7 @@ async function storefrontRoutes(fastify) {
 
   fastify.get('/media/admin-products/:filename', async (request, reply) => {
     const filename = basename(String(request.params.filename || ''))
-    const filepath = join(process.cwd(), 'data', 'uploads', 'admin-product-images', filename)
+    const filepath = join(resolveUploadPath('admin-product-images'), filename)
 
     try {
       return await sendStoredFile(reply, filepath, filename)

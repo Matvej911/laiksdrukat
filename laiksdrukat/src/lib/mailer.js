@@ -237,7 +237,7 @@ function getOrderSummaries({ order, cart }) {
   }
 }
 
-export async function sendOwnerOrderNotification({ order, cart }) {
+export async function sendOwnerOrderNotification({ order, cart, attachments = [] }) {
   const orderReference = order.publicId || String(order.id)
   const { subtotal, shipping, totalVat, totalWithVat, lines, htmlItems, } = getOrderSummaries({ order, cart })
   const subject = `Jauns pasūtījums #${orderReference} - ${order.name}`
@@ -277,7 +277,7 @@ export async function sendOwnerOrderNotification({ order, cart }) {
     ${order.note ? `<p><strong>Piezīmes:</strong><br>${order.note.replace(/\n/g, '<br>')}</p>` : ''}
   `
 
-  return sendOwnerNotificationMail({ subject, text, html })
+  return sendOwnerNotificationMail({ subject, text, html, attachments })
 }
 
 export async function sendCustomerOrderConfirmation({ order, cart }) {

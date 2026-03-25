@@ -28,6 +28,8 @@ if (!process.env.SESSION_SECRET) {
   throw new Error('SESSION_SECRET must be set in .env')
 }
 
+console.log('BOOT OK', { port: process.env.PORT, host: process.env.HOST })
+
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const isProduction = process.env.NODE_ENV === 'production'
 const trustProxy = process.env.TRUST_PROXY

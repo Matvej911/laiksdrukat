@@ -33,6 +33,65 @@ const isProduction = process.env.NODE_ENV === 'production'
 const trustProxy = process.env.TRUST_PROXY
   ? ['1', 'true', 'yes', 'on'].includes(process.env.TRUST_PROXY.toLowerCase())
   : isProduction
+const publicAppUrl = process.env.APP_URL?.trim()
+  || `http://localhost:${process.env.PORT || 3000}`
+const secureCookies = isProduction && publicAppUrl.startsWith('https://')
+const contentSecurityPolicy = {
+  directives: {
+    defaultSrc: ["'self'"],
+    baseUri: ["'self'"],
+    formAction: ["'self'"],
+    frameAncestors: ["'self'"],
+    objectSrc: ["'none'"],
+    scriptSrc: [
+      "'self'",
+      "'unsafe-inline'",
+      'https://www.googletagmanager.com',
+      'https://www.google-analytics.com',
+      'https://ssl.google-analytics.com',
+    ],
+    scriptSrcElem: [
+      "'self'",
+      "'unsafe-inline'",
+      'https://www.googletagmanager.com',
+      'https://www.google-analytics.com',
+      'https://ssl.google-analytics.com',
+    ],
+    scriptSrcAttr: [
+      "'unsafe-inline'",
+    ],
+    styleSrc: [
+      "'self'",
+      "'unsafe-inline'",
+      'https://fonts.googleapis.com',
+    ],
+    imgSrc: [
+      "'self'",
+      'data:',
+      'blob:',
+      'https:',
+    ],
+    fontSrc: [
+      "'self'",
+      'data:',
+      'https://fonts.gstatic.com',
+    ],
+    connectSrc: [
+      "'self'",
+      'https://www.googletagmanager.com',
+      'https://www.google-analytics.com',
+      'https://ssl.google-analytics.com',
+      'https://stats.g.doubleclick.net',
+    ],
+    frameSrc: [
+      "'self'",
+      'https://www.googletagmanager.com',
+      'https://www.google.com',
+      'https://www.google.com/maps',
+    ],
+    upgradeInsecureRequests: isProduction ? [] : null,
+  },
+}
 
 const fastify = Fastify({
   logger: true,
@@ -55,7 +114,7 @@ await fastify.register(FastifyView, {
 await fastify.register(sitemapRoutes)
 
 await fastify.register(FastifyHelmet, {
-  contentSecurityPolicy: false // disable CSP for now — it can break your styles/scripts
+  contentSecurityPolicy,
 })
 
 // Static files
@@ -79,7 +138,7 @@ await fastify.register(FastifyCookie)
 await fastify.register(FastifySession, {
   secret: process.env.SESSION_SECRET,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: secureCookies,
     httpOnly: true,
     sameSite: 'lax',
   },
@@ -128,7 +187,7 @@ try {
     port: Number(process.env.PORT) || 3000,
     host: process.env.HOST || '0.0.0.0',
   })
-  console.log(`\n🚀 Laiks Drukāt server running on http://localhost:${process.env.PORT || 3000}\n`)
+  console.log(`\n🚀 Laiks Drukāt server running on ${publicAppUrl}\n`)
 } catch (err) {
   fastify.log.error(err)
   process.exit(1)

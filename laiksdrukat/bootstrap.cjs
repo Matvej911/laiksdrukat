@@ -1,4 +1,1 @@
-import('./src/server.js').catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+throw new Error('BOOTSTRAP_REACHED')

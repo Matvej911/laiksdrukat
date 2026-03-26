@@ -28,7 +28,6 @@ if (!process.env.SESSION_SECRET) {
 }
 
 console.log('BOOT OK', { port: process.env.PORT, host: process.env.HOST })
-throw new Error('TEST_SERVER_REACHED')
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const isProduction = process.env.NODE_ENV === 'production'

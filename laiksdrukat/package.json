@@ -4,6 +4,9 @@
   "description": "Laiks Drukāt - Printing & Advertising Services",
   "type": "module",
   "main": "src/server.js",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "npx prisma generate && node src/server.js",

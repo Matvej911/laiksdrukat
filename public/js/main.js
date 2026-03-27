@@ -348,4 +348,185 @@ document.querySelectorAll('.portfolio-item img').forEach(img => {
   if (img.complete && img.naturalWidth) img.onload();
 });
 
+const consentStorageKey = 'ld_cookie_consent_v1'
+const cookieConsentDefaults = {
+  necessary: true,
+  preferences: false,
+  analytics: false,
+  marketing: false,
+}
+
+function readCookieConsent() {
+  try {
+    const stored = localStorage.getItem(consentStorageKey)
+    if (!stored) return null
+
+    const parsed = JSON.parse(stored)
+    return {
+      ...cookieConsentDefaults,
+      ...parsed,
+      necessary: true,
+    }
+  } catch (error) {
+    return null
+  }
+}
+
+function writeCookieConsent(consent) {
+  const payload = {
+    ...cookieConsentDefaults,
+    ...consent,
+    necessary: true,
+  }
+
+  try {
+    localStorage.setItem(consentStorageKey, JSON.stringify(payload))
+  } catch (error) {}
+
+  try {
+    document.cookie = `ld_cookie_consent=${encodeURIComponent(JSON.stringify(payload))}; Max-Age=31536000; Path=/; SameSite=Lax`
+  } catch (error) {}
+
+  return payload
+}
+
+function applyCookieConsent(consent) {
+  const payload = {
+    ...cookieConsentDefaults,
+    ...consent,
+    necessary: true,
+  }
+
+  window.dataLayer = window.dataLayer || []
+  window.gtag = window.gtag || function gtag() {
+    window.dataLayer.push(arguments)
+  }
+
+  window.gtag('consent', 'update', {
+    analytics_storage: payload.analytics ? 'granted' : 'denied',
+    ad_storage: payload.marketing ? 'granted' : 'denied',
+    ad_user_data: payload.marketing ? 'granted' : 'denied',
+    ad_personalization: payload.marketing ? 'granted' : 'denied',
+    functionality_storage: payload.preferences ? 'granted' : 'denied',
+    personalization_storage: payload.preferences ? 'granted' : 'denied',
+    security_storage: 'granted',
+  })
+
+  window.dataLayer.push({
+    event: 'cookie_consent_updated',
+    cookie_preferences: payload.preferences,
+    cookie_analytics: payload.analytics,
+    cookie_marketing: payload.marketing,
+  })
+}
+
+const cookieBanner = document.querySelector('[data-cookie-banner]')
+const cookieModal = document.querySelector('[data-cookie-modal]')
+const cookieManage = document.querySelector('[data-cookie-manage]')
+const cookieToggles = Array.from(document.querySelectorAll('[data-consent-toggle]'))
+const cookieActionButtons = Array.from(document.querySelectorAll('[data-cookie-action]'))
+const cookieCloseButtons = Array.from(document.querySelectorAll('[data-cookie-close]'))
+
+if (cookieBanner && cookieModal && cookieManage) {
+  let currentConsent = readCookieConsent()
+
+  const syncCookieToggles = (consent) => {
+    cookieToggles.forEach((toggle) => {
+      toggle.checked = Boolean(consent?.[toggle.dataset.consentToggle])
+    })
+  }
+
+  const showCookieBanner = () => {
+    cookieBanner.hidden = false
+    cookieManage.hidden = true
+  }
+
+  const hideCookieBanner = () => {
+    cookieBanner.hidden = true
+    cookieManage.hidden = false
+  }
+
+  const openCookieModal = () => {
+    syncCookieToggles(currentConsent || cookieConsentDefaults)
+    cookieModal.hidden = false
+    document.body.classList.add('cookie-modal-open')
+  }
+
+  const closeCookieModal = () => {
+    cookieModal.hidden = true
+    document.body.classList.remove('cookie-modal-open')
+
+    if (!currentConsent) {
+      showCookieBanner()
+    }
+  }
+
+  const saveCookieConsent = (consent) => {
+    currentConsent = writeCookieConsent(consent)
+    applyCookieConsent(currentConsent)
+    syncCookieToggles(currentConsent)
+    hideCookieBanner()
+    closeCookieModal()
+  }
+
+  const acceptAllConsent = () => saveCookieConsent({
+    preferences: true,
+    analytics: true,
+    marketing: true,
+  })
+
+  const rejectAllConsent = () => saveCookieConsent({
+    preferences: false,
+    analytics: false,
+    marketing: false,
+  })
+
+  const saveToggleConsent = () => saveCookieConsent({
+    preferences: cookieToggles.find((toggle) => toggle.dataset.consentToggle === 'preferences')?.checked || false,
+    analytics: cookieToggles.find((toggle) => toggle.dataset.consentToggle === 'analytics')?.checked || false,
+    marketing: cookieToggles.find((toggle) => toggle.dataset.consentToggle === 'marketing')?.checked || false,
+  })
+
+  cookieActionButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const action = button.dataset.cookieAction
+
+      if (action === 'preferences') {
+        cookieBanner.hidden = true
+        openCookieModal()
+        return
+      }
+
+      if (action === 'accept') {
+        acceptAllConsent()
+        return
+      }
+
+      if (action === 'reject') {
+        rejectAllConsent()
+        return
+      }
+
+      if (action === 'save') {
+        saveToggleConsent()
+      }
+    })
+  })
+
+  cookieCloseButtons.forEach((button) => {
+    button.addEventListener('click', closeCookieModal)
+  })
+
+  cookieManage.addEventListener('click', openCookieModal)
+
+  if (currentConsent) {
+    applyCookieConsent(currentConsent)
+    hideCookieBanner()
+    syncCookieToggles(currentConsent)
+  } else {
+    showCookieBanner()
+    syncCookieToggles(cookieConsentDefaults)
+  }
+}
+
 

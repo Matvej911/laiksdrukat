@@ -19,6 +19,39 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
   <%~ it.extraHead || '' %>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+
+    const ldDefaultConsent = {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      functionality_storage: 'denied',
+      personalization_storage: 'denied',
+      security_storage: 'granted',
+      wait_for_update: 500
+    };
+
+    gtag('consent', 'default', ldDefaultConsent);
+
+    try {
+      const savedConsent = localStorage.getItem('ld_cookie_consent_v1');
+      if (savedConsent) {
+        const parsed = JSON.parse(savedConsent);
+        gtag('consent', 'update', {
+          analytics_storage: parsed.analytics ? 'granted' : 'denied',
+          ad_storage: parsed.marketing ? 'granted' : 'denied',
+          ad_user_data: parsed.marketing ? 'granted' : 'denied',
+          ad_personalization: parsed.marketing ? 'granted' : 'denied',
+          functionality_storage: parsed.preferences ? 'granted' : 'denied',
+          personalization_storage: parsed.preferences ? 'granted' : 'denied',
+          security_storage: 'granted'
+        });
+      }
+    } catch (error) {}
+  </script>
   <% if (it.isProduction) { %>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -28,6 +61,8 @@
     })(window,document,'script','dataLayer','GTM-W64BBHWL');
   </script>
   <!-- End Google Tag Manager -->
+
+  
   <% } %>
 </head>
 <body class="<%= it.bodyClass || '' %>">
@@ -147,6 +182,92 @@
     </div>
   </div>
 </footer>
+
+<div class="cookie-consent" data-cookie-banner hidden>
+  <div class="cookie-consent__glow"></div>
+  <div class="cookie-consent__eyebrow">Privātums</div>
+  <h3>Mēs cienām jūsu privātumu</h3>
+  <p>
+    Izmantojam sīkfailus, lai nodrošinātu vietnes darbību, analizētu apmeklējumu un uzlabotu pieredzi.
+    Vairāk lasiet <a href="/privatuma-politika/">privātuma politikā</a>.
+  </p>
+  <div class="cookie-consent__actions">
+    <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-action="preferences">Pielāgot</button>
+    <button type="button" class="cookie-btn cookie-btn--outline" data-cookie-action="reject">Noraidīt visu</button>
+    <button type="button" class="cookie-btn cookie-btn--primary" data-cookie-action="accept">Pieņemt visus</button>
+  </div>
+</div>
+
+<button type="button" class="cookie-manage-btn" data-cookie-manage hidden>
+  Sīkfailu iestatījumi
+</button>
+
+<div class="cookie-modal" data-cookie-modal hidden>
+  <div class="cookie-modal__backdrop" data-cookie-close></div>
+  <div class="cookie-modal__panel" role="dialog" aria-modal="true" aria-labelledby="cookie-modal-title">
+    <div class="cookie-modal__header">
+      <div>
+        <div class="cookie-consent__eyebrow">Sīkfaili</div>
+        <h3 id="cookie-modal-title">Pielāgojiet piekrišanas preferences</h3>
+      </div>
+      <button type="button" class="cookie-modal__close" aria-label="Aizvērt" data-cookie-close>×</button>
+    </div>
+
+    <p class="cookie-modal__lead">
+      Izvēlieties, kādus sīkfailus drīkstam izmantot. Nepieciešamie sīkfaili vienmēr ir aktīvi,
+      pārējās kategorijas varat ieslēgt vai izslēgt.
+    </p>
+
+    <div class="cookie-settings">
+      <div class="cookie-setting is-locked">
+        <div class="cookie-setting__copy">
+          <strong>Nepieciešamie</strong>
+          <p>Nodrošina vietnes pamatfunkcijas, drošību un groza darbību.</p>
+        </div>
+        <span class="cookie-setting__badge">Vienmēr aktīvs</span>
+      </div>
+
+      <label class="cookie-setting">
+        <div class="cookie-setting__copy">
+          <strong>Preferences</strong>
+          <p>Saglabā jūsu izvēles un palīdz padarīt vietni ērtāku atkārtotos apmeklējumos.</p>
+        </div>
+        <span class="cookie-switch">
+          <input type="checkbox" data-consent-toggle="preferences">
+          <span class="cookie-switch__slider"></span>
+        </span>
+      </label>
+
+      <label class="cookie-setting">
+        <div class="cookie-setting__copy">
+          <strong>Analītika</strong>
+          <p>Ļauj Google Analytics un Google Tag Manager saprast, kā apmeklētāji izmanto vietni.</p>
+        </div>
+        <span class="cookie-switch">
+          <input type="checkbox" data-consent-toggle="analytics">
+          <span class="cookie-switch__slider"></span>
+        </span>
+      </label>
+
+      <label class="cookie-setting">
+        <div class="cookie-setting__copy">
+          <strong>Mārketings</strong>
+          <p>Atļauj reklāmas un atkārtotās mārketinga funkcijas, ja tās vēlāk tiks izmantotas.</p>
+        </div>
+        <span class="cookie-switch">
+          <input type="checkbox" data-consent-toggle="marketing">
+          <span class="cookie-switch__slider"></span>
+        </span>
+      </label>
+    </div>
+
+    <div class="cookie-modal__actions">
+      <button type="button" class="cookie-btn cookie-btn--outline" data-cookie-action="reject">Noraidīt visu</button>
+      <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-action="save">Saglabāt manas preferences</button>
+      <button type="button" class="cookie-btn cookie-btn--primary" data-cookie-action="accept">Pieņemt visus</button>
+    </div>
+  </div>
+</div>
 
 <script src="/js/main.js"></script>
 </body>

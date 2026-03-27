@@ -23,7 +23,7 @@
       </div>
 
       <div class="service-media">
-        <img src="${it.service.heroImage}" alt="${it.service.heroAlt}" loading="lazy">
+        <img src="${it.service.heroImage}" alt="${it.service.heroAlt}" loading="lazy" width="1200" height="900">
       </div>
     </div>
 
@@ -95,7 +95,7 @@
     <div class="gallery-grid">
       <% for (const image of it.service.gallery) { %>
         <div class="gallery-card">
-          <img src="<%= image %>" alt="<%= it.service.title %>" loading="lazy">
+          <img src="<%= image %>" alt="<%= it.service.title %>" loading="lazy" width="1200" height="900">
         </div>
       <% } %>
     </div>

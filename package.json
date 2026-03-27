@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "node --watch src/server.js",
-    "start": "npx prisma generate && node src/server.js",
+    "start": "node src/server.js",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",

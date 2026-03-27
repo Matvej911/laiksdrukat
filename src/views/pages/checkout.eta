@@ -228,7 +228,7 @@
             <div class="co-item">
               <div class="co-item-img">
                 <% if (item.image) { %>
-                  <img src="<%= item.image %>" alt="<%= item.name %>" loading="lazy">
+                  <img src="<%= item.image %>" alt="<%= item.name %>" loading="lazy" width="160" height="160">
                 <% } else { %>
                   <div class="co-item-placeholder">LD</div>
                 <% } %>

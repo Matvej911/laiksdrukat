@@ -131,12 +131,13 @@ if (fileInput && fileLabel) {
   })
 }
 
-const sliderWrapper = document.querySelector('.products-slider-wrapper');
-const slider = sliderWrapper?.querySelector('.products-slider');
-const track  = sliderWrapper?.querySelector('.products-slider-track');
+document.querySelectorAll('.products-slider-wrapper').forEach((sliderWrapper) => {
+  const slider = sliderWrapper.querySelector('.products-slider');
+  const track = sliderWrapper.querySelector('.products-slider-track');
 
-if (sliderWrapper && slider && track) {
-  const gap          = 30;
+  if (!slider || !track) return;
+
+  const gap = 30;
   const prevButton = sliderWrapper.querySelector('.slider-btn.left');
   const nextButton = sliderWrapper.querySelector('.slider-btn.right');
   const getVisibleCount = () => {
@@ -145,12 +146,11 @@ if (sliderWrapper && slider && track) {
     return 3;
   };
   const originalCards = Array.from(slider.children);
-
   const totalOriginal = originalCards.length;
-  let step            = 0;
-  let scrollAmount    = 0;
+  let step = 0;
+  let scrollAmount = 0;
   let isTransitioning = false;
-  let loopingEnabled  = false;
+  let loopingEnabled = false;
 
   function rebuildSlider() {
     const visibleCount = getVisibleCount();
@@ -159,7 +159,7 @@ if (sliderWrapper && slider && track) {
     slider.replaceChildren(...originalCards);
 
     if (loopingEnabled) {
-      originalCards.forEach(card => {
+      originalCards.forEach((card) => {
         const clone = card.cloneNode(true);
         clone.setAttribute('aria-hidden', 'true');
         slider.appendChild(clone);
@@ -170,11 +170,10 @@ if (sliderWrapper && slider && track) {
     if (nextButton) nextButton.style.display = loopingEnabled ? '' : 'none';
   }
 
-  // calculate from track, not slider
   function setCardWidths() {
     const visibleCount = getVisibleCount();
     const cardWidth = (track.offsetWidth - gap * (visibleCount - 1)) / visibleCount;
-    Array.from(slider.children).forEach(card => {
+    Array.from(slider.children).forEach((card) => {
       card.style.flex = `0 0 ${cardWidth}px`;
       card.style.width = `${cardWidth}px`;
     });
@@ -187,12 +186,15 @@ if (sliderWrapper && slider && track) {
 
     scrollAmount += direction * step;
     slider.style.transition = 'transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-    slider.style.transform   = `translateX(${-scrollAmount}px)`;
+    slider.style.transform = `translateX(${-scrollAmount}px)`;
   }
+
+  prevButton?.addEventListener('click', () => scrollSlider(-1));
+  nextButton?.addEventListener('click', () => scrollSlider(1));
 
   slider.addEventListener('transitionend', (e) => {
     if (e.target !== slider) return;
-    if (e.propertyName !== 'transform') return; // ← only react to transform, ignore others
+    if (e.propertyName !== 'transform') return;
 
     isTransitioning = false;
     const maxScroll = step * totalOriginal;
@@ -200,37 +202,31 @@ if (sliderWrapper && slider && track) {
     if (scrollAmount >= maxScroll) {
       scrollAmount -= maxScroll;
       slider.style.transition = 'none';
-      slider.style.transform   = `translateX(${-scrollAmount}px)`;
+      slider.style.transform = `translateX(${-scrollAmount}px)`;
     } else if (scrollAmount < 0) {
       scrollAmount += maxScroll;
       slider.style.transition = 'none';
-      slider.style.transform   = `translateX(${-scrollAmount}px)`;
+      slider.style.transform = `translateX(${-scrollAmount}px)`;
     }
   });
 
-  window.addEventListener('resize', () => {
+  function resetSlider() {
     rebuildSlider();
     setCardWidths();
-    scrollAmount    = 0;
+    scrollAmount = 0;
     isTransitioning = false;
     slider.style.transition = 'none';
-    slider.style.transform   = 'translateX(0)';
-  });
-
-  // init — works whether DOMContentLoaded has fired or not
-  if (document.readyState === 'loading') {
-    window.addEventListener('DOMContentLoaded', () => {
-      rebuildSlider();
-      setCardWidths();
-    });
-  } else {
-    rebuildSlider();
-    setCardWidths();
+    slider.style.transform = 'translateX(0)';
   }
 
-  // expose for onclick buttons
-  window.scrollSlider = scrollSlider;
-}
+  window.addEventListener('resize', resetSlider);
+
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', resetSlider, { once: true });
+  } else {
+    resetSlider();
+  }
+});
 
 
 

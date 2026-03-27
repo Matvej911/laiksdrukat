@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="hero-visual">
-      <img src="<%= it.site.home.heroImage %>" alt="<%= it.site.home.heroAlt %>" class="hero-img">
+      <img src="<%= it.site.home.heroImage %>" alt="<%= it.site.home.heroAlt %>" class="hero-img" width="960" height="720">
     </div>
   </div>
 </section>
@@ -42,7 +42,7 @@
     <div class="portfolio-grid">
       <% for (const item of it.site.portfolio) { %>
         <a href="<%= item.path %>" class="portfolio-card">
-          <img src="<%= item.image %>" alt="<%= item.title %>">
+          <img src="<%= item.image %>" alt="<%= item.title %>" width="1200" height="900">
         </a>
       <% } %>
     </div>
@@ -65,7 +65,7 @@
         <div class="portfolio-track">
           <% for (const item of it.site.portfolioSlider) { %>
             <div class="portfolio-item <%= item.type %>">
-              <img src="<%= item.image %>" alt="<%= item.alt %>">
+              <img src="<%= item.image %>" alt="<%= item.alt %>" width="1200" height="900">
             </div>
           <% } %>
         </div>
@@ -95,8 +95,8 @@
     </div>
 
     <div class="products-slider-wrapper">
-      <button class="slider-btn left" type="button" onclick="scrollSlider(-1)">
-        <img src="/images/web-design/angle-left.svg" alt="left">
+      <button class="slider-btn left" type="button">
+        <img src="/images/web-design/angle-left.svg" alt="left" width="24" height="24">
       </button>
       <div class="products-slider-track">
         <div class="products-slider">
@@ -105,7 +105,7 @@
             <a href="/veikals/<%= p.slug %>/">
               <div class="product-img">
                 <% if (p.image) { %>
-                  <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy">
+                  <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy" width="800" height="800">
                 <% } else { %>
                   <div class="product-img-placeholder">LD</div>
                 <% } %>
@@ -123,8 +123,8 @@
           <% } %>
         </div>
       </div>
-      <button class="slider-btn right" type="button" onclick="scrollSlider(1)">
-        <img src="/images/web-design/angle-right.svg" alt="right">
+      <button class="slider-btn right" type="button">
+        <img src="/images/web-design/angle-right.svg" alt="right" width="24" height="24">
       </button>
     </div>
   </div>

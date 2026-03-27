@@ -18,41 +18,47 @@ model Category {
 }
 
 model Product {
-  id          Int         @id @default(autoincrement())
-  name        String
-  slug        String      @unique
-  description String?     @db.Text
-  price       Decimal     @db.Decimal(10, 2)
-  priceVat    Boolean     @default(false) // true = price includes VAT
-  image       String?
+  id           Int     @id @default(autoincrement())
+  name         String
+  slug         String  @unique
+  description  String? @db.Text
+  price        Decimal @db.Decimal(10, 2)
+  priceVat     Boolean @default(false) // true = price includes VAT
+  image        String?
   imprintImage String?
-  stock       Int         @default(0)
-  active      Boolean     @default(true)
-  featured     Boolean     @default(false) 
+  stock        Int     @default(0)
+  active       Boolean @default(true)
+  featured     Boolean @default(false)
 
-  sortOrder    Int         @default(0)
-  category    Category    @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  orderItems  OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  sortOrder  Int         @default(0)
+  category   Category    @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  orderItems OrderItem[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([active, featured, sortOrder])
+  @@index([categoryId, active, sortOrder])
 }
 
 model Order {
-  id          Int         @id @default(autoincrement())
-  publicId    String      @unique @default(uuid())
-  name        String
-  email       String
-  phone       String?
-  address     String?
-  city        String?
-  zip         String?
-  note        String?     @db.Text
-  status      OrderStatus @default(PENDING)
-  total       Decimal     @db.Decimal(10, 2)
-  items       OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id        Int         @id @default(autoincrement())
+  publicId  String      @unique @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  address   String?
+  city      String?
+  zip       String?
+  note      String?     @db.Text
+  status    OrderStatus @default(PENDING)
+  total     Decimal     @db.Decimal(10, 2)
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([createdAt])
+  @@index([status, createdAt])
 }
 
 model OrderItem {
@@ -61,7 +67,7 @@ model OrderItem {
   orderId   Int
   product   Product @relation(fields: [productId], references: [id])
   productId Int
-  name      String  // snapshot of product name at time of order
+  name      String // snapshot of product name at time of order
   price     Decimal @db.Decimal(10, 2)
   quantity  Int
   options   Json?
@@ -85,7 +91,7 @@ model Upload {
 model AdminUser {
   id        Int      @id @default(autoincrement())
   username  String   @unique
-  password  String   // bcrypt hashed
+  password  String // bcrypt hashed
   createdAt DateTime @default(now())
 }
 

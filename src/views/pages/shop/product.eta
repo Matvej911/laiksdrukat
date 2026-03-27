@@ -25,7 +25,7 @@
     <div class="product-image-block">
       <div class="product-image-wrap">
         <% if (it.product.image) { %>
-          <img src="<%= it.product.image %>" alt="<%= it.product.name %>" loading="lazy">
+          <img src="<%= it.product.image %>" alt="<%= it.product.name %>" loading="lazy" width="1200" height="1200">
         <% } else { %>
           <div class="product-image-placeholder">LD</div>
         <% } %>
@@ -194,7 +194,7 @@
           <a href="/veikals/<%= p.slug %>/" class="shop-product-link">
             <div class="shop-product-img">
               <% if (p.image) { %>
-                <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy">
+                <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy" width="800" height="800">
               <% } else { %>
                 <div class="shop-product-placeholder">LD</div>
               <% } %>

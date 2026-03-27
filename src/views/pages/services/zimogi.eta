@@ -38,7 +38,7 @@
       </div>
       <div class="zimogi-hero-visual">
         <div class="zimogi-hero-img-wrap">
-          <img src="/images/web-design/col9p.png" alt="Zīmogi" loading="lazy">
+          <img src="/images/web-design/col9p.png" alt="Zīmogi" loading="lazy" width="960" height="720">
         </div>
       
       </div>
@@ -139,36 +139,36 @@
     </div>
 
     <div class="products-slider-wrapper">
-      <button class="slider-btn left" type="button" onclick="scrollSlider(-1)">
-        <img src="/images/web-design/angle-left.svg" alt="left">
+      <button class="slider-btn left" type="button">
+        <img src="/images/web-design/angle-left.svg" alt="left" width="24" height="24">
       </button>
       <div class="products-slider-track">
         <div class="products-slider">
           <% for (const p of it.products) { %>
-            <article class="product-card">
-              <a href="/veikals/<%= p.slug %>/">
-                <div class="product-img">
-                  <% if (p.image) { %>
-                    <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy">
-                  <% } else { %>
-                    <div class="product-img-placeholder">LD</div>
-                  <% } %>
+          <article class="product-card">
+            <a href="/veikals/<%= p.slug %>/">
+              <div class="product-img">
+                <% if (p.image) { %>
+                    <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy" width="800" height="800">
+                <% } else { %>
+                  <div class="product-img-placeholder">LD</div>
+                <% } %>
+              </div>
+              <div class="product-info">
+                <div class="product-category"><%= p.category.name %></div>
+                <div class="product-name"><%= p.name %></div>
+                <div class="product-price">
+                  <%= Number(p.price).toFixed(2) %> €
+                  <span class="product-price-vat">+ PVN</span>
                 </div>
-                <div class="product-info">
-                  <div class="product-category"><%= p.category ? p.category.name : '' %></div>
-                  <div class="product-name"><%= p.name %></div>
-                  <div class="product-price">
-                    <%= Number(p.price).toFixed(2) %> €
-                    <span class="product-price-vat">+ PVN</span>
-                  </div>
-                </div>
-              </a>
-            </article>
+              </div>
+            </a>
+          </article>
           <% } %>
         </div>
       </div>
-      <button class="slider-btn right" type="button" onclick="scrollSlider(1)">
-        <img src="/images/web-design/angle-right.svg" alt="right">
+      <button class="slider-btn right" type="button">
+        <img src="/images/web-design/angle-right.svg" alt="right" width="24" height="24">
       </button>
     </div>
 

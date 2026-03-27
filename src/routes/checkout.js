@@ -152,20 +152,26 @@ async function checkoutRoutes(fastify) {
       }
 
       const attachments = []
-      const seenAttachmentTokens = new Set()
-      for (const token of uploadTokens) {
-        if (seenAttachmentTokens.has(token)) continue
-
-        const upload = await fastify.db.upload.findUnique({ where: { token } })
-        if (!upload || !upload.isPrivate) continue
-
-        const filepath = resolveUploadPath(upload.relativePath)
-        attachments.push({
-          filename: upload.originalName,
-          path: filepath,
+      if (uploadTokens.size > 0) {
+        const uploads = await fastify.db.upload.findMany({
+          where: {
+            token: { in: [...uploadTokens] },
+            isPrivate: true,
+          },
+          select: {
+            token: true,
+            originalName: true,
+            relativePath: true,
+          },
         })
 
-        seenAttachmentTokens.add(token)
+        for (const upload of uploads) {
+          const filepath = resolveUploadPath(upload.relativePath)
+          attachments.push({
+            filename: upload.originalName,
+            path: filepath,
+          })
+        }
       }
 
       const ownerResult = await sendOwnerOrderNotification({

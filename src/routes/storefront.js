@@ -16,6 +16,28 @@ const CONTACT_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const CONTACT_RATE_LIMIT_MAX = 5
 const contactAttempts = new Map()
 const currentYear = new Date().getFullYear()
+
+const productCardSelect = {
+  id: true,
+  name: true,
+  slug: true,
+  price: true,
+  image: true,
+  category: {
+    select: {
+      name: true,
+    },
+  },
+}
+
+const categoryListSelect = {
+  name: true,
+  slug: true,
+  _count: {
+    select: { products: true },
+  },
+}
+
 function getContactRateLimitState(ip) {
   const now = Date.now()
   const attempts = (contactAttempts.get(ip) || []).filter(t => now - t < CONTACT_RATE_LIMIT_WINDOW_MS)
@@ -154,15 +176,11 @@ async function storefrontRoutes(fastify) {
     const [products, categories] = await Promise.all([
       fastify.db.product.findMany({
         where: { active: true, featured: true, },
-        include: { category: true },
+        select: productCardSelect,
         orderBy: { sortOrder: 'asc' },
       }),
       fastify.db.category.findMany({
-        include: {
-          _count: {
-            select: { products: true },
-          },
-        },
+        select: categoryListSelect,
         orderBy: { name: 'asc' },
       }),
     ])
@@ -289,7 +307,7 @@ async function storefrontRoutes(fastify) {
             featured: true,
             category: { slug: 'zimogi' },
           },
-          include: { category: true },
+          select: productCardSelect,
           orderBy: { sortOrder: 'asc' },
         })
 

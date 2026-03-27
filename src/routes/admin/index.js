@@ -255,7 +255,19 @@ async function adminRoutes(fastify) {
 
   fastify.get('/products', { preHandler: fastify.requireAdmin }, async (request, reply) => {
     const products = await fastify.db.product.findMany({
-      include: { category: true },
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        price: true,
+        stock: true,
+        active: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
       orderBy: { sortOrder: 'asc' },
     })
     return reply.view('admin/products', {

@@ -7,6 +7,7 @@ import FastifyCookie from '@fastify/cookie'
 import FastifySession from '@fastify/session'
 import FastifyCsrf from '@fastify/csrf-protection'
 import FastifyHelmet from '@fastify/helmet'
+import FastifyCompress from '@fastify/compress'
 import { Eta } from 'eta'
 import { fileURLToPath } from 'url'
 import { join, dirname } from 'path'
@@ -118,10 +119,18 @@ await fastify.register(FastifyHelmet, {
   contentSecurityPolicy,
 })
 
+await fastify.register(FastifyCompress, {
+  global: true,
+  encodings: ['br', 'gzip', 'deflate'],
+})
+
 // Static files
 await fastify.register(FastifyStatic, {
   root: join(__dirname, '../public'),
   prefix: '/',
+  cacheControl: true,
+  immutable: isProduction,
+  maxAge: isProduction ? '30d' : 0,
 })
 
 // Body parsing

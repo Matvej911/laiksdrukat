@@ -36,6 +36,13 @@ async function cartPlugin(fastify) {
         id: { in: productIds },
         active: true,
       },
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        image: true,
+        stock: true,
+      },
     })
     const productMap = new Map(products.map((product) => [product.id, product]))
 

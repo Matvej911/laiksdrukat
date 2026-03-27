@@ -1,5 +1,45 @@
 import sanitizeHtml from 'sanitize-html'
 
+const productCardSelect = {
+  id: true,
+  name: true,
+  slug: true,
+  price: true,
+  image: true,
+  category: {
+    select: {
+      name: true,
+      slug: true,
+    },
+  },
+}
+
+const categoryListSelect = {
+  name: true,
+  slug: true,
+  _count: {
+    select: { products: true },
+  },
+}
+
+const productDetailSelect = {
+  id: true,
+  name: true,
+  slug: true,
+  description: true,
+  price: true,
+  image: true,
+  imprintImage: true,
+  stock: true,
+  active: true,
+  category: {
+    select: {
+      name: true,
+      slug: true,
+    },
+  },
+}
+
 async function shopRoutes(fastify, opts = {}) {
   const {
     includeListing = true,
@@ -41,15 +81,11 @@ async function shopRoutes(fastify, opts = {}) {
       const [products, categories] = await Promise.all([
         fastify.db.product.findMany({
           where: filters.where,
-          include: { category: true },
+          select: productCardSelect,
           orderBy: filters.orderBy,
         }),
         fastify.db.category.findMany({
-          include: {
-            _count: {
-              select: { products: true },
-            },
-          },
+          select: categoryListSelect,
           orderBy: { name: 'asc' },
         }),
       ])
@@ -87,15 +123,11 @@ async function shopRoutes(fastify, opts = {}) {
       const [products, categories] = await Promise.all([
         fastify.db.product.findMany({
           where: filters.where,
-          include: { category: true },
+          select: productCardSelect,
           orderBy: filters.orderBy,
         }),
         fastify.db.category.findMany({
-          include: {
-            _count: {
-              select: { products: true },
-            },
-          },
+          select: categoryListSelect,
           orderBy: { name: 'asc' },
         }),
       ])
@@ -121,7 +153,7 @@ async function shopRoutes(fastify, opts = {}) {
 
       const product = await fastify.db.product.findUnique({
         where: { slug },
-        include: { category: true },
+        select: productDetailSelect,
       })
 
       if (!product || !product.active) {
@@ -161,7 +193,7 @@ async function shopRoutes(fastify, opts = {}) {
             active: true,
             id: { in: recentlyViewedIds },
           },
-          include: { category: true },
+          select: productCardSelect,
         })
 
         // Prisma may not preserve the `in: [ids...]` order; reorder manually.

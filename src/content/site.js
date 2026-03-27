@@ -5,6 +5,11 @@ import { fileURLToPath } from 'url'
 const contactAddress = 'Asteru iela 16A, Jelgava, LV-3001'
 const currentYear = new Date().getFullYear()
 const portfolioImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.svg'])
+const isProduction = process.env.NODE_ENV === 'production'
+const SITE_CONTENT_TTL_MS = isProduction ? 10 * 60 * 1000 : 5 * 1000
+
+let cachedSiteContent = null
+let cachedSiteContentAt = 0
 
 function prettifyPortfolioName(filename) {
   return filename
@@ -46,6 +51,11 @@ const vizitkaртesSliderDir = new URL('../../public/images/slider-vizitkartes/'
 const autoGalleryTrack = new URL('../../public/images/car-portfolio/', import.meta.url)
 
 export function getSiteContent() {
+  const now = Date.now()
+  if (cachedSiteContent && now - cachedSiteContentAt < SITE_CONTENT_TTL_MS) {
+    return structuredClone(cachedSiteContent)
+  }
+
   const portfolioItems = readGallery(portfolioDir, '/images/portfolio')
   const vizitkaртesItems = readGallery(vizitkaртesSliderDir, '/images/slider-vizitkartes')
   const autoItems = readGallery(autoGalleryTrack, '/images/car-portfolio')
@@ -199,7 +209,10 @@ export function getSiteContent() {
       path: service.path
     }))
 
-  return content
+  cachedSiteContent = content
+  cachedSiteContentAt = now
+
+  return structuredClone(content)
 }
 
 

@@ -21,6 +21,10 @@ import {
   sendStoredFile,
   validateImageUpload,
 } from '../../lib/uploads.js'
+import {
+  removeProductFromCatalogCsv,
+  upsertProductInCatalogCsv,
+} from '../../lib/catalog-csv.js'
 
 
 const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
@@ -283,11 +287,15 @@ async function adminRoutes(fastify) {
     const featured = fields.featured === 'on'
 
     try {
-      await fastify.db.product.create({
+      const createdProduct = await fastify.db.product.create({
         data: {
           ...payload,
           featured,
-        }
+        },
+        include: { category: true },
+      })
+      await upsertProductInCatalogCsv(createdProduct, {
+        categoryName: createdProduct.category?.name,
       })
       return reply.redirect('/admin/products')
     } catch (err) {
@@ -339,12 +347,18 @@ async function adminRoutes(fastify) {
     const featured = fields.featured === 'on'
 
     try {
-      await fastify.db.product.update({
+      const updatedProduct = await fastify.db.product.update({
         where: { id: productId },
         data: {
           ...payload,
           featured,
-        }
+        },
+        include: { category: true },
+      })
+      await upsertProductInCatalogCsv(updatedProduct, {
+        categoryName: updatedProduct.category?.name,
+        previousSlug: existingProduct?.slug,
+        previousName: existingProduct?.name,
       })
       return reply.redirect('/admin/products')
     } catch (err) {
@@ -367,15 +381,28 @@ async function adminRoutes(fastify) {
   })
 
   fastify.post('/products/:id/visibility', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
-    await fastify.db.product.update({
+    const updatedProduct = await fastify.db.product.update({
       where: { id: Number(request.params.id) },
       data: { active: request.body.active === 'true' },
+      include: { category: true },
+    })
+    await upsertProductInCatalogCsv(updatedProduct, {
+      categoryName: updatedProduct.category?.name,
     })
     return reply.redirect('/admin/products')
   })
 
   fastify.post('/products/:id/delete', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
+    const product = await fastify.db.product.findUnique({
+      where: { id: Number(request.params.id) },
+    })
     await fastify.db.product.delete({ where: { id: Number(request.params.id) } })
+    if (product) {
+      await removeProductFromCatalogCsv({
+        slug: product.slug,
+        name: product.name,
+      })
+    }
     return reply.redirect('/admin/products')
   })
 
@@ -471,12 +498,58 @@ async function adminRoutes(fastify) {
   // --- SETTINGS ---
 
   fastify.get('/settings', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const saved = request.query.saved || ''
     return reply.view('admin/settings', {
       title: 'Admin | Iestatījumi',
-      success: request.query.saved === '1',
+      saved,
       error: null,
       csrf: await reply.generateCsrf(),
     })
+  })
+
+  fastify.post('/settings/change-password', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
+    const { currentPassword, newPassword, confirmPassword } = request.body
+
+    if (!newPassword || String(newPassword).length < 8) {
+      return reply.view('admin/settings', {
+        title: 'Admin | Iestatījumi',
+        error: 'Jaunajai parolei jābūt vismaz 8 rakstzīmes garai.',
+        saved: '',
+        csrf: await reply.generateCsrf(),
+      })
+    }
+
+    if (newPassword !== confirmPassword) {
+      return reply.view('admin/settings', {
+        title: 'Admin | Iestatījumi',
+        error: 'Jaunā parole un atkārtotā parole nesakrīt.',
+        saved: '',
+        csrf: await reply.generateCsrf(),
+      })
+    }
+
+    const user = await fastify.db.adminUser.findUnique({
+      where: { id: request.session.adminId }
+    })
+
+    const valid = await bcrypt.compare(currentPassword, user.password)
+    if (!valid) {
+      return reply.view('admin/settings', {
+        title: 'Admin | Iestatījumi',
+        error: 'Pašreizējā parole nav pareiza.',
+        saved: '',
+        csrf: await reply.generateCsrf(),
+      })
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+    await fastify.db.adminUser.update({
+      where: { id: request.session.adminId },
+      data: { password: hashedPassword }
+    })
+
+    return reply.redirect('/admin/settings?saved=password')
   })
 
   fastify.post('/settings/change-username', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
@@ -486,7 +559,7 @@ async function adminRoutes(fastify) {
     return reply.view('admin/settings', {
       title: 'Admin | Iestatījumi',
       error: 'Lietotājvārdam jābūt vismaz 4 rakstzīmes garam.',
-      success: false,
+      saved: '',
       csrf: await reply.generateCsrf(),
     })
   }
@@ -500,7 +573,7 @@ async function adminRoutes(fastify) {
     return reply.view('admin/settings', {
       title: 'Admin | Iestatījumi',
       error: 'Parole nav pareiza.',
-      success: false,
+      saved: '',
       csrf: await reply.generateCsrf(),
     })
   }
@@ -513,7 +586,7 @@ async function adminRoutes(fastify) {
     return reply.view('admin/settings', {
       title: 'Admin | Iestatījumi',
       error: 'Šāds lietotājvārds jau eksistē.',
-      success: false,
+      saved: '',
       csrf: await reply.generateCsrf(),
     })
   }
@@ -523,7 +596,7 @@ async function adminRoutes(fastify) {
     data: { username: newUsername }
   })
 
-  return reply.redirect('/admin/settings?saved=1')
+  return reply.redirect('/admin/settings?saved=username')
 })
 
   // --- GALLERIES ---

@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= it.title || it.site.meta.title %></title>
   <meta name="description" content="<%= it.description || it.site.meta.description %>">
+  <% if (it.site.meta.favicon && it.site.meta.favicon.icon) { %>
+    <link rel="icon" href="<%= it.site.meta.favicon.icon %>">
+  <% } %>
+  <% if (it.site.meta.favicon && it.site.meta.favicon.svg) { %>
+    <link rel="icon" type="image/svg+xml" href="<%= it.site.meta.favicon.svg %>">
+  <% } %>
+  <% if (it.site.meta.favicon && it.site.meta.favicon.appleTouch) { %>
+    <link rel="apple-touch-icon" href="<%= it.site.meta.favicon.appleTouch %>">
+  <% } %>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">

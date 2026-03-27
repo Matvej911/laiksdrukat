@@ -4,8 +4,11 @@
   <h1>Iestatījumi</h1>
 </div>
 
-<% if (it.success) { %>
+<% if (it.saved === 'password') { %>
   <div class="admin-alert admin-alert-success">Parole veiksmīgi nomainīta!</div>
+<% } %>
+<% if (it.saved === 'username') { %>
+  <div class="admin-alert admin-alert-success">Lietotājvārds veiksmīgi nomainīts!</div>
 <% } %>
 <% if (it.error) { %>
   <div class="admin-alert admin-alert-error"><%= it.error %></div>

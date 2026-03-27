@@ -1,8 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
-import { access, readFile, readdir } from 'fs/promises'
+import { access, readdir } from 'fs/promises'
 import { constants } from 'fs'
 import { basename, join } from 'path'
+import { readCatalogCsv } from '../src/lib/catalog-csv.js'
 
 const prisma = new PrismaClient()
 const CSV_PATH = join(process.cwd(), 'export-products.csv')
@@ -15,71 +16,6 @@ const LOCAL_IMAGE_DIRECTORIES = {
     filesystemPath: join(process.cwd(), 'public', 'images', 'products', 'tintes'),
     publicPrefix: '/images/products/tintes',
   },
-}
-
-function parseCsv(text) {
-  const rows = []
-  let row = []
-  let field = ''
-  let inQuotes = false
-
-  for (let i = 0; i < text.length; i += 1) {
-    const char = text[i]
-
-    if (char === '"') {
-      if (inQuotes && text[i + 1] === '"') {
-        field += '"'
-        i += 1
-      } else {
-        inQuotes = !inQuotes
-      }
-      continue
-    }
-
-    if (char === ',' && !inQuotes) {
-      row.push(field)
-      field = ''
-      continue
-    }
-
-    if ((char === '\n' || char === '\r') && !inQuotes) {
-      if (char === '\r' && text[i + 1] === '\n') {
-        i += 1
-      }
-
-      row.push(field)
-      if (row.some((value) => value !== '')) {
-        rows.push(row)
-      }
-      row = []
-      field = ''
-      continue
-    }
-
-    field += char
-  }
-
-  if (field !== '' || row.length > 0) {
-    row.push(field)
-    if (row.some((value) => value !== '')) {
-      rows.push(row)
-    }
-  }
-
-  return rows
-}
-
-function toObjects(text) {
-  const rows = parseCsv(text)
-  const headers = rows.shift().map((header) => header.replace(/^\uFEFF/, '').trim())
-
-  return rows.map((row) => {
-    const entry = {}
-    headers.forEach((header, index) => {
-      entry[header] = row[index] ?? ''
-    })
-    return entry
-  })
 }
 
 function slugify(value) {
@@ -232,7 +168,7 @@ function buildProductSlug(name, categorySlug) {
 
 async function seedFromCsv() {
   await access(CSV_PATH, constants.F_OK)
-  const rows = toObjects(await readFile(CSV_PATH, 'utf8'))
+  const { items: rows } = await readCatalogCsv()
   const localImageIndex = await buildLocalImageIndex()
   const categoryCache = new Map()
   let imported = 0
@@ -265,13 +201,14 @@ async function seedFromCsv() {
     )
     const product = {
       name,
-      slug: buildProductSlug(name, categorySlug),
+      slug: String(row.Slug || '').trim() || buildProductSlug(name, categorySlug),
       description,
       price: normalizePrice(row['Parastā cena:'] || row['Akcijas cena']),
       image: findLocalImage(localImageIndex, categorySlug, extractImage(row['Attēli'])) || extractImage(row['Attēli']),
-      imprintImage: extractFirstLocalImageFromDescription(description),
+      imprintImage: row['Nospieduma paraugs'] || extractFirstLocalImageFromDescription(description),
       stock: normalizeStock(row),
-      active: true,
+      active: String(row['Publicēts'] || '') === '1',
+      featured: String(row['Izcelts?'] || '') === '1',
       categoryId,
     }
 

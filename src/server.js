@@ -38,6 +38,8 @@ const trustProxy = process.env.TRUST_PROXY
 const publicAppUrl = process.env.APP_URL?.trim()
   || `http://localhost:${process.env.PORT || 3000}`
 const secureCookies = isProduction && publicAppUrl.startsWith('https://')
+const assetVersion = process.env.ASSET_VERSION?.trim()
+  || String(Math.floor(Date.now() / 1000))
 const contentSecurityPolicy = {
   directives: {
     defaultSrc: ["'self'"],
@@ -110,6 +112,7 @@ await fastify.register(FastifyView, {
     currentYear: new Date().getFullYear(),
     site: siteContent,
     isProduction,
+    assetVersion,
   },
 })
 

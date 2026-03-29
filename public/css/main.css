@@ -362,7 +362,7 @@ p {
 
 .dropdown-menu a:hover {
   background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  color: #4a38c2;
   padding-left: 18px; /* ← slides right on hover */
 }
 
@@ -418,6 +418,7 @@ p {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.1);
     margin-top: 8px;
+    
   }
 }
 
@@ -5492,7 +5493,7 @@ body:has(.cart-section) .header-waves {
 
 .vr-type-img img {
   width: 100%;
-  height: 400px;
+  height: 350px;
 }
 
 /* PROCESS */
@@ -10735,6 +10736,16 @@ body:has(.cart-section) .header-waves {
   gap: 10px;
   flex-wrap: wrap;
   margin-top: 18px;
+}
+
+.cookie-consent__actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.cookie-consent__actions .cookie-btn {
+  width: 100%;
 }
 
 .cookie-btn {

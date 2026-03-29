@@ -137,32 +137,37 @@
           style="<%= formData.deliveryType === 'omniva' ? '' : 'display:none' %>">
           <div class="checkout-form-section-header">
             <div class="checkout-form-section-num">3</div>
-            <h2>Piegādes adrese</h2>
+            <h2>Omniva pakomāts</h2>
           </div>
           <div class="checkout-fields">
             <div class="form-group">
               <label class="co-label">Valsts</label>
-              <select name="country" class="co-input co-select">
-                <option value="Latvija">🇱🇻 Latvija</option>
-              </select>
+              <input type="hidden" name="country" value="Latvija">
+              <div class="co-static-field">
+                <span class="co-static-badge">LV</span>
+                <span>Latvija</span>
+              </div>
             </div>
             <div class="form-group">
-              <label class="co-label">Omniva pakomāta adrese <span class="required">*</span></label>
-              <input type="text" name="address" class="co-input" 
-                placeholder="Piem. Brīvības iela 1, Rīga" 
-                value="<%= formData.address || '' %>">
-            </div>
-            <div class="checkout-field-row">
-              <div class="form-group">
-                <label class="co-label">Pilsēta <span class="required">*</span></label>
-                <input type="text" name="city" class="co-input" 
-                  value="<%= formData.city || '' %>" placeholder="Rīga">
-              </div>
-              <div class="form-group">
-                <label class="co-label">Pasta indekss <span class="required">*</span></label>
-                <input type="text" name="zip" class="co-input" 
-                  value="<%= formData.zip || '' %>" placeholder="LV-1001">
-              </div>
+              <label class="co-label">Izvēlieties Omniva pakomātu <span class="required">*</span></label>
+              <select name="address" class="co-input co-select co-locker-select" data-omniva-select>
+                <option value="">Izvēlieties pakomātu...</option>
+                <% for (const group of (it.omnivaLockerGroups || [])) { %>
+                  <optgroup label="<%= group.city %>">
+                    <% for (const locker of group.lockers) { %>
+                      <option
+                        value="<%= locker.label %>"
+                        data-city="<%= locker.city %>"
+                        <%= formData.address === locker.label ? 'selected' : '' %>>
+                        <%= locker.name %><%= locker.street ? ' — ' + locker.street : '' %>
+                      </option>
+                    <% } %>
+                  </optgroup>
+                <% } %>
+              </select>
+              <p class="co-field-hint">Piegāde ir pieejama tikai Latvijā. Izvēlieties sev ērtāko pakomātu.</p>
+              <input type="hidden" name="city" value="<%= formData.city || '' %>" data-omniva-city>
+              <input type="hidden" name="zip" value="<%= formData.zip || '' %>">
             </div>
           </div>
         </div>
@@ -310,21 +315,32 @@
 
 
 <script>
+function syncOmnivaLockerMeta() {
+  var select = document.querySelector('[data-omniva-select]')
+  var cityInput = document.querySelector('[data-omniva-city]')
+  if (!select || !cityInput) return
+
+  var option = select.options[select.selectedIndex]
+  cityInput.value = option ? (option.dataset.city || '') : ''
+}
+
 function toggleDelivery(value) {
-  console.log('toggleDelivery called with:', value)
-  console.log('addressSection:', document.getElementById('addressSection'))
-  console.log('deliveryItem:', document.getElementById('co-delivery-item'))
   var addressSection = document.getElementById('addressSection')
   var addressInputs = addressSection.querySelectorAll('input, select')
 
   if (value === 'omniva') {
     addressSection.style.display = 'block'
     addressInputs.forEach(function(input) {
-      if (['address','city','zip'].includes(input.name)) input.required = true
+      if (input.name === 'address') input.required = true
     })
+    syncOmnivaLockerMeta()
   } else {
     addressSection.style.display = 'none'
-    addressInputs.forEach(function(input) { input.required = false })
+    addressInputs.forEach(function(input) {
+      input.required = false
+      if (input.name === 'address' && input.tagName === 'SELECT') input.value = ''
+      if (input.name === 'city' || input.name === 'zip') input.value = ''
+    })
   }
 
   var basePreVat = <%= Number(it.total).toFixed(2) %>;
@@ -347,16 +363,15 @@ function toggleDelivery(value) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM loaded')
-  console.log('payment options found:', document.querySelectorAll('.co-payment-option').length)
-  console.log('delivery item found:', document.getElementById('co-delivery-item'))
-  console.log('selected radio:', document.querySelector('input[name="deliveryType"]:checked'))
+  var omnivaSelect = document.querySelector('[data-omniva-select]')
+  if (omnivaSelect) {
+    omnivaSelect.addEventListener('change', syncOmnivaLockerMeta)
+    syncOmnivaLockerMeta()
+  }
 
   document.querySelectorAll('.co-payment-option').forEach(function(label) {
-    console.log('attaching click to label:', label)
     label.addEventListener('click', function() {
       var radio = label.querySelector('input[name="deliveryType"]')
-      console.log('label clicked, radio:', radio, 'value:', radio ? radio.value : 'none')
       if (radio) setTimeout(function() { toggleDelivery(radio.value) }, 0)
     })
   })

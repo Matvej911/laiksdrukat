@@ -1,3 +1,75 @@
+@font-face {
+  font-family: 'ManropeLocal';
+  src: url('/fonts/manrope/manrope-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ManropeLocal';
+  src: url('/fonts/manrope/manrope-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ManropeLocal';
+  src: url('/fonts/manrope/manrope-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ManropeLocal';
+  src: url('/fonts/manrope/manrope-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ManropeLocal';
+  src: url('/fonts/manrope/manrope-800.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SoraLocal';
+  src: url('/fonts/sora/sora-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SoraLocal';
+  src: url('/fonts/sora/sora-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SoraLocal';
+  src: url('/fonts/sora/sora-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SoraLocal';
+  src: url('/fonts/sora/sora-800.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg: #ffffff;
   --surface: #fffaf4;
@@ -18,8 +90,8 @@
   --radius-lg: 32px;
   --shadow: 0 18px 50px rgba(22, 19, 16, 0.08);
   --shadow-soft: 0 10px 30px rgba(22, 19, 16, 0.06);
-  --font-body: 'Manrope', system-ui, sans-serif;
-  --font-heading: 'Sora', 'Manrope', system-ui, sans-serif;
+  --font-body: 'ManropeLocal', 'Manrope', system-ui, sans-serif;
+  --font-heading: 'SoraLocal', 'Sora', 'ManropeLocal', 'Manrope', system-ui, sans-serif;
 }
 
 
@@ -276,7 +348,7 @@ p {
 
 
 .dropdown-menu a {
-  color: rgba(#5f4bd8, 0.85);
+  color: rgba(255, 255, 255, 0.92);
   border-radius: 10px;
   transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease, padding-left 0.18s ease;
   padding-left: 12px;
@@ -290,7 +362,7 @@ p {
 
 .dropdown-menu a:hover {
   background: rgba(255, 255, 255, 0.12);
-  color: #5f4bd8;
+  color: #ffffff;
   padding-left: 18px; /* ← slides right on hover */
 }
 
@@ -556,7 +628,9 @@ p {
   flex-shrink: 0;
 }
 
-.home-gallery-btn:hover { background: rgba(255,255,255,0.25); }
+.home-gallery-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
 
 .home-gallery-btn svg {
   width: 20px;
@@ -1030,6 +1104,9 @@ p {
 /* KONTAKTI */
 
 /* ── CONTACT HERO ─────────────────────────────── */
+
+.page-kontakti .header-waves { background: #3a2a97; }
+
 .contact-hero-section {
   background: #3a2a97;
   padding: 20px 0 80px;
@@ -1964,6 +2041,10 @@ body:has(.cart-section) .header-waves {
   margin-bottom: 6px;
 }
 
+.cart-item-details {
+  min-width: 0;
+}
+
 .cart-item-options {
   display: flex;
   flex-direction: column;
@@ -2253,6 +2334,19 @@ body:has(.cart-section) .header-waves {
     grid-template-rows: auto auto auto;
     gap: 10px;
   }
+
+  .cart-item-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .cart-item-name,
+  .cart-item-option,
+  .cart-item-file,
+  .cart-item-price-mobile {
+    overflow-wrap: anywhere;
+  }
+
   .cart-item-price { display: none; }
   .cart-item-price-mobile {
     display: block;
@@ -2261,7 +2355,12 @@ body:has(.cart-section) .header-waves {
     font-weight: 600;
     margin-top: 4px;
   }
-  .cart-item-qty { grid-column: 2; }
+  .cart-item-qty {
+    grid-column: 2;
+    justify-self: start;
+    width: fit-content;
+    max-width: 100%;
+  }
   .cart-item-total { grid-column: 2; text-align: left; }
   .cart-item-remove { grid-row: 1; grid-column: 3; }
 }
@@ -3525,6 +3624,48 @@ body:has(.cart-section) .header-waves {
   background-position: right 14px center;
   padding-right: 36px;
   cursor: pointer;
+}
+
+.co-locker-select {
+  min-height: 52px;
+  font-weight: 600;
+}
+
+.co-static-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid rgba(95,75,216,0.12);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fcfbff 0%, #f4f1ff 100%);
+  color: #1a1464;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.co-static-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(95,75,216,0.12);
+  color: #5f4bd8;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.co-field-hint {
+  margin-top: 10px;
+  color: #7c73ac;
+  font-size: 12px;
+  line-height: 1.55;
 }
 
 .co-textarea {
@@ -6176,6 +6317,19 @@ body:has(.cart-section) .header-waves {
   .vk-why-grid { grid-template-columns: 1fr; }
   .vk-form-row { grid-template-columns: 1fr; }
   .vk-form { padding: 24px; }
+
+  .vr-type-img img {
+    height: 280px;
+  }
+}
+
+@media (max-width: 400px) {
+  .vk-type-img img {
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+    background: #fff;
+  }
 }
 
 
@@ -10154,12 +10308,112 @@ body:has(.cart-section) .header-waves {
   }
 
   .home-gallery-slider {
+    display: block;
     gap: 10px;
   }
 
   .home-gallery-btn {
-    width: 40px;
-    height: 40px;
+    position: absolute;
+    top: 50%;
+    z-index: 4;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    transition: transform 0.18s ease;
+    transform: translateY(-50%);
+  }
+
+  .home-gallery-btn.left {
+    left: 14px;
+  }
+
+  .home-gallery-btn.right {
+    right: 14px;
+  }
+
+  .home-gallery-btn:hover {
+    background: transparent;
+    transform: translateY(-50%) scale(1.06);
+  }
+
+  .home-gallery-btn svg {
+    width: 34px;
+    height: 34px;
+    filter: drop-shadow(0 2px 8px rgba(17, 10, 66, 0.45));
+  }
+
+  .au-gallery-slider,
+  .vk-gallery-slider {
+    position: relative;
+    display: block;
+  }
+
+  .au-gallery-track-wrap,
+  .vk-gallery-track-wrap {
+    width: 100%;
+    border-radius: 24px;
+  }
+
+  .au-gallery-btn,
+  .vk-gallery-btn {
+    position: absolute;
+    top: 50%;
+    z-index: 4;
+    display: flex;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    transform: translateY(-50%);
+  }
+
+  .au-gallery-btn.left,
+  .vk-gallery-btn.left {
+    left: 10px;
+  }
+
+  .au-gallery-btn.right,
+  .vk-gallery-btn.right {
+    right: 10px;
+  }
+
+  .au-gallery-btn svg,
+  .vk-gallery-btn svg {
+    width: 28px;
+    height: 28px;
+    stroke: #fff;
+    filter: drop-shadow(0 2px 8px rgba(17, 10, 66, 0.45));
+  }
+
+  .au-gallery-btn:hover,
+  .vk-gallery-btn:hover {
+    background: transparent;
+  }
+
+  .page-auto .portfolio-track,
+  .page-vizitkartes .portfolio-track {
+    gap: 0;
+  }
+
+  .page-auto .portfolio-item.horizontal,
+  .page-auto .portfolio-item.vertical,
+  .page-vizitkartes .portfolio-item.horizontal,
+  .page-vizitkartes .portfolio-item.vertical {
+    min-width: 100%;
+    overflow: hidden;
+    border-radius: 24px;
+  }
+
+  .page-auto .portfolio-item img,
+  .page-vizitkartes .portfolio-item img {
+    height: 360px;
+    border-radius: 0;
   }
 
   .portfolio-item.horizontal,

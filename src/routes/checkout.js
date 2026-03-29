@@ -4,6 +4,7 @@ import {
   sendOwnerOrderNotification,
 } from '../lib/mailer.js'
 import { resolveUploadPath } from '../lib/uploads.js'
+import { getOmnivaLockerGroups } from '../lib/omniva-lockers.js'
 
 const CHECKOUT_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000
 const CHECKOUT_RATE_LIMIT_MAX = 5
@@ -29,6 +30,8 @@ function recordCheckoutAttempt(ip) {
 }
 
 async function checkoutRoutes(fastify) {
+  const omnivaLockerGroups = getOmnivaLockerGroups()
+
   // Checkout form
   fastify.get('/', async (request, reply) => {
     const cart = await fastify.getValidatedCart(request)
@@ -38,6 +41,7 @@ async function checkoutRoutes(fastify) {
       title: 'Checkout | Laiks Drukāt',
       cart,
       total: await fastify.validatedCartTotal(request), //
+      omnivaLockerGroups,
       csrf: await reply.generateCsrf(),
     })
   })
@@ -61,13 +65,14 @@ async function checkoutRoutes(fastify) {
     } = request.body
     
     const needsAddress = deliveryType === 'omniva'
-    if (!firstName || !lastName || !email || (needsAddress && (!address || !city || !zip))) {
+    if (!firstName || !lastName || !email || (needsAddress && !address)) {
       return reply.view('pages/checkout', {
         title: 'Checkout | Laiks Drukāt',
         cart,
         total: await fastify.validatedCartTotal(request),
         error: 'Lūdzu aizpildiet visus obligātos laukus.',
         formData: request.body,
+        omnivaLockerGroups,
         csrf: await reply.generateCsrf(),
       })
     }
@@ -80,6 +85,7 @@ async function checkoutRoutes(fastify) {
         total: await fastify.validatedCartTotal(request),
         error: 'Pārāk daudz pasūtījumu no šīs IP adreses. Lūdzu mēģiniet vēlreiz pēc stundas.',
         formData: request.body,
+        omnivaLockerGroups,
         csrf: await reply.generateCsrf(),
       })
     }
@@ -94,7 +100,8 @@ async function checkoutRoutes(fastify) {
       noteParts.unshift(`Maksājuma veids: ${paymentMethod}`)
     }
     if (deliveryType === 'omniva') {
-      noteParts.unshift(`Piegāde: Omniva pakomāts (+3.50 €) — ${address}, ${city}, ${zip}`)
+      const lockerParts = [address, city, zip].filter(Boolean)
+      noteParts.unshift(`Piegāde: Omniva pakomāts (+3.50 €) — ${lockerParts.join(', ')}`)
     } else {
       noteParts.unshift(`Piegāde: Saņem birojā (Asteru iela 16A, Jelgava)`)
     }

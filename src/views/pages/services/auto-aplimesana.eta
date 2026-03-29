@@ -94,8 +94,8 @@
       <span class="au-eyebrow-dark">Darbu piemēri</span>
       <h2>Mūsu darbi</h2>
     </div>
-    <div class="au-gallery-slider">
-      <button class="au-gallery-btn left" onclick="portfolioSlide(-1)">
+    <div class="au-gallery-slider" data-portfolio-slider>
+      <button class="au-gallery-btn left" type="button" onclick="portfolioSlide(this, -1)">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <div class="au-gallery-track-wrap">
@@ -107,7 +107,7 @@
           <% } %>
         </div>
       </div>
-      <button class="au-gallery-btn right" onclick="portfolioSlide(1)">
+      <button class="au-gallery-btn right" type="button" onclick="portfolioSlide(this, 1)">
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>

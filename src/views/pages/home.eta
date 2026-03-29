@@ -57,8 +57,8 @@
       <h2>Galerija</h2>
       <p>Apskatiet dažādus projektus, lai iegūtu priekšstatu par mūsu iespējām</p>
     </div>
-    <div class="home-gallery-slider">
-      <button class="home-gallery-btn left" onclick="portfolioSlide(-1)">
+    <div class="home-gallery-slider" data-portfolio-slider>
+      <button class="home-gallery-btn left" type="button" onclick="portfolioSlide(this, -1)">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <div class="home-gallery-track-wrap">
@@ -70,7 +70,7 @@
           <% } %>
         </div>
       </div>
-      <button class="home-gallery-btn right" onclick="portfolioSlide(1)">
+      <button class="home-gallery-btn right" type="button" onclick="portfolioSlide(this, 1)">
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>

@@ -245,99 +245,146 @@ document.querySelectorAll('.products-slider-wrapper').forEach((sliderWrapper) =>
 
 
 // ── Portfolio infinite loop ────────────────────────────────
-const portfolioTrack = document.querySelector('.portfolio-track');
-const portfolioSliderEl = portfolioTrack; // track IS the sliding element
+const portfolioControllers = new Map()
 
-if (portfolioTrack) {
-  const style = window.getComputedStyle(portfolioTrack);
-  const gap = parseInt(style.gap || style.columnGap || 0);
+document.querySelectorAll('.portfolio-track').forEach((portfolioTrack) => {
+  const portfolioOriginals = Array.from(portfolioTrack.children)
+  const totalOriginal = portfolioOriginals.length
+  let currentIndex = 0
+  let isPortfolioTransitioning = false
+  let pendingPortfolioReset = null
+  let originalOffsets = []
+  let cloneOffsets = []
+  let portfolioInitRaf = null
 
-  const portfolioOriginals = Array.from(portfolioTrack.children);
-  portfolioOriginals.forEach(item => {
-    const clone = item.cloneNode(true);
-    clone.setAttribute('aria-hidden', 'true');
-    const img = clone.querySelector('img');
-    if (img && img.complete) {
-      clone.classList.add(img.naturalHeight > img.naturalWidth ? 'vertical' : 'horizontal');
-    }
-    portfolioTrack.appendChild(clone);
-  });
-
-  const totalOriginal = portfolioOriginals.length;
-  let pStep = 0;
-  let pScroll = 0;
-  let pTransitioning = false;
-
-  function initPortfolio() {
-    const first = portfolioTrack.children[0];
-    pStep = first ? first.offsetWidth + gap : 0;
+  if (totalOriginal <= 1) {
+    return
   }
 
-  function portfolioSlide(direction) {
-    if (pTransitioning) return;
+  portfolioOriginals.forEach((item) => {
+    const clone = item.cloneNode(true)
+    clone.setAttribute('aria-hidden', 'true')
+    portfolioTrack.appendChild(clone)
+  })
 
-    const items = portfolioTrack.children;
+  function setPortfolioPosition(offset, animated = false) {
+    portfolioTrack.style.transition = animated ? 'transform 0.45s ease' : 'none'
+    portfolioTrack.style.transform = `translateX(-${offset}px)`
+  }
 
-    // find current visible index
-    let currentIndex = 0;
-    let accumulated = 0;
+  function measurePortfolio() {
+    const items = Array.from(portfolioTrack.children)
+    originalOffsets = items.slice(0, totalOriginal).map((item) => item.offsetLeft)
+    cloneOffsets = items.slice(totalOriginal).map((item) => item.offsetLeft)
+  }
 
-    for (let i = 0; i < items.length; i++) {
-      const width = items[i].offsetWidth + gap;
-      if (accumulated + width > pScroll) {
-        currentIndex = i;
-        break;
-      }
-      accumulated += width;
+  function initPortfolio(keepIndex = true) {
+    measurePortfolio()
+
+    if (!originalOffsets.length) return
+
+    if (!keepIndex) {
+      currentIndex = 0
+    } else {
+      currentIndex = Math.max(0, Math.min(currentIndex, totalOriginal - 1))
     }
 
-    // next item
-    const targetIndex = currentIndex + direction;
+    pendingPortfolioReset = null
+    isPortfolioTransitioning = false
+    setPortfolioPosition(originalOffsets[currentIndex] || 0, false)
+  }
 
-    if (!items[targetIndex]) return;
+  function schedulePortfolioInit(keepIndex = true) {
+    if (portfolioInitRaf) {
+      cancelAnimationFrame(portfolioInitRaf)
+    }
 
-    const moveWidth = items[targetIndex].offsetWidth + gap;
+    portfolioInitRaf = requestAnimationFrame(() => {
+      initPortfolio(keepIndex)
+      portfolioInitRaf = null
+    })
+  }
 
-    pTransitioning = true;
-    pScroll += direction * moveWidth;
+  function slidePortfolio(direction) {
+    if (!originalOffsets.length || isPortfolioTransitioning) return
 
-    portfolioTrack.style.transition = 'transform 0.45s ease';
-    portfolioTrack.style.transform = `translateX(${-pScroll}px)`;
+    isPortfolioTransitioning = true
+
+    if (direction > 0) {
+      if (currentIndex < totalOriginal - 1) {
+        currentIndex += 1
+        setPortfolioPosition(originalOffsets[currentIndex], true)
+      } else {
+        pendingPortfolioReset = 0
+        setPortfolioPosition(cloneOffsets[0], true)
+      }
+      return
+    }
+
+    if (currentIndex > 0) {
+      currentIndex -= 1
+      setPortfolioPosition(originalOffsets[currentIndex], true)
+      return
+    }
+
+    setPortfolioPosition(cloneOffsets[0], false)
+    // Force layout so the browser applies the jump before animating back.
+    void portfolioTrack.offsetHeight
+    pendingPortfolioReset = totalOriginal - 1
+    setPortfolioPosition(cloneOffsets[totalOriginal - 1], true)
   }
 
   portfolioTrack.addEventListener('transitionend', (e) => {
-    if (e.target !== portfolioTrack) return;
-    if (e.propertyName !== 'transform') return;
+    if (e.target !== portfolioTrack) return
+    if (e.propertyName !== 'transform') return
 
-    pTransitioning = false;
-    const maxScroll = pStep * totalOriginal;
+    isPortfolioTransitioning = false
 
-    if (pScroll >= maxScroll) {
-      pScroll -= maxScroll;
-      portfolioTrack.style.transition = 'none';
-      portfolioTrack.style.transform = `translateX(${-pScroll}px)`;
-    } else if (pScroll < 0) {
-      pScroll += maxScroll;
-      portfolioTrack.style.transition = 'none';
-      portfolioTrack.style.transform = `translateX(${-pScroll}px)`;
-    }
-  });
+    if (pendingPortfolioReset === null) return
 
-  window.addEventListener('resize', () => {
-    initPortfolio();
-    pScroll = 0;
-    pTransitioning = false;
-    portfolioTrack.style.transition = 'none';
-    portfolioTrack.style.transform = 'translateX(0)';
-  });
+    currentIndex = pendingPortfolioReset
+    pendingPortfolioReset = null
+    setPortfolioPosition(originalOffsets[currentIndex] || 0, false)
+  })
+
+  const portfolioImages = Array.from(portfolioTrack.querySelectorAll('img'))
+  portfolioImages.forEach((img) => {
+    img.addEventListener('load', () => schedulePortfolioInit(true), { once: true })
+    img.addEventListener('error', () => schedulePortfolioInit(true), { once: true })
+  })
+
+  window.addEventListener('load', () => schedulePortfolioInit(true), { once: true })
+  window.addEventListener('resize', () => schedulePortfolioInit(true))
 
   if (document.readyState === 'loading') {
-    window.addEventListener('DOMContentLoaded', initPortfolio);
+    window.addEventListener('DOMContentLoaded', () => schedulePortfolioInit(false), { once: true })
   } else {
-    initPortfolio();
+    schedulePortfolioInit(false)
   }
 
-  window.portfolioSlide = portfolioSlide;
+  portfolioControllers.set(portfolioTrack, {
+    slide: slidePortfolio,
+  })
+})
+
+window.portfolioSlide = function portfolioSlide(buttonOrDirection, maybeDirection) {
+  const direction = typeof buttonOrDirection === 'number' ? buttonOrDirection : maybeDirection
+
+  if (!direction) return
+
+  let targetTrack = null
+
+  if (buttonOrDirection instanceof Element) {
+    targetTrack = buttonOrDirection
+      .closest('[data-portfolio-slider]')
+      ?.querySelector('.portfolio-track')
+  }
+
+  if (!targetTrack) {
+    targetTrack = document.querySelector('.portfolio-track')
+  }
+
+  portfolioControllers.get(targetTrack)?.slide(direction)
 }
 
 document.querySelectorAll('.portfolio-item img').forEach(img => {

@@ -1,4 +1,4 @@
-<% layout('../partials/layout', { bodyClass: 'page-home' }) %>
+<% layout('../partials/layout', { bodyClass: 'page-kontakti' }) %>
 <% const formData = it.formData || {} %>
 
 <!-- HERO -->

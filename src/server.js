@@ -40,16 +40,6 @@ const publicAppUrl = process.env.APP_URL?.trim()
 const secureCookies = isProduction && publicAppUrl.startsWith('https://')
 const assetVersion = process.env.ASSET_VERSION?.trim()
   || String(Math.floor(Date.now() / 1000))
-const canonicalAppUrl = (() => {
-  try {
-    return new URL(publicAppUrl)
-  } catch {
-    return null
-  }
-})()
-const bareRedirectHost = canonicalAppUrl?.hostname.startsWith('www.')
-  ? canonicalAppUrl.hostname.slice(4).toLowerCase()
-  : null
 const contentSecurityPolicy = {
   directives: {
     defaultSrc: ["'self'"],
@@ -111,25 +101,6 @@ const fastify = Fastify({
   logger: true,
   trustProxy,
 })
-
-if (isProduction && canonicalAppUrl && bareRedirectHost) {
-  fastify.addHook('onRequest', async (request, reply) => {
-    const forwardedHost = typeof request.headers['x-forwarded-host'] === 'string'
-      ? request.headers['x-forwarded-host'].split(',')[0].trim()
-      : ''
-    const requestHost = (forwardedHost || request.headers.host || '')
-      .split(',')[0]
-      .trim()
-      .toLowerCase()
-
-    if (requestHost !== bareRedirectHost) {
-      return
-    }
-
-    const targetUrl = new URL(request.raw.url || '/', canonicalAppUrl.origin)
-    return reply.redirect(301, targetUrl.toString())
-  })
-}
 
 // Template engine (Eta)
 await fastify.register(FastifyView, {

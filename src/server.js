@@ -103,6 +103,25 @@ const fastify = Fastify({
   trustProxy,
 })
 
+if (isProduction) {
+  fastify.addHook('onRequest', async (request, reply) => {
+    const forwardedHostHeader = request.headers['x-forwarded-host']
+    const rawHostHeader = Array.isArray(forwardedHostHeader)
+      ? forwardedHostHeader[0]
+      : forwardedHostHeader || request.headers.host || ''
+
+    const normalizedHost = String(rawHostHeader)
+      .split(',')[0]
+      .trim()
+      .toLowerCase()
+      .replace(/:\d+$/, '')
+
+    if (normalizedHost === 'laiksdrukat.lv') {
+      return reply.redirect(301, `https://www.laiksdrukat.lv${request.raw.url || '/'}`)
+    }
+  })
+}
+
 fastify.get('/__diag/ping', async (request) => {
   const forwardedHost = request.headers['x-forwarded-host']
   const forwardedProto = request.headers['x-forwarded-proto']

@@ -86,6 +86,8 @@ DATABASE_URL="mysql://user:password@localhost:3306/laiksdrukat"
 SESSION_SECRET="your-long-random-secret-here"
 PORT=3000
 UPLOADS_DIR="./data/uploads"
+ADMIN_BOOTSTRAP_USERNAME="admin"
+ADMIN_BOOTSTRAP_PASSWORD="replace-with-a-strong-password"
 ```
 
 ### 3. Set up the database
@@ -97,7 +99,7 @@ npm run db:generate
 # Run migrations (creates all tables)
 npm run db:migrate
 
-# Seed with sample products + admin user
+# Seed with sample products + optional bootstrap admin user
 npm run db:seed
 ```
 
@@ -114,10 +116,12 @@ npm start
 Site is live at: **http://localhost:3000**
 Admin panel at: **http://localhost:3000/admin**
 
-Default admin login:
+Admin bootstrap:
 
-- Username: `admin`
-- Password: `admin123` ← **change this immediately!**
+- `npm run db:seed` will create the initial admin user only if both
+  `ADMIN_BOOTSTRAP_USERNAME` and `ADMIN_BOOTSTRAP_PASSWORD` are set.
+- The user is created only if that username does not already exist.
+- There is no longer a hardcoded default password in the seed script.
 
 ---
 

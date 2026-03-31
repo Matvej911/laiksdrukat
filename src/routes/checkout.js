@@ -37,7 +37,7 @@ async function checkoutRoutes(fastify) {
     const cart = await fastify.getValidatedCart(request)
     if (cart.length === 0) return reply.redirect('/grozs/')
 
-    return reply.view('pages/checkout', {
+    return reply.publicView('pages/checkout', {
       title: 'Checkout | Laiks Drukāt',
       cart,
       total: await fastify.validatedCartTotal(request), //
@@ -66,7 +66,7 @@ async function checkoutRoutes(fastify) {
     
     const needsAddress = deliveryType === 'omniva'
     if (!firstName || !lastName || !email || (needsAddress && !address)) {
-      return reply.view('pages/checkout', {
+      return reply.publicView('pages/checkout', {
         title: 'Checkout | Laiks Drukāt',
         cart,
         total: await fastify.validatedCartTotal(request),
@@ -79,7 +79,7 @@ async function checkoutRoutes(fastify) {
 
     const rateLimit = getCheckoutRateLimitState(request.ip)
     if (rateLimit.limited) {
-      return reply.view('pages/checkout', {
+      return reply.publicView('pages/checkout', {
         title: 'Checkout | Laiks Drukāt',
         cart,
         total: await fastify.validatedCartTotal(request),
@@ -244,7 +244,7 @@ async function checkoutRoutes(fastify) {
       return reply.redirect('/veikals/')
     }
 
-    return reply.view('pages/thankyou', {
+    return reply.publicView('pages/thankyou', {
       title: 'Paldies! | Laiks Drukāt',
       order,
       cart: fastify.getCart(request),

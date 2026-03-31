@@ -200,7 +200,17 @@ async function adminRoutes(fastify) {
     })
   }
 
-  // successful login — do NOT record attempt
+  // Successful login: rotate the session identifier to prevent fixation.
+  await new Promise((resolve, reject) => {
+    request.session.regenerate((error) => {
+      if (error) {
+        reject(error)
+        return
+      }
+      resolve()
+    })
+  })
+
   request.session.adminId = user.id
   return reply.redirect('/admin')
 })
@@ -640,7 +650,7 @@ async function adminRoutes(fastify) {
     },
   ]
 
-  const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.svg'])
+  const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif'])
 
   function getGallery(slug) {
     return GALLERIES.find(g => g.slug === slug)

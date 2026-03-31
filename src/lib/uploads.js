@@ -2,6 +2,8 @@ import { randomUUID } from 'crypto'
 import { mkdir, readFile, writeFile } from 'fs/promises'
 import { extname, join } from 'path'
 
+const PUBLIC_IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif'])
+
 export function sanitizeFilename(filename) {
   return String(filename || '').replace(/[^a-zA-Z0-9._-]/g, '-')
 }
@@ -59,11 +61,12 @@ export function validateDocumentOrImageUpload(buffer, ext) {
 
 export function validateImageUpload(buffer, ext) {
   const normalizedExt = String(ext || '').toLowerCase()
-  if (!new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg']).has(normalizedExt)) {
+  if (!PUBLIC_IMAGE_EXTENSIONS.has(normalizedExt)) {
     return false
   }
 
-  return Boolean(detectImageMime(buffer))
+  const mime = detectImageMime(buffer)
+  return Boolean(mime && mime !== 'image/svg+xml')
 }
 
 export function contentTypeFromFilename(filename) {

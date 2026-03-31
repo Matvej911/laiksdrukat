@@ -103,6 +103,17 @@ const fastify = Fastify({
   trustProxy,
 })
 
+fastify.decorateReply('publicView', function publicView(page, data = {}) {
+  const canonicalBase = publicAppUrl.replace(/\/+$/, '')
+  const requestPath = new URL(this.request.raw.url || '/', 'http://localhost').pathname
+  const canonicalUrl = data.canonicalUrl || new URL(requestPath, `${canonicalBase}/`).toString()
+
+  return this.view(page, {
+    ...data,
+    canonicalUrl,
+  })
+})
+
 if (isProduction) {
   fastify.addHook('onRequest', async (request, reply) => {
     const forwardedHostHeader = request.headers['x-forwarded-host']

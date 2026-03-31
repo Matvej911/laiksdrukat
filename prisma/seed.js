@@ -224,15 +224,56 @@ async function seedFromCsv() {
   console.log(`✅ Imported ${imported} products from export-products.csv`)
 }
 
+function getBootstrapAdminConfig() {
+  const username = String(process.env.ADMIN_BOOTSTRAP_USERNAME || '').trim()
+  const password = String(process.env.ADMIN_BOOTSTRAP_PASSWORD || '').trim()
+
+  if (!username && !password) {
+    return null
+  }
+
+  if (!username || !password) {
+    throw new Error('ADMIN_BOOTSTRAP_USERNAME and ADMIN_BOOTSTRAP_PASSWORD must either both be set or both be empty.')
+  }
+
+  if (password.length < 8) {
+    throw new Error('ADMIN_BOOTSTRAP_PASSWORD must be at least 8 characters long.')
+  }
+
+  return { username, password }
+}
+
+async function seedBootstrapAdmin() {
+  const config = getBootstrapAdminConfig()
+
+  if (!config) {
+    console.log('ℹ️ Skipping admin bootstrap user creation. Set ADMIN_BOOTSTRAP_USERNAME and ADMIN_BOOTSTRAP_PASSWORD to create the initial admin user.')
+    return
+  }
+
+  const existingUser = await prisma.adminUser.findUnique({
+    where: { username: config.username },
+  })
+
+  if (existingUser) {
+    console.log(`ℹ️ Admin bootstrap user "${config.username}" already exists. Skipping creation.`)
+    return
+  }
+
+  const hash = await bcrypt.hash(config.password, 10)
+  await prisma.adminUser.create({
+    data: {
+      username: config.username,
+      password: hash,
+    },
+  })
+
+  console.log(`✅ Created bootstrap admin user "${config.username}"`)
+}
+
 async function main() {
   await seedFromCsv()
-
-  const hash = await bcrypt.hash('admin123', 10)
-  await prisma.adminUser.upsert({
-    where: { username: 'admin' },
-    update: {},
-    create: { username: 'admin', password: hash },
-  })
+  await seedBootstrapAdmin()
 
   console.log('✅ Seed complete')
 }

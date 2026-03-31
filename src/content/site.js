@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 
 const contactAddress = 'Asteru iela 16A, Jelgava, LV-3001'
 const currentYear = new Date().getFullYear()
-const portfolioImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.svg'])
+const portfolioImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif'])
 const isProduction = process.env.NODE_ENV === 'production'
 const SITE_CONTENT_TTL_MS = isProduction ? 10 * 60 * 1000 : 5 * 1000
 

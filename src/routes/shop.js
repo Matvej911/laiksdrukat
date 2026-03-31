@@ -90,7 +90,7 @@ async function shopRoutes(fastify, opts = {}) {
         }),
       ])
 
-      return reply.view('pages/shop/index', {
+      return reply.publicView('pages/shop/index', {
         title: 'Zīmogi un zīmogu tintes | Laiks Drukāt veikals ✅',
         description:
           'Zīmogi un zīmogu tintes COLOP ⚡ Izvēlies tieši savu zīmogu vai tinti | Dažādi veidi, augsta kvalitāte un ātra izgatavošana ✓ Pasūti tagad!',
@@ -132,7 +132,7 @@ async function shopRoutes(fastify, opts = {}) {
         }),
       ])
 
-      return reply.view('pages/shop/index', {
+      return reply.publicView('pages/shop/index', {
         title: `${category.name} | Laiks Drukāt ✅`,
         description: `${category.name} kategorija Laiks Drukāt e-veikalā.`,
         products,
@@ -219,7 +219,7 @@ async function shopRoutes(fastify, opts = {}) {
         )
       }
 
-      return reply.view('pages/shop/product', {
+      return reply.publicView('pages/shop/product', {
         title: `${product.name} | Laiks Drukāt`,
         description:
           product.description ||

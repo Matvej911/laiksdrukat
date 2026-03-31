@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= it.title || it.site.meta.title %></title>
   <meta name="description" content="<%= it.description || it.site.meta.description %>">
+  <% if (it.canonicalUrl) { %>
+    <link rel="canonical" href="<%= it.canonicalUrl %>">
+  <% } %>
   <% if (it.site.meta.favicon && it.site.meta.favicon.icon) { %>
     <link rel="icon" href="<%= it.site.meta.favicon.icon %>">
   <% } %>

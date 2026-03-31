@@ -185,7 +185,7 @@ async function storefrontRoutes(fastify) {
       }),
     ])
 
-    return reply.view('pages/home', {
+    return reply.publicView('pages/home', {
       title: 'Laiks Drukāt | Poligrāfijas un reklāmas pakalpojumi ✅',
       description:
         `Druka Jelgavā – piedāvājam zīmogus, banerus, uzlīmes, auto aplīmēšanu, kā arī vizītkartes un gaismas kastes | 1000+ projekti ⭐ Kvalitāte ✓ Ātra izpilde 🚀 ${currentYear}`,
@@ -201,7 +201,7 @@ async function storefrontRoutes(fastify) {
     const success = request.session.contactFormSent === true
     delete request.session.contactFormSent
 
-    return reply.view('pages/kontakti', {
+    return reply.publicView('pages/kontakti', {
       title: 'Kontakti | Laiks Drukāt – Druka un reklāma »',
       description:
         `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
@@ -222,7 +222,7 @@ async function storefrontRoutes(fastify) {
 
     const rateLimit = getContactRateLimitState(request.ip)
     if (rateLimit.limited) {
-      return reply.view('pages/kontakti', {
+      return reply.publicView('pages/kontakti', {
         title: `Kontakti | Laiks Drukāt – Druka un reklāma »`,
         description: `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
         cart: fastify.getCart(request),
@@ -232,7 +232,7 @@ async function storefrontRoutes(fastify) {
       })
     }
     if (!name || !email || !normalizedMessage) {
-      return reply.view('pages/kontakti', {
+      return reply.publicView('pages/kontakti', {
         title: `Kontakti | Laiks Drukāt – Druka un reklāma »`,
         description:
           `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
@@ -244,7 +244,7 @@ async function storefrontRoutes(fastify) {
     }
 
     if (normalizedMessage.length > 180) {
-      return reply.view('pages/kontakti', {
+      return reply.publicView('pages/kontakti', {
         title: `Kontakti | Laiks Drukāt – Druka un reklāma »`,
         description:
           `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
@@ -311,7 +311,7 @@ async function storefrontRoutes(fastify) {
           orderBy: { sortOrder: 'asc' },
         })
 
-        return reply.view('pages/services/zimogi', {
+        return reply.publicView('pages/services/zimogi', {
           title: `Zīmogu izgatavošana Jelgavā⚡Ātra izgatavošana | Laiks Drukāt`,
           description: route.service.teaser,
           service: route.service,
@@ -328,7 +328,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormSent
         delete request.session.contactFormError
 
-        return reply.view('pages/services/vides-reklama', {
+        return reply.publicView('pages/services/vides-reklama', {
           title: '✨Izkārtnes, gaismas kastes un reklāmas burti | Vides reklāma',
           description: route.service.teaser,
           service: route.service,
@@ -346,7 +346,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormSent
         delete request.session.contactFormError
 
-        return reply.view('pages/services/vizitkartes', {
+        return reply.publicView('pages/services/vizitkartes', {
           title: 'Vizītkartes – sietspiede, standarta druka | Laiks Drukāt ✅',
           description: route.service.teaser,
           service: route.service,
@@ -364,7 +364,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormSent
         delete request.session.contactFormError
 
-        return reply.view('pages/services/baneri/', {
+        return reply.publicView('pages/services/baneri/', {
           title: 'Baneri Jelgavā – Roll-up & PVC banneri | Laiks Drukāt⭐',
           description: route.service.teaser,
           service: route.service,
@@ -381,7 +381,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormSent
         delete request.session.contactFormError
 
-        return reply.view('pages/services/auto-aplimesana', {
+        return reply.publicView('pages/services/auto-aplimesana', {
           title: 'Auto aplīmēšana Jelgavā – 3M & Oracal vinils | Laiks Drukāt⭐',
           description: route.service.teaser,
           service: route.service,
@@ -399,7 +399,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormSent
         delete request.session.contactFormError
 
-        return reply.view('pages/services/uzlimes', {
+        return reply.publicView('pages/services/uzlimes', {
           title: 'Uzlīmju druka – ruļļu, UV un lielformāta | Laiks Drukāt ✅',
           description: route.service.teaser,
           service: route.service,
@@ -416,7 +416,7 @@ async function storefrontRoutes(fastify) {
         delete request.session.contactFormSent
         delete request.session.contactFormError
 
-        return reply.view('pages/services/druka', {
+        return reply.publicView('pages/services/druka', {
           title: 'Reklāmas, poligrāfijas pakalpojumi⚡Bukleti, brošūras, plakāti',
           description: route.service.teaser,
           service: route.service,
@@ -430,7 +430,7 @@ async function storefrontRoutes(fastify) {
       
 
       // all other services use service-page
-      return reply.view('partials/service-page', {
+      return reply.publicView('partials/service-page', {
         title: `${route.service.title} | Laiks Drukāt`,
         description: route.service.teaser,
         service: route.service,
@@ -440,7 +440,7 @@ async function storefrontRoutes(fastify) {
   }
 
   fastify.get('/privatuma-politika/', async (request, reply) => {
-    return reply.view('pages/privatuma-politika', {
+    return reply.publicView('pages/privatuma-politika', {
       title: 'Privātuma politika | Laiks Drukāt',
       description: 'Privātuma politika un personas datu apstrāde.',
       cart: fastify.getCart(request),

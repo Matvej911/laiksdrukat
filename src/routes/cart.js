@@ -90,7 +90,7 @@ async function cartRoutes(fastify) {
   fastify.get('/', async (request, reply) => {
     const cart = await fastify.getValidatedCart(request)
 
-    return reply.view('pages/cart', {
+    return reply.publicView('pages/cart', {
       title: 'Grozs | Laiks Drukāt',
       cart,
       total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),

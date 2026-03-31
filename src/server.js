@@ -103,6 +103,21 @@ const fastify = Fastify({
   trustProxy,
 })
 
+fastify.get('/__diag/ping', async (request) => {
+  const forwardedHost = request.headers['x-forwarded-host']
+  const forwardedProto = request.headers['x-forwarded-proto']
+
+  return {
+    ok: true,
+    now: new Date().toISOString(),
+    host: request.headers.host || null,
+    hostname: request.hostname,
+    forwardedHost: Array.isArray(forwardedHost) ? forwardedHost.join(', ') : forwardedHost || null,
+    forwardedProto: Array.isArray(forwardedProto) ? forwardedProto.join(', ') : forwardedProto || null,
+    appUrl: publicAppUrl,
+    nodeEnv: process.env.NODE_ENV || null,
+  }
+})
 
 
 

@@ -8,7 +8,7 @@ async function dbPlugin(fastify) {
   })
 
   fastify.log.info('Prisma boot: connecting to database')
-  await prisma.$connect()
+  /*await prisma.$connect()*/
   fastify.log.info('Prisma boot: database connection established')
 
   fastify.decorate('db', prisma)

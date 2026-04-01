@@ -35,12 +35,19 @@
       <div class="admin-image-item sortable-img" data-filename="<%= img.filename %>">
         <div class="admin-image-drag-handle">⠿</div>
         <div class="admin-image-wrap">
-          <img src="<%= img.url %>" alt="<%= img.filename %>" loading="lazy">
+          <img src="<%= img.url %>" alt="<%= img.alt %>" loading="lazy">
         </div>
         <div class="admin-image-footer">
           <span class="admin-image-name"><%= img.filename %></span>
+          <form action="/admin/galleries/<%= it.gallery.slug %>/alt" method="POST" style="display:grid;gap:8px;width:100%;margin-top:10px;">
+            <input type="hidden" name="_csrf" value="<%= it.csrf %>">
+            <input type="hidden" name="filename" value="<%= img.filename %>">
+            <label style="font-size:12px;color:var(--gray-500);font-weight:600;">Alt teksts</label>
+            <input type="text" name="alt" value="<%= img.alt %>" class="form-input" maxlength="180" placeholder="Aprakstiet attēlu">
+            <button type="submit" class="btn btn-sm btn-primary">Saglabāt alt</button>
+          </form>
           <form action="/admin/galleries/<%= it.gallery.slug %>/delete" method="POST"
-            onsubmit="return confirm('Dzēst šo attēlu?')">
+            onsubmit="return confirm('Dzēst šo attēlu?')" style="margin-top:10px;">
             <input type="hidden" name="_csrf" value="<%= it.csrf %>">
             <input type="hidden" name="filename" value="<%= img.filename %>">
             <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#991b1b;">Dzēst</button>

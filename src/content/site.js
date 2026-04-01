@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url'
 const contactAddress = 'Asteru iela 16A, Jelgava, LV-3001'
 const currentYear = new Date().getFullYear()
 const portfolioImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif'])
+const galleryMetaFiles = new Set(['_order.json', '_alt.json'])
 const isProduction = process.env.NODE_ENV === 'production'
 const SITE_CONTENT_TTL_MS = isProduction ? 10 * 60 * 1000 : 5 * 1000
 
@@ -20,11 +21,21 @@ function prettifyPortfolioName(filename) {
     .trim()
 }
 
+function readGalleryAltMap(dir) {
+  try {
+    const altMap = JSON.parse(readFileSync(join(dir, '_alt.json'), 'utf8'))
+    return altMap && typeof altMap === 'object' && !Array.isArray(altMap) ? altMap : {}
+  } catch {
+    return {}
+  }
+}
+
 function readGallery(dirUrl, urlPrefix) {
   try {
     const dir = fileURLToPath(dirUrl)
     const allFiles = readdirSync(dir)
-      .filter(f => f !== '_order.json' && portfolioImageExtensions.has(extname(f).toLowerCase()))
+      .filter(f => !galleryMetaFiles.has(f) && portfolioImageExtensions.has(extname(f).toLowerCase()))
+    const altMap = readGalleryAltMap(dir)
 
     let ordered = []
     try {
@@ -39,11 +50,16 @@ function readGallery(dirUrl, urlPrefix) {
 
     return ordered.map(filename => ({
       image: `${urlPrefix}/${filename}`,
-      alt: prettifyPortfolioName(filename),
+      alt: String(altMap[filename] || '').trim() || prettifyPortfolioName(filename),
     }))
   } catch {
     return []
   }
+}
+
+export function invalidateSiteContentCache() {
+  cachedSiteContent = null
+  cachedSiteContentAt = 0
 }
 
 const portfolioDir = new URL('../../public/images/portfolio/', import.meta.url)

@@ -7,8 +7,13 @@
       Izveidots: <%= new Date(it.order.createdAt).toLocaleString('lv-LV') %>
     </span>
   </div>
-
-  <a href="/admin/orders" class="btn btn-outline btn-sm">Atpakaļ</a>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <a href="/admin/orders" class="btn btn-outline btn-sm">Atpakaļ</a>
+    <form action="/admin/orders/<%= it.order.id %>/delete" method="POST" onsubmit="return confirm('Dzēst šo pasūtījumu?')">
+      <input type="hidden" name="_csrf" value="<%= it.csrf %>">
+      <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#991b1b;">Dzēst pasūtījumu</button>
+    </form>
+  </div>
 </div>
 
 <div class="admin-layout">

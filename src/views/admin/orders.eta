@@ -4,6 +4,13 @@
   <h1>Pasutijumi</h1>
 </div>
 
+<% if (it.success) { %>
+  <div class="admin-alert admin-alert-success"><%= it.success %></div>
+<% } %>
+<% if (it.error) { %>
+  <div class="admin-alert admin-alert-error"><%= it.error %></div>
+<% } %>
+
 <div class="admin-table-wrap">
   <table class="admin-table">
     <thead>
@@ -35,7 +42,15 @@
           </td>
           <td><span class="badge badge-<%= o.status.toLowerCase() %>"><%= o.status %></span></td>
           <td style="font-size:13px;color:var(--gray-400);"><%= new Date(o.createdAt).toLocaleDateString('lv-LV') %></td>
-          <td><a href="/admin/orders/<%= o.id %>" class="btn btn-sm btn-outline">Skatit</a></td>
+          <td>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <a href="/admin/orders/<%= o.id %>" class="btn btn-sm btn-outline">Skatit</a>
+              <form action="/admin/orders/<%= o.id %>/delete" method="POST" onsubmit="return confirm('Dzēst šo pasūtījumu?')">
+                <input type="hidden" name="_csrf" value="<%= it.csrf %>">
+                <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#991b1b;">Dzēst</button>
+              </form>
+            </div>
+          </td>
         </tr>
       <% } %>
     </tbody>

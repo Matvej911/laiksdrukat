@@ -5,6 +5,13 @@
   <a href="/admin/products/new" class="btn btn-primary btn-sm">+ Jauns produkts</a>
 </div>
 
+<% if (it.success) { %>
+  <div class="admin-alert admin-alert-success"><%= it.success %></div>
+<% } %>
+<% if (it.error) { %>
+  <div class="admin-alert admin-alert-error"><%= it.error %></div>
+<% } %>
+
 <div class="admin-table-wrap">
   <table class="admin-table" id="products-table">
     <thead>

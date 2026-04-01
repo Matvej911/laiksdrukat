@@ -25,6 +25,7 @@ import {
   removeProductFromCatalogCsv,
   upsertProductInCatalogCsv,
 } from '../../lib/catalog-csv.js'
+import { invalidateSiteContentCache } from '../../content/site.js'
 
 
 const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
@@ -155,6 +156,63 @@ async function readContactMessages() {
   }
 }
 
+async function deleteOrderWithRelatedData(fastify, orderId) {
+  const order = await fastify.db.order.findUnique({
+    where: { id: orderId },
+    include: {
+      items: {
+        select: { id: true },
+      },
+    },
+  })
+
+  if (!order) {
+    return { deleted: false, reason: 'not-found' }
+  }
+
+  const sourceRefs = order.items.map((item) => `orderItem:${item.id}`)
+  const uploads = sourceRefs.length > 0
+    ? await fastify.db.upload.findMany({
+        where: {
+          sourceType: 'STAMP_ORDER',
+          sourceRef: { in: sourceRefs },
+        },
+        select: {
+          id: true,
+          relativePath: true,
+        },
+      })
+    : []
+
+  await fastify.db.$transaction([
+    fastify.db.upload.deleteMany({
+      where: {
+        id: { in: uploads.map((upload) => upload.id) },
+      },
+    }),
+    fastify.db.orderItem.deleteMany({
+      where: { orderId },
+    }),
+    fastify.db.order.delete({
+      where: { id: orderId },
+    }),
+  ])
+
+  await Promise.all(
+    uploads.map(async (upload) => {
+      try {
+        await unlink(resolveUploadPath(upload.relativePath))
+      } catch (error) {
+        if (error?.code !== 'ENOENT') {
+          fastify.log.warn({ error, uploadId: upload.id }, 'Failed to remove uploaded order file from disk')
+        }
+      }
+    }),
+  )
+
+  return { deleted: true }
+}
+
 async function adminRoutes(fastify) {
   // Login page
   fastify.get('/login', async (request, reply) => {
@@ -283,6 +341,8 @@ async function adminRoutes(fastify) {
     return reply.view('admin/products', {
       title: 'Admin | Produkti',
       products,
+      error: request.query?.error || null,
+      success: request.query?.success || null,
       csrf: await reply.generateCsrf(),
     })
   })
@@ -415,17 +475,41 @@ async function adminRoutes(fastify) {
   })
 
   fastify.post('/products/:id/delete', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
+    const productId = Number(request.params.id)
     const product = await fastify.db.product.findUnique({
-      where: { id: Number(request.params.id) },
+      where: { id: productId },
     })
-    await fastify.db.product.delete({ where: { id: Number(request.params.id) } })
-    if (product) {
+
+    if (!product) {
+      return reply.redirect('/admin/products?error=Produkts+nav+atrasts')
+    }
+
+    try {
+      await fastify.db.product.delete({ where: { id: productId } })
       await removeProductFromCatalogCsv({
         slug: product.slug,
         name: product.name,
       })
+      return reply.redirect('/admin/products?success=Produkts+veiksm%C4%ABgi+dz%C4%93sts')
+    } catch (error) {
+      if (error?.code === 'P2003') {
+        await fastify.db.product.update({
+          where: { id: productId },
+          data: {
+            active: false,
+            featured: false,
+            stock: 0,
+          },
+        })
+        await removeProductFromCatalogCsv({
+          slug: product.slug,
+          name: product.name,
+        })
+        return reply.redirect('/admin/products?success=Produkts+ir+pasl%C4%93pts,+jo+tas+jau+ir+saist%C4%ABts+ar+pas%C5%ABt%C4%ABjumiem')
+      }
+
+      throw error
     }
-    return reply.redirect('/admin/products')
   })
 
   // --- ORDERS ---
@@ -435,7 +519,13 @@ async function adminRoutes(fastify) {
       orderBy: { createdAt: 'desc' },
       include: { items: true },
     })
-    return reply.view('admin/orders', { title: 'Admin | Pasūtījumi', orders, csrf: await reply.generateCsrf(), })
+    return reply.view('admin/orders', {
+      title: 'Admin | Pasūtījumi',
+      orders,
+      success: request.query?.success || null,
+      error: request.query?.error || null,
+      csrf: await reply.generateCsrf(),
+    })
   })
 
   fastify.get('/orders/:id', { preHandler: fastify.requireAdmin }, async (request, reply) => {
@@ -452,6 +542,17 @@ async function adminRoutes(fastify) {
       data: { status: request.body.status },
     })
     return reply.redirect(`/admin/orders/${request.params.id}`)
+  })
+
+  fastify.post('/orders/:id/delete', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
+    const orderId = Number(request.params.id)
+    const result = await deleteOrderWithRelatedData(fastify, orderId)
+
+    if (!result.deleted) {
+      return reply.redirect('/admin/orders?error=Pas%C5%ABt%C4%ABjums+nav+atrasts')
+    }
+
+    return reply.redirect('/admin/orders?success=Pas%C5%ABt%C4%ABjums+veiksm%C4%ABgi+dz%C4%93sts')
   })
 
   // --- CONTACT MESSAGES ---
@@ -651,15 +752,46 @@ async function adminRoutes(fastify) {
   ]
 
   const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif'])
+  const GALLERY_ALT_FILENAME = '_alt.json'
 
   function getGallery(slug) {
     return GALLERIES.find(g => g.slug === slug)
   }
 
+  function prettifyGalleryAlt(filename) {
+    return String(filename || '')
+      .replace(/\.[^.]+$/, '')
+      .replace(/[-_]+/g, ' ')
+      .replace(/\bscaled\b/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+  }
+
+  function readGalleryAltMap(gallery) {
+    try {
+      const parsed = JSON.parse(readFileSync(join(gallery.dir, GALLERY_ALT_FILENAME), 'utf8'))
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {}
+    } catch {
+      return {}
+    }
+  }
+
+  async function writeGalleryAltMap(gallery, altMap) {
+    const cleaned = Object.fromEntries(
+      Object.entries(altMap || {}).filter(([filename, alt]) => (
+        IMAGE_EXTENSIONS.has(extname(filename).toLowerCase()) &&
+        String(alt || '').trim()
+      )),
+    )
+
+    await writeFile(join(gallery.dir, GALLERY_ALT_FILENAME), JSON.stringify(cleaned, null, 2))
+  }
+
   function readGalleryImages(gallery) {
     try {
       const allFiles = readdirSync(gallery.dir)
-        .filter(f => f !== '_order.json' && IMAGE_EXTENSIONS.has(extname(f).toLowerCase()))
+        .filter(f => f !== '_order.json' && f !== GALLERY_ALT_FILENAME && IMAGE_EXTENSIONS.has(extname(f).toLowerCase()))
+      const altMap = readGalleryAltMap(gallery)
 
       let ordered = []
       try {
@@ -676,6 +808,7 @@ async function adminRoutes(fastify) {
       return ordered.map(filename => ({
         filename,
         url: `${gallery.urlPrefix}/${filename}`,
+        alt: String(altMap[filename] || '').trim() || prettifyGalleryAlt(filename),
       }))
     } catch {
       return []
@@ -744,6 +877,7 @@ async function adminRoutes(fastify) {
       await writeFile(join(gallery.dir, filename), file.buffer)
     }
 
+    invalidateSiteContentCache()
     return reply.redirect(`/admin/galleries/${gallery.slug}?success=1`)
   })
 
@@ -760,10 +894,16 @@ async function adminRoutes(fastify) {
 
     try {
       await unlink(filepath)
+      const altMap = readGalleryAltMap(gallery)
+      if (altMap[filename]) {
+        delete altMap[filename]
+        await writeGalleryAltMap(gallery, altMap)
+      }
     } catch {
       return reply.redirect(`/admin/galleries/${gallery.slug}?error=Neizdevās+dzēst`)
     }
 
+    invalidateSiteContentCache()
     return reply.redirect(`/admin/galleries/${gallery.slug}?success=1`)
   })
   fastify.post('/galleries/:slug/reorder', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
@@ -772,7 +912,33 @@ async function adminRoutes(fastify) {
 
     const { filenames } = request.body
     await writeFile(join(gallery.dir, '_order.json'), JSON.stringify(filenames))
+    invalidateSiteContentCache()
     return { ok: true }
+  })
+
+  fastify.post('/galleries/:slug/alt', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
+    const gallery = getGallery(request.params.slug)
+    if (!gallery) return reply.code(404).send('Not found')
+
+    const filename = basename(String(request.body.filename || ''))
+    const alt = String(request.body.alt || '').trim()
+    const images = readGalleryImages(gallery)
+
+    if (!images.some((image) => image.filename === filename)) {
+      return reply.redirect(`/admin/galleries/${gallery.slug}?error=Nederīgs+attēls`)
+    }
+
+    const altMap = readGalleryAltMap(gallery)
+
+    if (alt) {
+      altMap[filename] = alt
+    } else {
+      delete altMap[filename]
+    }
+
+    await writeGalleryAltMap(gallery, altMap)
+    invalidateSiteContentCache()
+    return reply.redirect(`/admin/galleries/${gallery.slug}?success=1`)
   })
   
 

@@ -1,7 +1,7 @@
+import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import xlsx from 'xlsx'
 
-const OMNIVA_XLSX_PATH = join(process.cwd(), 'omnivapakomat.xlsx')
+const OMNIVA_JSON_PATH = join(process.cwd(), 'omnivapakomat.json')
 
 function normalizeValue(value) {
   return String(value || '').trim()
@@ -15,11 +15,28 @@ function buildLockerLabel(row) {
   return [name, city, street].filter(Boolean).join(' — ')
 }
 
+function readOmnivaRows() {
+  const raw = readFileSync(OMNIVA_JSON_PATH, 'utf8')
+  const parsed = JSON.parse(raw)
+
+  if (Array.isArray(parsed)) {
+    return parsed
+  }
+
+  if (Array.isArray(parsed.omnivapakomat)) {
+    return parsed.omnivapakomat
+  }
+
+  if (Array.isArray(parsed.ominapakomat)) {
+    return parsed.ominapakomat
+  }
+
+  return []
+}
+
 function loadOmnivaLockers() {
   try {
-    const workbook = xlsx.readFile(OMNIVA_XLSX_PATH)
-    const sheet = workbook.Sheets[workbook.SheetNames[0]]
-    const rows = xlsx.utils.sheet_to_json(sheet, { defval: '' })
+    const rows = readOmnivaRows()
 
     return rows
       .filter((row) => normalizeValue(row.Valsts) === 'LV')

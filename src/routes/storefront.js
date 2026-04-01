@@ -5,6 +5,12 @@ import { serviceRouteEntries, getSiteContent } from '../content/site.js'
 import { hasValidSessionCsrf } from '../lib/csrf.js'
 import { sendContactNotification } from '../lib/mailer.js'
 import {
+  appendStructuredData,
+  buildBreadcrumbSchema,
+  resolvePublicBaseUrl,
+  toAbsoluteUrl,
+} from '../lib/seo.js'
+import {
   contentTypeFromFilename,
   persistUpload,
   resolveUploadPath,
@@ -173,6 +179,13 @@ async function storefrontRoutes(fastify) {
 
   // Homepage
   fastify.get('/', async (request, reply) => {
+    const site = getSiteContent()
+    const baseUrl = resolvePublicBaseUrl()
+    const canonicalUrl = `${baseUrl}/`
+    const breadcrumbs = [
+      { name: 'Sākums', path: '/' },
+    ]
+    const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
     const [products, categories] = await Promise.all([
       fastify.db.product.findMany({
         where: { active: true, featured: true, },
@@ -192,7 +205,42 @@ async function storefrontRoutes(fastify) {
       products,
       categories,
       cart: fastify.getCart(request),
-      site: getSiteContent(),
+      site,
+      breadcrumbs,
+      seoImage: site.home.heroImage,
+      structuredData: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: site.company.name,
+          legalName: site.company.legalName,
+          url: canonicalUrl,
+          logo: toAbsoluteUrl(baseUrl, site.meta.defaultShareImage),
+          image: toAbsoluteUrl(baseUrl, site.home.heroImage),
+          email: site.contact.email,
+          telephone: site.contact.phones[0]?.label,
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: 'Asteru iela 16A',
+            addressLocality: 'Jelgava',
+            postalCode: 'LV-3001',
+            addressCountry: 'LV',
+          },
+          sameAs: [site.contact.facebook.url],
+        },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: site.company.name,
+          url: canonicalUrl,
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: `${baseUrl}/veikals/?q={search_term_string}`,
+            'query-input': 'required name=search_term_string',
+          },
+        },
+        breadcrumbSchema,
+      ],
     })
   })
 
@@ -200,6 +248,11 @@ async function storefrontRoutes(fastify) {
   fastify.get('/kontakti/', async (request, reply) => {
     const success = request.session.contactFormSent === true
     delete request.session.contactFormSent
+    const baseUrl = resolvePublicBaseUrl()
+    const breadcrumbs = [
+      { name: 'Sākums', path: '/' },
+      { name: 'Kontakti', path: '/kontakti/' },
+    ]
 
     return reply.publicView('pages/kontakti', {
       title: 'Kontakti | Laiks Drukāt – Druka un reklāma »',
@@ -207,11 +260,18 @@ async function storefrontRoutes(fastify) {
         `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
       cart: fastify.getCart(request),
       success,
+      breadcrumbs,
       csrf: await reply.generateCsrf(),
+      structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),
     })
   })
 
   fastify.post('/kontakti/', async (request, reply) => {
+    const breadcrumbs = [
+      { name: 'Sākums', path: '/' },
+      { name: 'Kontakti', path: '/kontakti/' },
+    ]
+    const contactBreadcrumbs = buildBreadcrumbSchema(resolvePublicBaseUrl(), breadcrumbs)
     const { fields, uploadedFile, invalidCsrf } = await collectContactForm(request)
     if (invalidCsrf) {
       return reply.code(403).send('Invalid CSRF token')
@@ -228,7 +288,9 @@ async function storefrontRoutes(fastify) {
         cart: fastify.getCart(request),
         error: 'Pārāk daudz ziņu. Lūdzu mēģiniet vēlreiz pēc 15 minūtēm.',
         formData: fields,
+        breadcrumbs,
         csrf: await reply.generateCsrf(),
+        structuredData: contactBreadcrumbs,
       })
     }
     if (!name || !email || !normalizedMessage) {
@@ -239,7 +301,9 @@ async function storefrontRoutes(fastify) {
         cart: fastify.getCart(request),
         error: 'Lūdzu aizpildiet vārdu, e-pastu un ziņu.',
         formData: fields,
+        breadcrumbs,
         csrf: await reply.generateCsrf(),
+        structuredData: contactBreadcrumbs,
       })
     }
 
@@ -251,7 +315,9 @@ async function storefrontRoutes(fastify) {
         cart: fastify.getCart(request),
         error: 'Ziņa nedrīkst pārsniegt 180 rakstzīmes.',
         formData: fields,
+        breadcrumbs,
         csrf: await reply.generateCsrf(),
+        structuredData: contactBreadcrumbs,
       })
     }
 
@@ -301,6 +367,14 @@ async function storefrontRoutes(fastify) {
 
       // ← special case for zimogi
       if (route.service.path === '/zimogs/') {
+        const site = getSiteContent()
+        const baseUrl = resolvePublicBaseUrl()
+        const breadcrumbs = [
+          { name: 'Sākums', path: '/' },
+          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
+          { name: route.service.title, path: route.service.path },
+        ]
+        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
         const products = await fastify.db.product.findMany({
           where: {
             active: true,
@@ -317,12 +391,38 @@ async function storefrontRoutes(fastify) {
           service: route.service,
           products,
           cart: fastify.getCart(request),
-          site: getSiteContent(),
+          site,
+          breadcrumbs,
+          seoImage: route.service.heroImage || site.meta.defaultShareImage,
+          seoType: 'website',
+          structuredData: appendStructuredData({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            name: route.service.title,
+            description: route.service.teaser,
+            serviceType: route.service.title,
+            areaServed: 'Latvia',
+            provider: {
+              '@type': 'Organization',
+              name: site.company.name,
+              url: `${baseUrl}/`,
+            },
+            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
+            url: `${baseUrl}${route.service.path}`,
+          }, breadcrumbSchema),
         })
       }
 
       
       if (route.service.path === '/vides-reklama/') {
+        const site = getSiteContent()
+        const baseUrl = resolvePublicBaseUrl()
+        const breadcrumbs = [
+          { name: 'Sākums', path: '/' },
+          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
+          { name: route.service.title, path: route.service.path },
+        ]
+        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
@@ -335,12 +435,33 @@ async function storefrontRoutes(fastify) {
           cart: fastify.getCart(request),
           success,
           error,
-          site: getSiteContent(),
+          site,
+          breadcrumbs,
+          seoImage: route.service.heroImage || site.meta.defaultShareImage,
+          structuredData: appendStructuredData({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            name: route.service.title,
+            description: route.service.teaser,
+            serviceType: route.service.title,
+            areaServed: 'Latvia',
+            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
+            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
+            url: `${baseUrl}${route.service.path}`,
+          }, breadcrumbSchema),
           csrf: await reply.generateCsrf(),
         })
       }
 
       if (route.service.path === '/vizitkartes/') {
+        const site = getSiteContent()
+        const baseUrl = resolvePublicBaseUrl()
+        const breadcrumbs = [
+          { name: 'Sākums', path: '/' },
+          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
+          { name: route.service.title, path: route.service.path },
+        ]
+        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
@@ -353,12 +474,33 @@ async function storefrontRoutes(fastify) {
           cart: fastify.getCart(request),
           success,
           error,
-          site: getSiteContent(),
+          site,
+          breadcrumbs,
+          seoImage: route.service.heroImage || site.meta.defaultShareImage,
+          structuredData: appendStructuredData({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            name: route.service.title,
+            description: route.service.teaser,
+            serviceType: route.service.title,
+            areaServed: 'Latvia',
+            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
+            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
+            url: `${baseUrl}${route.service.path}`,
+          }, breadcrumbSchema),
           csrf: await reply.generateCsrf(),
         })
       }
 
       if (route.service.path === '/baneri/') {
+        const site = getSiteContent()
+        const baseUrl = resolvePublicBaseUrl()
+        const breadcrumbs = [
+          { name: 'Sākums', path: '/' },
+          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
+          { name: route.service.title, path: route.service.path },
+        ]
+        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
@@ -371,11 +513,33 @@ async function storefrontRoutes(fastify) {
           cart: fastify.getCart(request),
           success,
           error,
+          site,
+          breadcrumbs,
+          seoImage: route.service.heroImage || site.meta.defaultShareImage,
+          structuredData: appendStructuredData({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            name: route.service.title,
+            description: route.service.teaser,
+            serviceType: route.service.title,
+            areaServed: 'Latvia',
+            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
+            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
+            url: `${baseUrl}${route.service.path}`,
+          }, breadcrumbSchema),
           csrf: await reply.generateCsrf(),
         })
       }
 
       if (route.service.path === '/auto-aplimesana/') {
+        const site = getSiteContent()
+        const baseUrl = resolvePublicBaseUrl()
+        const breadcrumbs = [
+          { name: 'Sākums', path: '/' },
+          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
+          { name: route.service.title, path: route.service.path },
+        ]
+        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
@@ -388,12 +552,33 @@ async function storefrontRoutes(fastify) {
           cart: fastify.getCart(request),
           success,
           error,
-          site: getSiteContent(),
+          site,
+          breadcrumbs,
+          seoImage: route.service.heroImage || site.meta.defaultShareImage,
+          structuredData: appendStructuredData({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            name: route.service.title,
+            description: route.service.teaser,
+            serviceType: route.service.title,
+            areaServed: 'Latvia',
+            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
+            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
+            url: `${baseUrl}${route.service.path}`,
+          }, breadcrumbSchema),
           csrf: await reply.generateCsrf(),
         })
       }
 
       if (route.service.path === '/uzlimes/') {
+        const site = getSiteContent()
+        const baseUrl = resolvePublicBaseUrl()
+        const breadcrumbs = [
+          { name: 'Sākums', path: '/' },
+          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
+          { name: route.service.title, path: route.service.path },
+        ]
+        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
@@ -406,11 +591,33 @@ async function storefrontRoutes(fastify) {
           cart: fastify.getCart(request),
           success,
           error,
+          site,
+          breadcrumbs,
+          seoImage: route.service.heroImage || site.meta.defaultShareImage,
+          structuredData: appendStructuredData({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            name: route.service.title,
+            description: route.service.teaser,
+            serviceType: route.service.title,
+            areaServed: 'Latvia',
+            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
+            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
+            url: `${baseUrl}${route.service.path}`,
+          }, breadcrumbSchema),
           csrf: await reply.generateCsrf(),
         })
       }
 
       if (route.service.path === '/druka/') {
+        const site = getSiteContent()
+        const baseUrl = resolvePublicBaseUrl()
+        const breadcrumbs = [
+          { name: 'Sākums', path: '/' },
+          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
+          { name: route.service.title, path: route.service.path },
+        ]
+        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
         delete request.session.contactFormSent
@@ -423,6 +630,20 @@ async function storefrontRoutes(fastify) {
           cart: fastify.getCart(request),
           success,
           error,
+          site,
+          breadcrumbs,
+          seoImage: route.service.heroImage || site.meta.defaultShareImage,
+          structuredData: appendStructuredData({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            name: route.service.title,
+            description: route.service.teaser,
+            serviceType: route.service.title,
+            areaServed: 'Latvia',
+            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
+            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
+            url: `${baseUrl}${route.service.path}`,
+          }, breadcrumbSchema),
           csrf: await reply.generateCsrf(),
         })
       }
@@ -430,20 +651,36 @@ async function storefrontRoutes(fastify) {
       
 
       // all other services use service-page
+      const breadcrumbs = [
+        { name: 'Sākums', path: '/' },
+        { name: 'Pakalpojumi', path: '/#pakalpojumi' },
+        { name: route.service.title, path: route.service.path },
+      ]
       return reply.publicView('partials/service-page', {
         title: `${route.service.title} | Laiks Drukāt`,
         description: route.service.teaser,
         service: route.service,
         cart: fastify.getCart(request),
+        site: getSiteContent(),
+        breadcrumbs,
+        seoImage: route.service.heroImage,
+        structuredData: buildBreadcrumbSchema(resolvePublicBaseUrl(), breadcrumbs),
       })
     })
   }
 
   fastify.get('/privatuma-politika/', async (request, reply) => {
+    const baseUrl = resolvePublicBaseUrl()
+    const breadcrumbs = [
+      { name: 'Sākums', path: '/' },
+      { name: 'Privātuma politika', path: '/privatuma-politika/' },
+    ]
     return reply.publicView('pages/privatuma-politika', {
       title: 'Privātuma politika | Laiks Drukāt',
       description: 'Privātuma politika un personas datu apstrāde.',
       cart: fastify.getCart(request),
+      breadcrumbs,
+      structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),
     })
   })
 

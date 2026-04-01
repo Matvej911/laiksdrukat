@@ -9,6 +9,7 @@
   </div>
 
   <div class="container page-404-inner">
+    <%~ include('../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
 
     <div class="stamp-wrap">
       <div class="stamp">

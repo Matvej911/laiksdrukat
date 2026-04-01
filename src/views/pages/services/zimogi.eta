@@ -3,13 +3,7 @@
 <!-- HERO -->
 <section class="zimogi-hero">
   <div class="container">
-    <div class="breadcrumb">
-      <a href="/">Sākums</a>
-      <span class="breadcrumb-sep">/</span>
-      <a href="/#pakalpojumi">Pakalpojumi</a>
-      <span class="breadcrumb-sep">/</span>
-      <span>Zīmogi</span>
-    </div>
+    <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="zimogi-hero-inner">
       <div class="zimogi-hero-copy">
         <span class="zimogi-eyebrow">Pakalpojums</span>

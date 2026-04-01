@@ -85,6 +85,7 @@ export function getSiteContent() {
     title: 'Laiks Drukāt',
     description:
       `Druka Jelgavā – piedāvājam zīmogus, banerus, uzlīmes, auto aplīmēšanu, kā arī vizītkartes un gaismas kastes | 1000+ projekti ⭐ Kvalitāte ✓ Ātra izpilde 🚀 ${currentYear}`,
+    defaultShareImage: '/images/web-design/col9p.png',
     favicon: {
       icon: '',
       svg: '/images/web-design/Laiks LOGOsvg.svg',

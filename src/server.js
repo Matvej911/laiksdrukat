@@ -144,6 +144,7 @@ await fastify.register(FastifyView, {
     siteName: siteContent.company.name,
     currentYear: new Date().getFullYear(),
     site: siteContent,
+    siteUrl: publicAppUrl.replace(/\/+$/, ''),
     isProduction,
     assetVersion,
   },
@@ -223,6 +224,11 @@ fastify.setNotFoundHandler(async (request, reply) => {
   return reply.code(404).view('pages/404', {
     title: '404 | Laiks Drukāt',
     description: 'Lapa netika atrasta.',
+    robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+    breadcrumbs: [
+      { name: 'Sākums', path: '/' },
+      { name: '404' },
+    ],
     cart: fastify.getCart(request),
   })
 })

@@ -6,13 +6,7 @@
 <!-- HERO -->
 <section class="checkout-hero">
   <div class="container">
-    <div class="breadcrumb">
-      <a href="/">Sākums</a>
-      <span class="breadcrumb-sep">/</span>
-      <a href="/grozs/">Grozs</a>
-      <span class="breadcrumb-sep">/</span>
-      <span>Pasūtījums</span>
-    </div>
+    <%~ include('../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="checkout-hero-inner">
       <div class="checkout-hero-copy">
         <h1>Noformēt pasūtījumu</h1>

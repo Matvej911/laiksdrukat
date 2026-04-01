@@ -2,6 +2,7 @@
 
 <section class="pp-hero">
   <div class="container">
+    <%~ include('../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <h1>Privātuma politika</h1>
     <p>Mēs rūpējamies par Jūsu datu drošību un caurspīdīgu apstrādi.</p>
   </div>

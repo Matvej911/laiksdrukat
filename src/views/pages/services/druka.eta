@@ -3,13 +3,7 @@
 <!-- HERO -->
 <section class="dr-hero">
   <div class="container">
-    <div class="breadcrumb">
-      <a href="/">Sākums</a>
-      <span class="breadcrumb-sep">/</span>
-      <a href="/#pakalpojumi">Pakalpojumi</a>
-      <span class="breadcrumb-sep">/</span>
-      <span>Druka</span>
-    </div>
+    <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="dr-hero-inner">
       <div class="dr-hero-copy">
         <span class="dr-eyebrow">Pakalpojums</span>

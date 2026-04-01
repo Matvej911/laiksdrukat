@@ -1,0 +1,15 @@
+<% if (it.breadcrumbs && it.breadcrumbs.length > 0) { %>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <% it.breadcrumbs.forEach((item, index) => { %>
+      <% const isLast = index === it.breadcrumbs.length - 1 %>
+      <% if (item.path && !isLast) { %>
+        <a href="<%= item.path %>"><%= item.name %></a>
+      <% } else { %>
+        <span><%= item.name %></span>
+      <% } %>
+      <% if (!isLast) { %>
+        <span class="breadcrumb-sep">/</span>
+      <% } %>
+    <% }) %>
+  </nav>
+<% } %>

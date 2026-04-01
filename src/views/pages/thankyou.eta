@@ -2,6 +2,7 @@
 
 <section class="thankyou-section">
   <div class="container">
+    <%~ include('../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
 
     <!-- SUCCESS ANIMATION -->
     <div class="thankyou-hero">

@@ -3,17 +3,7 @@
 <!-- BREADCRUMB -->
 <section class="product-hero-section">
   <div class="container">
-    <div class="breadcrumb">
-      <a href="/">Sākums</a>
-      <span class="breadcrumb-sep">/</span>
-      <a href="/veikals/">Veikals</a>
-      <% if (it.product.category) { %>
-        <span class="breadcrumb-sep">/</span>
-        <a href="/kategorija/<%= it.product.category.slug %>/"><%= it.product.category.name %></a>
-      <% } %>
-      <span class="breadcrumb-sep">/</span>
-      <span><%= it.product.name %></span>
-    </div>
+    <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
   </div>
 </section>
 

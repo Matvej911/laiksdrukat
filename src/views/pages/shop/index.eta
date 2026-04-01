@@ -3,11 +3,7 @@
 <!-- HERO -->
 <section class="shop-hero">
   <div class="container">
-    <div class="breadcrumb">
-      <a href="/">Sākums</a>
-      <span class="breadcrumb-sep">/</span>
-      <span>Veikals</span>
-    </div>
+    <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="shop-hero-inner">
       <div>
         <span class="shop-eyebrow">E-veikals</span>

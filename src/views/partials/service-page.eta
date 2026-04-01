@@ -3,13 +3,7 @@
 
 <section class="page-hero">
   <div class="container">
-    <div class="breadcrumb">
-      <a href="/">Sākums</a>
-      <span class="breadcrumb-sep">/</span>
-      <a href="/#pakalpojumi">Pakalpojumi</a>
-      <span class="breadcrumb-sep">/</span>
-      <span>${it.service.title}</span>
-    </div>
+    <%~ include('breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
 
     <div class="service-hero">
       <div class="service-copy">

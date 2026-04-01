@@ -5,9 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= it.title || it.site.meta.title %></title>
   <meta name="description" content="<%= it.description || it.site.meta.description %>">
+  <meta name="robots" content="<%= it.robots || 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1' %>">
   <% if (it.canonicalUrl) { %>
     <link rel="canonical" href="<%= it.canonicalUrl %>">
   <% } %>
+  <% const seoImage = it.seoImage || it.site.meta.defaultShareImage %>
+  <% const seoType = it.seoType || 'website' %>
+  <% const absoluteSeoImage = seoImage ? (seoImage.startsWith('http') ? seoImage : `${it.siteUrl}${seoImage.startsWith('/') ? seoImage : `/${seoImage}`}`) : null %>
+  <meta property="og:locale" content="lv_LV">
+  <meta property="og:site_name" content="<%= it.site.company.name %>">
+  <meta property="og:type" content="<%= seoType %>">
+  <meta property="og:title" content="<%= it.title || it.site.meta.title %>">
+  <meta property="og:description" content="<%= it.description || it.site.meta.description %>">
+  <% if (it.canonicalUrl) { %>
+    <meta property="og:url" content="<%= it.canonicalUrl %>">
+  <% } %>
+  <% if (absoluteSeoImage) { %>
+    <meta property="og:image" content="<%= absoluteSeoImage %>">
+    <meta name="twitter:image" content="<%= absoluteSeoImage %>">
+  <% } %>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= it.title || it.site.meta.title %>">
+  <meta name="twitter:description" content="<%= it.description || it.site.meta.description %>">
   <% if (it.site.meta.favicon && it.site.meta.favicon.icon) { %>
     <link rel="icon" href="<%= it.site.meta.favicon.icon %>">
   <% } %>
@@ -16,6 +35,9 @@
   <% } %>
   <% if (it.site.meta.favicon && it.site.meta.favicon.appleTouch) { %>
     <link rel="apple-touch-icon" href="<%= it.site.meta.favicon.appleTouch %>">
+  <% } %>
+  <% if (it.structuredData) { %>
+    <script type="application/ld+json"><%= JSON.stringify(it.structuredData) %></script>
   <% } %>
   <link rel="stylesheet" href="/css/main.css?v=<%= it.assetVersion %>">
   <%~ it.extraHead || '' %>

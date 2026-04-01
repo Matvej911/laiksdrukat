@@ -2,6 +2,7 @@
 
 <section class="cart-section">
   <div class="container">
+    <%~ include('../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
 
     <div class="cart-header">
       <h1>Iepirkumu grozs</h1>

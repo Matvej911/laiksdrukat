@@ -3,13 +3,7 @@
 <!-- HERO -->
 <section class="au-hero">
   <div class="container">
-    <div class="breadcrumb">
-      <a href="/">Sākums</a>
-      <span class="breadcrumb-sep">/</span>
-      <a href="/#pakalpojumi">Pakalpojumi</a>
-      <span class="breadcrumb-sep">/</span>
-      <span>Auto aplīmēšana</span>
-    </div>
+    <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="au-hero-inner">
       <div class="au-hero-copy">
         <span class="au-eyebrow">Pakalpojums</span>

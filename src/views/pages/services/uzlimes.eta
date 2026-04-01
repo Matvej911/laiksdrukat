@@ -3,13 +3,7 @@
 <!-- HERO -->
 <section class="uz-hero">
   <div class="container">
-    <div class="breadcrumb">
-      <a href="/">Sākums</a>
-      <span class="breadcrumb-sep">/</span>
-      <a href="/#pakalpojumi">Pakalpojumi</a>
-      <span class="breadcrumb-sep">/</span>
-      <span>Uzlīmes</span>
-    </div>
+    <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="uz-hero-inner">
       <div class="uz-hero-copy">
         <span class="uz-eyebrow">Pakalpojums</span>

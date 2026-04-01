@@ -3,6 +3,7 @@ import {
   sendCustomerOrderConfirmation,
   sendOwnerOrderNotification,
 } from '../lib/mailer.js'
+import { buildBreadcrumbSchema, resolvePublicBaseUrl } from '../lib/seo.js'
 import { resolveUploadPath } from '../lib/uploads.js'
 import { getOmnivaLockerGroups } from '../lib/omniva-lockers.js'
 
@@ -36,13 +37,22 @@ async function checkoutRoutes(fastify) {
   fastify.get('/', async (request, reply) => {
     const cart = await fastify.getValidatedCart(request)
     if (cart.length === 0) return reply.redirect('/grozs/')
+    const baseUrl = resolvePublicBaseUrl()
+    const breadcrumbs = [
+      { name: 'Sākums', path: '/' },
+      { name: 'Grozs', path: '/grozs/' },
+      { name: 'Pasūtījums', path: '/pasutijums/' },
+    ]
 
     return reply.publicView('pages/checkout', {
       title: 'Checkout | Laiks Drukāt',
+      robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+      breadcrumbs,
       cart,
       total: await fastify.validatedCartTotal(request), //
       omnivaLockerGroups,
       csrf: await reply.generateCsrf(),
+      structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),
     })
   })
 
@@ -50,6 +60,12 @@ async function checkoutRoutes(fastify) {
   fastify.post('/', { preHandler: fastify.csrfProtection }, async (request, reply) => {
     const cart = await fastify.getValidatedCart(request)
     if (cart.length === 0) return reply.redirect('/grozs/')
+    const breadcrumbs = [
+      { name: 'Sākums', path: '/' },
+      { name: 'Grozs', path: '/grozs/' },
+      { name: 'Pasūtījums', path: '/pasutijums/' },
+    ]
+    const checkoutBreadcrumbs = buildBreadcrumbSchema(resolvePublicBaseUrl(), breadcrumbs)
 
     const {
       firstName,
@@ -68,12 +84,15 @@ async function checkoutRoutes(fastify) {
     if (!firstName || !lastName || !email || (needsAddress && !address)) {
       return reply.publicView('pages/checkout', {
         title: 'Checkout | Laiks Drukāt',
+        robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+        breadcrumbs,
         cart,
         total: await fastify.validatedCartTotal(request),
         error: 'Lūdzu aizpildiet visus obligātos laukus.',
         formData: request.body,
         omnivaLockerGroups,
         csrf: await reply.generateCsrf(),
+        structuredData: checkoutBreadcrumbs,
       })
     }
 
@@ -81,12 +100,15 @@ async function checkoutRoutes(fastify) {
     if (rateLimit.limited) {
       return reply.publicView('pages/checkout', {
         title: 'Checkout | Laiks Drukāt',
+        robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+        breadcrumbs,
         cart,
         total: await fastify.validatedCartTotal(request),
         error: 'Pārāk daudz pasūtījumu no šīs IP adreses. Lūdzu mēģiniet vēlreiz pēc stundas.',
         formData: request.body,
         omnivaLockerGroups,
         csrf: await reply.generateCsrf(),
+        structuredData: checkoutBreadcrumbs,
       })
     }
 
@@ -244,10 +266,20 @@ async function checkoutRoutes(fastify) {
       return reply.redirect('/veikals/')
     }
 
+    const baseUrl = resolvePublicBaseUrl()
+    const breadcrumbs = [
+      { name: 'Sākums', path: '/' },
+      { name: 'Grozs', path: '/grozs/' },
+      { name: 'Pasūtījums', path: '/pasutijums/' },
+      { name: 'Paldies', path: `/pasutijums/paldies/${order.publicId}` },
+    ]
     return reply.publicView('pages/thankyou', {
       title: 'Paldies! | Laiks Drukāt',
+      robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+      breadcrumbs,
       order,
       cart: fastify.getCart(request),
+      structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),
     })
   })
 }

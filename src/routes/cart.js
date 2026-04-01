@@ -1,6 +1,7 @@
 import { basename, extname, join } from 'path'
 
 import { hasValidSessionCsrf } from '../lib/csrf.js'
+import { buildBreadcrumbSchema, resolvePublicBaseUrl } from '../lib/seo.js'
 import {
   contentTypeFromFilename,
   persistUpload,
@@ -89,12 +90,20 @@ async function cartRoutes(fastify) {
   // View cart
   fastify.get('/', async (request, reply) => {
     const cart = await fastify.getValidatedCart(request)
+    const baseUrl = resolvePublicBaseUrl()
+    const breadcrumbs = [
+      { name: 'Sākums', path: '/' },
+      { name: 'Grozs', path: '/grozs/' },
+    ]
 
     return reply.publicView('pages/cart', {
       title: 'Grozs | Laiks Drukāt',
+      robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+      breadcrumbs,
       cart,
       total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
       csrf: await reply.generateCsrf(),
+      structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),
     })
   })
 

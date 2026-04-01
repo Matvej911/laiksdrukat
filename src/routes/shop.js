@@ -1,4 +1,10 @@
 import sanitizeHtml from 'sanitize-html'
+import {
+  appendStructuredData,
+  buildBreadcrumbSchema,
+  resolvePublicBaseUrl,
+  toAbsoluteUrl,
+} from '../lib/seo.js'
 
 const productCardSelect = {
   id: true,
@@ -73,10 +79,17 @@ async function shopRoutes(fastify, opts = {}) {
     return { q, sort, kategorija, where, orderBy }
   }
 
+  const shouldNoindexListing = (filters) => Boolean(filters.q) || filters.sort !== 'default'
+
   if (includeListing) {
     // Product listing
     fastify.get('/', async (request, reply) => {
+      const baseUrl = resolvePublicBaseUrl()
       const filters = buildShopFilters(request.query)
+      const breadcrumbs = [
+        { name: 'Sākums', path: '/' },
+        { name: 'Veikals', path: '/veikals/' },
+      ]
 
       const [products, categories] = await Promise.all([
         fastify.db.product.findMany({
@@ -99,7 +112,28 @@ async function shopRoutes(fastify, opts = {}) {
         activeCategory: filters.kategorija,
         q: filters.q,
         sort: filters.sort,
+        breadcrumbs,
+        robots: shouldNoindexListing(filters)
+          ? 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'
+          : undefined,
         cart: fastify.getCart(request),
+        seoImage: products[0]?.image || '/images/web-design/col9p.png',
+        structuredData: appendStructuredData({
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: 'Laiks Drukāt veikals',
+          description: 'Zīmogi un zīmogu tintes Laiks Drukāt e-veikalā.',
+          url: `${baseUrl}/veikals/`,
+          mainEntity: {
+            '@type': 'ItemList',
+            itemListElement: products.slice(0, 12).map((product, index) => ({
+              '@type': 'ListItem',
+              position: index + 1,
+              url: `${baseUrl}/veikals/${product.slug}/`,
+              name: product.name,
+            })),
+          },
+        }, buildBreadcrumbSchema(baseUrl, breadcrumbs)),
         csrf: await reply.generateCsrf(),
       })
     })
@@ -108,6 +142,7 @@ async function shopRoutes(fastify, opts = {}) {
   if (includeCategory) {
     // Category page (e.g. /kategorija/zimogi/)
     fastify.get('/kategorija/:slug/', async (request, reply) => {
+      const baseUrl = resolvePublicBaseUrl()
       const { slug } = request.params
       const filters = buildShopFilters({ ...request.query, kategorija: slug })
 
@@ -116,6 +151,7 @@ async function shopRoutes(fastify, opts = {}) {
         return reply.code(404).view('pages/404', {
           title: '404 | Laiks Drukāt',
           description: 'Lapa netika atrasta.',
+          robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
           cart: fastify.getCart(request),
         })
       }
@@ -131,6 +167,11 @@ async function shopRoutes(fastify, opts = {}) {
           orderBy: { name: 'asc' },
         }),
       ])
+      const breadcrumbs = [
+        { name: 'Sākums', path: '/' },
+        { name: 'Veikals', path: '/veikals/' },
+        { name: category.name, path: `/kategorija/${category.slug}/` },
+      ]
 
       return reply.publicView('pages/shop/index', {
         title: `${category.name} | Laiks Drukāt ✅`,
@@ -140,7 +181,28 @@ async function shopRoutes(fastify, opts = {}) {
         activeCategory: slug,
         q: filters.q,
         sort: filters.sort,
+        breadcrumbs,
+        robots: shouldNoindexListing(filters)
+          ? 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'
+          : undefined,
         cart: fastify.getCart(request),
+        seoImage: products[0]?.image || '/images/web-design/col9p.png',
+        structuredData: appendStructuredData({
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: category.name,
+          description: `${category.name} kategorija Laiks Drukāt e-veikalā.`,
+          url: `${baseUrl}/kategorija/${category.slug}/`,
+          mainEntity: {
+            '@type': 'ItemList',
+            itemListElement: products.slice(0, 12).map((product, index) => ({
+              '@type': 'ListItem',
+              position: index + 1,
+              url: `${baseUrl}/veikals/${product.slug}/`,
+              name: product.name,
+            })),
+          },
+        }, buildBreadcrumbSchema(baseUrl, breadcrumbs)),
         csrf: await reply.generateCsrf(),
       })
     })
@@ -149,6 +211,7 @@ async function shopRoutes(fastify, opts = {}) {
   if (includeProduct) {
     // Product detail page
     fastify.get('/:slug/', async (request, reply) => {
+      const baseUrl = resolvePublicBaseUrl()
       const { slug } = request.params
 
       const product = await fastify.db.product.findUnique({
@@ -160,6 +223,7 @@ async function shopRoutes(fastify, opts = {}) {
         return reply.code(404).view('pages/404', {
           title: '404 | Laiks Drukāt',
           description: 'Lapa netika atrasta.',
+          robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
           cart: fastify.getCart(request),
         })
       }
@@ -218,6 +282,12 @@ async function shopRoutes(fastify, opts = {}) {
           }
         )
       }
+      const breadcrumbs = [
+        { name: 'Sākums', path: '/' },
+        { name: 'Veikals', path: '/veikals/' },
+        { name: product.category.name, path: `/kategorija/${product.category.slug}/` },
+        { name: product.name, path: `/veikals/${product.slug}/` },
+      ]
 
       return reply.publicView('pages/shop/product', {
         title: `${product.name} | Laiks Drukāt`,
@@ -227,7 +297,37 @@ async function shopRoutes(fastify, opts = {}) {
         product,
         recentlyViewed,
         isStampProduct,
+        breadcrumbs,
         cart: fastify.getCart(request),
+        seoImage: product.image || product.imprintImage || '/images/web-design/col9p.png',
+        seoType: 'product',
+        structuredData: appendStructuredData({
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          name: product.name,
+          description: product.description
+            ? product.description.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+            : `${product.name} kategorijā ${product.category.name} Laiks Drukāt e-veikalā.`,
+          image: [product.image, product.imprintImage]
+            .filter(Boolean)
+            .map((image) => toAbsoluteUrl(baseUrl, image)),
+          sku: String(product.id),
+          category: product.category.name,
+          brand: {
+            '@type': 'Brand',
+            name: 'Laiks Drukāt',
+          },
+          offers: {
+            '@type': 'Offer',
+            priceCurrency: 'EUR',
+            price: Number(product.price).toFixed(2),
+            availability: product.stock > 0
+              ? 'https://schema.org/InStock'
+              : 'https://schema.org/OutOfStock',
+            url: `${baseUrl}/veikals/${product.slug}/`,
+            itemCondition: 'https://schema.org/NewCondition',
+          },
+        }, buildBreadcrumbSchema(baseUrl, breadcrumbs)),
         csrf: await reply.generateCsrf(),
       })
     })

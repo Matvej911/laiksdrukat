@@ -403,6 +403,32 @@ const cookieConsentDefaults = {
   marketing: false,
 }
 
+function trackingConsentEnabled(consent) {
+  return Boolean(consent?.analytics || consent?.marketing)
+}
+
+function loadGoogleTagManager() {
+  const trackingConfig = window.ldTrackingConfig || {}
+  const gtmId = trackingConfig.gtmId
+
+  if (!trackingConfig.isProduction || !gtmId || window.ldGtmLoaded) {
+    return
+  }
+
+  window.dataLayer = window.dataLayer || []
+  window.dataLayer.push({
+    'gtm.start': new Date().getTime(),
+    event: 'gtm.js',
+  })
+
+  const script = document.createElement('script')
+  script.async = true
+  script.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmId)}`
+  script.dataset.ldGtm = 'true'
+  document.head.appendChild(script)
+  window.ldGtmLoaded = true
+}
+
 function readCookieConsent() {
   try {
     const stored = localStorage.getItem(consentStorageKey)
@@ -465,6 +491,10 @@ function applyCookieConsent(consent) {
     cookie_analytics: payload.analytics,
     cookie_marketing: payload.marketing,
   })
+
+  if (trackingConsentEnabled(payload)) {
+    loadGoogleTagManager()
+  }
 }
 
 const cookieBanner = document.querySelector('[data-cookie-banner]')
@@ -509,11 +539,16 @@ if (cookieBanner && cookieModal && cookieManage) {
   }
 
   const saveCookieConsent = (consent) => {
+    const hadTrackingBefore = trackingConsentEnabled(currentConsent)
     currentConsent = writeCookieConsent(consent)
     applyCookieConsent(currentConsent)
     syncCookieToggles(currentConsent)
     hideCookieBanner()
     closeCookieModal()
+
+    if (hadTrackingBefore && !trackingConsentEnabled(currentConsent) && window.ldGtmLoaded) {
+      window.location.reload()
+    }
   }
 
   const acceptAllConsent = () => saveCookieConsent({

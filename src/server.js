@@ -10,7 +10,7 @@ import FastifyHelmet from '@fastify/helmet'
 import FastifyCompress from '@fastify/compress'
 import { Eta } from 'eta'
 import { fileURLToPath } from 'url'
-import { join, dirname } from 'path'
+import { join, dirname, extname } from 'path'
 import 'dotenv/config'
 
 import dbPlugin from './plugins/db.js'
@@ -40,6 +40,23 @@ const publicAppUrl = process.env.APP_URL?.trim()
 const secureCookies = isProduction && publicAppUrl.startsWith('https://')
 const assetVersion = process.env.ASSET_VERSION?.trim()
   || String(Math.floor(Date.now() / 1000))
+const longCacheAssetExtensions = new Set([
+  '.avif',
+  '.webp',
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.gif',
+  '.svg',
+  '.ico',
+  '.css',
+  '.js',
+  '.woff',
+  '.woff2',
+  '.ttf',
+  '.otf',
+  '.pdf',
+])
  
 const contentSecurityPolicy = {
   directives: {
@@ -166,8 +183,18 @@ await fastify.register(FastifyStatic, {
   root: join(__dirname, '../public'),
   prefix: '/',
   cacheControl: true,
-  immutable: isProduction,
-  maxAge: isProduction ? '30d' : 0,
+  immutable: true,
+  maxAge: '30d',
+  setHeaders(res, filepath) {
+    const extension = extname(filepath).toLowerCase()
+
+    if (longCacheAssetExtensions.has(extension)) {
+      res.setHeader('Cache-Control', 'public, max-age=2592000, immutable')
+      return
+    }
+
+    res.setHeader('Cache-Control', 'public, max-age=3600')
+  },
 })
 
 // Body parsing

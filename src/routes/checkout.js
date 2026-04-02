@@ -207,6 +207,7 @@ async function checkoutRoutes(fastify) {
         order,
         cart,
         attachments,
+        db: fastify.db,
       })
 
       if (!ownerResult.sent) {

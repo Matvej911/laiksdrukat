@@ -96,6 +96,12 @@ model AdminUser {
   createdAt DateTime @default(now())
 }
 
+model NotificationRecipient {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
 enum OrderStatus {
   PENDING
   CONFIRMED

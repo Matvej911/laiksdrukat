@@ -93,8 +93,8 @@ async function sendMail({ to, subject, text, html, attachments = [] }) {
   return { sent: true }
 }
 
-async function sendOwnerNotificationMail({ subject, text, html, attachments = [] }) {
-  const recipients = await getNotificationRecipients()
+async function sendOwnerNotificationMail({ subject, text, html, attachments = [], db = null }) {
+  const recipients = await getNotificationRecipients(db)
 
   if (recipients.length === 0) {
     return { sent: false, reason: 'no-recipients', recipients }
@@ -158,6 +158,7 @@ export async function sendContactNotification(submission) {
     attachments: submission.attachment
       ? [{ filename: submission.attachment.name, path: submission.attachment.path }]
       : [],
+    db: submission.db || null,
   })
 }
 
@@ -237,7 +238,7 @@ function getOrderSummaries({ order, cart }) {
   }
 }
 
-export async function sendOwnerOrderNotification({ order, cart, attachments = [] }) {
+export async function sendOwnerOrderNotification({ order, cart, attachments = [], db = null }) {
   const orderReference = order.publicId || String(order.id)
   const { subtotal, shipping, totalVat, totalWithVat, lines, htmlItems, } = getOrderSummaries({ order, cart })
   const subject = `Jauns pasūtījums #${orderReference} - ${order.name}`
@@ -277,7 +278,7 @@ export async function sendOwnerOrderNotification({ order, cart, attachments = []
     ${order.note ? `<p><strong>Piezīmes:</strong><br>${order.note.replace(/\n/g, '<br>')}</p>` : ''}
   `
 
-  return sendOwnerNotificationMail({ subject, text, html, attachments })
+  return sendOwnerNotificationMail({ subject, text, html, attachments, db })
 }
 
 export async function sendCustomerOrderConfirmation({ order, cart }) {

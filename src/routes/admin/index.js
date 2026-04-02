@@ -585,7 +585,7 @@ async function adminRoutes(fastify) {
   // --- NOTIFICATION EMAILS ---
 
   fastify.get('/notification-emails', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const recipients = await getNotificationRecipients()
+    const recipients = await getNotificationRecipients(fastify.db)
 
     return reply.view('admin/notification-emails', {
       title: 'Admin | Paziņojumu e-pasti',
@@ -599,12 +599,12 @@ async function adminRoutes(fastify) {
 
   fastify.post('/notification-emails', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
     try {
-      await addNotificationRecipient(request.body.email)
+      await addNotificationRecipient(request.body.email, fastify.db)
       return reply.redirect('/admin/notification-emails?saved=1')
     } catch (error) {
       return reply.view('admin/notification-emails', {
         title: 'Admin | Paziņojumu e-pasti',
-        recipients: await getNotificationRecipients(),
+        recipients: await getNotificationRecipients(fastify.db),
         mailConfigured: isMailConfigured(),
         error: error.message || 'Neizdevās pievienot e-pasta adresi.',
         success: false,
@@ -614,7 +614,7 @@ async function adminRoutes(fastify) {
   })
 
   fastify.post('/notification-emails/delete', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
-    await deleteNotificationRecipient(request.body.email)
+    await deleteNotificationRecipient(request.body.email, fastify.db)
     return reply.redirect('/admin/notification-emails?saved=1')
   })
 

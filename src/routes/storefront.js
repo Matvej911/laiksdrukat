@@ -346,7 +346,10 @@ async function storefrontRoutes(fastify) {
     )
 
     try {
-      const result = await sendContactNotification(entry)
+      const result = await sendContactNotification({
+        ...entry,
+        db: fastify.db,
+      })
 
       if (!result.sent) {
         fastify.log.warn({ reason: result.reason }, 'Contact notification email was not sent')
@@ -736,7 +739,10 @@ async function storefrontRoutes(fastify) {
     )
 
     try {
-      await sendContactNotification(entry)
+      await sendContactNotification({
+        ...entry,
+        db: fastify.db,
+      })
     } catch (error) {
       fastify.log.error(error, 'Failed to send notification')
     }

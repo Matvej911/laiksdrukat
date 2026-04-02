@@ -7,7 +7,7 @@ function recipientsPath() {
   return join(process.cwd(), 'data', 'notification-recipients.json')
 }
 
-async function ensureRecipientsFile() {
+async function ensureLegacyRecipientsFile() {
   const filepath = recipientsPath()
 
   try {
@@ -35,28 +35,96 @@ async function ensureRecipientsFile() {
   }
 }
 
+async function readLegacyRecipients() {
+  await ensureLegacyRecipientsFile()
+  const raw = await readFile(recipientsPath(), 'utf8')
+  const parsed = JSON.parse(raw)
+
+  return Array.isArray(parsed)
+    ? parsed.filter((entry) => entry && entry.email)
+    : []
+}
+
 function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase()
 }
 
-export async function getNotificationRecipients() {
-  await ensureRecipientsFile()
-  const raw = await readFile(recipientsPath(), 'utf8')
-  const parsed = JSON.parse(raw)
-
-  return parsed.filter((entry) => entry && entry.email)
+async function hasNotificationRecipientTable(db) {
+  try {
+    await db.notificationRecipient.findFirst({
+      select: { id: true },
+    })
+    return true
+  } catch (error) {
+    if (error?.code === 'P2021') {
+      return false
+    }
+    throw error
+  }
 }
 
-export async function addNotificationRecipient(email) {
+async function seedRecipientsToDb(db) {
+  const existing = await db.notificationRecipient.findMany({
+    select: { email: true },
+  })
+
+  if (existing.length > 0) {
+    return
+  }
+
+  const legacyRecipients = await readLegacyRecipients()
+  const recipientsToSeed = legacyRecipients.length > 0
+    ? legacyRecipients
+    : [{ email: DEFAULT_EMAIL, createdAt: new Date().toISOString() }]
+
+  for (const entry of recipientsToSeed) {
+    const email = normalizeEmail(entry.email)
+    if (!email) continue
+
+    await db.notificationRecipient.upsert({
+      where: { email },
+      update: {},
+      create: {
+        email,
+        createdAt: entry.createdAt ? new Date(entry.createdAt) : undefined,
+      },
+    })
+  }
+}
+
+export async function getNotificationRecipients(db) {
+  if (db && await hasNotificationRecipientTable(db)) {
+    await seedRecipientsToDb(db)
+    return db.notificationRecipient.findMany({
+      orderBy: { createdAt: 'asc' },
+    })
+  }
+
+  return readLegacyRecipients()
+}
+
+export async function addNotificationRecipient(email, db) {
   const normalizedEmail = normalizeEmail(email)
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
     throw new Error('Nepareizs e-pasta formāts.')
   }
 
-  const recipients = await getNotificationRecipients()
+  if (db && await hasNotificationRecipientTable(db)) {
+    await seedRecipientsToDb(db)
 
-  if (recipients.some((entry) => entry.email === normalizedEmail)) {
+    await db.notificationRecipient.upsert({
+      where: { email: normalizedEmail },
+      update: {},
+      create: { email: normalizedEmail },
+    })
+
+    return getNotificationRecipients(db)
+  }
+
+  const recipients = await readLegacyRecipients()
+
+  if (recipients.some((entry) => normalizeEmail(entry.email) === normalizedEmail)) {
     return recipients
   }
 
@@ -72,10 +140,19 @@ export async function addNotificationRecipient(email) {
   return updated
 }
 
-export async function deleteNotificationRecipient(email) {
+export async function deleteNotificationRecipient(email, db) {
   const normalizedEmail = normalizeEmail(email)
-  const recipients = await getNotificationRecipients()
-  const updated = recipients.filter((entry) => entry.email !== normalizedEmail)
+
+  if (db && await hasNotificationRecipientTable(db)) {
+    await seedRecipientsToDb(db)
+    await db.notificationRecipient.deleteMany({
+      where: { email: normalizedEmail },
+    })
+    return getNotificationRecipients(db)
+  }
+
+  const recipients = await readLegacyRecipients()
+  const updated = recipients.filter((entry) => normalizeEmail(entry.email) !== normalizedEmail)
 
   await writeFile(recipientsPath(), JSON.stringify(updated, null, 2), 'utf8')
   return updated

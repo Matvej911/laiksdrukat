@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `product` ADD COLUMN `featured` BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE `Product` ADD COLUMN `featured` BOOLEAN NOT NULL DEFAULT false;

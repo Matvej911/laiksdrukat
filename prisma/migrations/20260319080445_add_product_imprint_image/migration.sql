@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `product` ADD COLUMN `imprintImage` VARCHAR(191) NULL;
+ALTER TABLE `Product` ADD COLUMN `imprintImage` VARCHAR(191) NULL;

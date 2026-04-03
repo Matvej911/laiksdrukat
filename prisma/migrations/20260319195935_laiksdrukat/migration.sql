@@ -6,7 +6,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `order` ADD COLUMN `publicId` VARCHAR(191) NOT NULL;
+ALTER TABLE `Order` ADD COLUMN `publicId` VARCHAR(191) NOT NULL;
 
 -- CreateIndex
 CREATE UNIQUE INDEX `Order_publicId_key` ON `Order`(`publicId`);

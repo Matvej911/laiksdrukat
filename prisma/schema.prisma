@@ -5,6 +5,7 @@ generator client {
   engineType = "library"
 }
 
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")

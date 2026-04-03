@@ -1,1 +1,1 @@
-web: npx prisma generate && node src/server.js
+web: node start.cjs

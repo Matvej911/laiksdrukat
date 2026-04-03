@@ -123,6 +123,7 @@ const fastify = Fastify({
 })
 let inFlightRequests = 0
 let peakInFlightRequests = 0
+let shuttingDown = false
 
 function finalizeRequestMetrics(request) {
   if (!request.requestMetrics || request.requestMetrics.completed) {
@@ -223,7 +224,7 @@ if (isProduction) {
       .replace(/:\d+$/, '')
 
     if (normalizedHost === 'laiksdrukat.lv') {
-      return reply.redirect(301, `https://www.laiksdrukat.lv${request.raw.url || '/'}`)
+      return reply.redirect(`https://www.laiksdrukat.lv${request.raw.url || '/'}`, 301)
     }
   })
 }
@@ -336,6 +337,46 @@ fastify.setNotFoundHandler(async (request, reply) => {
     ],
     cart: fastify.getCart(request),
   })
+})
+
+async function shutdown(signal, error = null) {
+  if (shuttingDown) {
+    return
+  }
+
+  shuttingDown = true
+
+  if (error) {
+    fastify.log.error({ err: error, signal }, 'Fatal process event')
+  } else {
+    fastify.log.warn({ signal }, 'Received shutdown signal')
+  }
+
+  try {
+    await fastify.close()
+    fastify.log.info({ signal }, 'Fastify shutdown completed')
+  } catch (closeError) {
+    fastify.log.error({ err: closeError, signal }, 'Fastify shutdown failed')
+  } finally {
+    process.exit(error ? 1 : 0)
+  }
+}
+
+process.on('SIGINT', () => {
+  shutdown('SIGINT')
+})
+
+process.on('SIGTERM', () => {
+  shutdown('SIGTERM')
+})
+
+process.on('uncaughtException', (error) => {
+  shutdown('uncaughtException', error)
+})
+
+process.on('unhandledRejection', (reason) => {
+  const error = reason instanceof Error ? reason : new Error(String(reason))
+  shutdown('unhandledRejection', error)
 })
 
 // Start server

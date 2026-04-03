@@ -395,7 +395,7 @@ async function storefrontRoutes(fastify) {
   for (const route of serviceRouteEntries) {
     fastify.get(route.path, async (request, reply) => {
       if (!route.canonical) {
-        return reply.redirect(301, route.service.path)
+        return reply.redirect(route.service.path, 301)
       }
 
       // ← special case for zimogi

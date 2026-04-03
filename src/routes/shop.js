@@ -381,7 +381,7 @@ async function shopRoutes(fastify, opts = {}) {
           redirectedTo: redirectSlug,
           durationMs: Date.now() - startedAt,
         }, 'Route timing')
-        return reply.redirect(301, `/veikals/${redirectSlug}/`)
+        return reply.redirect(`/veikals/${redirectSlug}/`, 301)
       }
 
       const slug = requestedSlug

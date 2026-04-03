@@ -57,6 +57,8 @@ const longCacheAssetExtensions = new Set([
   '.otf',
   '.pdf',
 ])
+const SLOW_REQUEST_THRESHOLD_MS = 500
+const HIGH_CONCURRENCY_THRESHOLD = 20
  
 const contentSecurityPolicy = {
   directives: {
@@ -118,6 +120,82 @@ const contentSecurityPolicy = {
 const fastify = Fastify({
   logger: true,
   trustProxy,
+})
+let inFlightRequests = 0
+let peakInFlightRequests = 0
+
+function finalizeRequestMetrics(request) {
+  if (!request.requestMetrics || request.requestMetrics.completed) {
+    return null
+  }
+
+  request.requestMetrics.completed = true
+  inFlightRequests = Math.max(0, inFlightRequests - 1)
+  return request.requestMetrics
+}
+
+fastify.addHook('onRequest', async (request) => {
+  inFlightRequests += 1
+  peakInFlightRequests = Math.max(peakInFlightRequests, inFlightRequests)
+  request.requestMetrics = {
+    startedAt: Date.now(),
+    inFlightAtStart: inFlightRequests,
+    peakInFlightAtRequest: peakInFlightRequests,
+    completed: false,
+  }
+
+  if (inFlightRequests >= HIGH_CONCURRENCY_THRESHOLD) {
+    fastify.log.warn({
+      route: request.raw.url,
+      method: request.method,
+      inFlightRequests,
+      peakInFlightRequests,
+    }, 'High concurrency detected')
+  }
+})
+
+fastify.addHook('onResponse', async (request, reply) => {
+  const metrics = finalizeRequestMetrics(request)
+  if (!metrics) {
+    return
+  }
+
+  const durationMs = Date.now() - metrics.startedAt
+  if (durationMs >= SLOW_REQUEST_THRESHOLD_MS) {
+    fastify.log.warn({
+      route: request.raw.url,
+      method: request.method,
+      statusCode: reply.statusCode,
+      durationMs,
+      inFlightAtStart: metrics.inFlightAtStart,
+      inFlightNow: inFlightRequests,
+      peakInFlightRequests,
+    }, 'Slow request detected')
+  }
+})
+
+fastify.addHook('onError', async (request, reply, error) => {
+  const metrics = finalizeRequestMetrics(request)
+  fastify.log.error({
+    err: error,
+    route: request.raw.url,
+    method: request.method,
+    statusCode: reply.statusCode,
+    durationMs: metrics ? Date.now() - metrics.startedAt : null,
+    inFlightNow: inFlightRequests,
+    peakInFlightRequests,
+  }, 'Request failed')
+})
+
+fastify.addHook('onTimeout', async (request) => {
+  const metrics = finalizeRequestMetrics(request)
+  fastify.log.error({
+    route: request.raw.url,
+    method: request.method,
+    durationMs: metrics ? Date.now() - metrics.startedAt : null,
+    inFlightNow: inFlightRequests,
+    peakInFlightRequests,
+  }, 'Request timed out')
 })
 
 fastify.decorateReply('publicView', function publicView(page, data = {}) {

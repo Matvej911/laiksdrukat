@@ -10,6 +10,9 @@ import { getOrSetCache } from '../lib/runtime-cache.js'
 const SHOP_PAGE_SIZE = 24
 const SHOP_LIST_CACHE_TTL_MS = 30 * 1000
 const SHOP_CATEGORY_CACHE_TTL_MS = 5 * 60 * 1000
+const legacyProductSlugRedirects = new Map([
+  ['printer-c10-compact', 'colop-c10-compact'],
+])
 
 const productCardSelect = {
   id: true,
@@ -368,7 +371,20 @@ async function shopRoutes(fastify, opts = {}) {
     fastify.get('/:slug/', async (request, reply) => {
       const startedAt = Date.now()
       const baseUrl = resolvePublicBaseUrl()
-      const { slug } = request.params
+      const requestedSlug = String(request.params.slug || '')
+      const redirectSlug = legacyProductSlugRedirects.get(requestedSlug)
+
+      if (redirectSlug) {
+        fastify.log.info({
+          route: '/veikals/:slug/',
+          slug: requestedSlug,
+          redirectedTo: redirectSlug,
+          durationMs: Date.now() - startedAt,
+        }, 'Route timing')
+        return reply.redirect(301, `/veikals/${redirectSlug}/`)
+      }
+
+      const slug = requestedSlug
 
       const product = await fastify.db.product.findUnique({
         where: { slug },

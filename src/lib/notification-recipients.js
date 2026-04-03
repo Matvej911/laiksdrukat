@@ -51,15 +51,20 @@ function normalizeEmail(email) {
 
 async function hasNotificationRecipientTable(db) {
   try {
-    await db.notificationRecipient.findFirst({
-      select: { id: true },
-    })
-    return true
+    const rows = await db.$queryRawUnsafe(`
+      SELECT COUNT(*) AS count
+      FROM information_schema.tables
+      WHERE table_schema = DATABASE()
+        AND table_name = 'NotificationRecipient'
+    `)
+
+    const count = Array.isArray(rows) && rows[0]
+      ? Number(rows[0].count ?? Object.values(rows[0])[0] ?? 0)
+      : 0
+
+    return count > 0
   } catch (error) {
-    if (error?.code === 'P2021') {
-      return false
-    }
-    throw error
+    return false
   }
 }
 

@@ -1685,6 +1685,47 @@ p {
   color: #5f4bd8;
 }
 
+.shop-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.shop-page-link {
+  min-width: 44px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(95, 75, 216, 0.16);
+  background: #fff;
+  color: #1a1464;
+  text-decoration: none;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.shop-page-link:hover {
+  border-color: #5f4bd8;
+  color: #5f4bd8;
+}
+
+.shop-page-link.active {
+  background: linear-gradient(135deg, #6d5dfc 0%, #8d7fff 100%);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(95, 75, 216, 0.22);
+}
+
+.shop-page-link-nav {
+  padding: 0 18px;
+}
+
 /* ── EMPTY ────────────────────────────────────── */
 .shop-empty {
   text-align: center;

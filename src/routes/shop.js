@@ -5,6 +5,11 @@ import {
   resolvePublicBaseUrl,
   toAbsoluteUrl,
 } from '../lib/seo.js'
+import { getOrSetCache } from '../lib/runtime-cache.js'
+
+const SHOP_PAGE_SIZE = 24
+const SHOP_LIST_CACHE_TTL_MS = 30 * 1000
+const SHOP_CATEGORY_CACHE_TTL_MS = 5 * 60 * 1000
 
 const productCardSelect = {
   id: true,
@@ -53,6 +58,11 @@ async function shopRoutes(fastify, opts = {}) {
     includeProduct = true,
   } = opts
 
+  const getPageNumber = (query = {}) => {
+    const rawPage = Number.parseInt(String(query.page || '1'), 10)
+    return Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1
+  }
+
   const buildShopFilters = (query = {}) => {
     const q = typeof query.q === 'string' ? query.q.trim() : ''
     const sort = typeof query.sort === 'string' ? query.sort : 'default'
@@ -81,27 +91,127 @@ async function shopRoutes(fastify, opts = {}) {
 
   const shouldNoindexListing = (filters) => Boolean(filters.q) || filters.sort !== 'default'
 
+  const buildPaginationItems = (currentPage, totalPages) => {
+    if (totalPages <= 1) {
+      return []
+    }
+
+    const pages = new Set([1, totalPages, currentPage - 1, currentPage, currentPage + 1])
+    return [...pages]
+      .filter((page) => page >= 1 && page <= totalPages)
+      .sort((a, b) => a - b)
+  }
+
+  const buildPaginationUrl = (pathname, filters, page) => {
+    const params = new URLSearchParams()
+
+    if (filters.q) {
+      params.set('q', filters.q)
+    }
+
+    if (filters.sort && filters.sort !== 'default') {
+      params.set('sort', filters.sort)
+    }
+
+    if (page > 1) {
+      params.set('page', String(page))
+    }
+
+    const queryString = params.toString()
+    return queryString ? `${pathname}?${queryString}` : pathname
+  }
+
+  const getShopCategories = async (db) => {
+    const { value } = await getOrSetCache('shop:categories', SHOP_CATEGORY_CACHE_TTL_MS, async () => (
+      Promise.all([
+        db.category.findMany({
+          select: categoryListSelect,
+          orderBy: { name: 'asc' },
+        }),
+        db.product.count({
+          where: { active: true },
+        }),
+      ]).then(([categories, allProductsCount]) => ({
+        categories,
+        allProductsCount,
+      }))
+    ))
+
+    return value
+  }
+
+  const getListingData = async (db, filters, page) => {
+    const cacheKey = JSON.stringify({
+      scope: 'listing',
+      q: filters.q,
+      sort: filters.sort,
+      kategorija: filters.kategorija,
+      page,
+    })
+
+    return getOrSetCache(cacheKey, SHOP_LIST_CACHE_TTL_MS, async () => {
+      const totalProducts = await db.product.count({ where: filters.where })
+      const totalPages = Math.max(1, Math.ceil(totalProducts / SHOP_PAGE_SIZE))
+      const currentPage = Math.min(page, totalPages)
+      const skip = (currentPage - 1) * SHOP_PAGE_SIZE
+
+      const products = await db.product.findMany({
+        where: filters.where,
+        select: productCardSelect,
+        orderBy: filters.orderBy,
+        skip,
+        take: SHOP_PAGE_SIZE,
+      })
+
+      return {
+        products,
+        totalProducts,
+        totalPages,
+        currentPage,
+        pageSize: SHOP_PAGE_SIZE,
+      }
+    })
+  }
+
   if (includeListing) {
     // Product listing
     fastify.get('/', async (request, reply) => {
+      const startedAt = Date.now()
       const baseUrl = resolvePublicBaseUrl()
       const filters = buildShopFilters(request.query)
+      const requestedPage = getPageNumber(request.query)
       const breadcrumbs = [
         { name: 'Sākums', path: '/' },
         { name: 'Veikals', path: '/veikals/' },
       ]
 
-      const [products, categories] = await Promise.all([
-        fastify.db.product.findMany({
-          where: filters.where,
-          select: productCardSelect,
-          orderBy: filters.orderBy,
-        }),
-        fastify.db.category.findMany({
-          select: categoryListSelect,
-          orderBy: { name: 'asc' },
-        }),
+      const [listingResult, categoryData] = await Promise.all([
+        getListingData(fastify.db, filters, requestedPage),
+        getShopCategories(fastify.db),
       ])
+      const {
+        hit: cacheHit,
+        value: {
+          products,
+          totalProducts,
+          totalPages,
+          currentPage,
+          pageSize,
+        },
+      } = listingResult
+      const { categories, allProductsCount } = categoryData
+      const paginationPath = '/veikals/'
+
+      fastify.log.info({
+        route: '/veikals/',
+        cacheHit,
+        q: filters.q || null,
+        sort: filters.sort,
+        page: currentPage,
+        totalProducts,
+        returnedProducts: products.length,
+        durationMs: Date.now() - startedAt,
+      }, 'Route timing')
 
       return reply.publicView('pages/shop/index', {
         title: 'Zīmogi un zīmogu tintes | Laiks Drukāt veikals ✅',
@@ -109,9 +219,23 @@ async function shopRoutes(fastify, opts = {}) {
           'Zīmogi un zīmogu tintes COLOP ⚡ Izvēlies tieši savu zīmogu vai tinti | Dažādi veidi, augsta kvalitāte un ātra izgatavošana ✓ Pasūti tagad!',
         products,
         categories,
+        allProductsCount,
         activeCategory: filters.kategorija,
         q: filters.q,
         sort: filters.sort,
+        currentPage,
+        totalPages,
+        totalProducts,
+        pageSize,
+        pagination: {
+          currentPage,
+          totalPages,
+          totalProducts,
+          items: buildPaginationItems(currentPage, totalPages),
+          prevUrl: currentPage > 1 ? buildPaginationUrl(paginationPath, filters, currentPage - 1) : null,
+          nextUrl: currentPage < totalPages ? buildPaginationUrl(paginationPath, filters, currentPage + 1) : null,
+          buildUrl: (page) => buildPaginationUrl(paginationPath, filters, page),
+        },
         breadcrumbs,
         robots: shouldNoindexListing(filters)
           ? 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'
@@ -134,7 +258,6 @@ async function shopRoutes(fastify, opts = {}) {
             })),
           },
         }, buildBreadcrumbSchema(baseUrl, breadcrumbs)),
-        csrf: await reply.generateCsrf(),
       })
     })
   }
@@ -142,8 +265,10 @@ async function shopRoutes(fastify, opts = {}) {
   if (includeCategory) {
     // Category page (e.g. /kategorija/zimogi/)
     fastify.get('/kategorija/:slug/', async (request, reply) => {
+      const startedAt = Date.now()
       const baseUrl = resolvePublicBaseUrl()
       const { slug } = request.params
+      const requestedPage = getPageNumber(request.query)
       const filters = buildShopFilters({ ...request.query, kategorija: slug })
 
       const category = await fastify.db.category.findUnique({ where: { slug } })
@@ -156,31 +281,62 @@ async function shopRoutes(fastify, opts = {}) {
         })
       }
 
-      const [products, categories] = await Promise.all([
-        fastify.db.product.findMany({
-          where: filters.where,
-          select: productCardSelect,
-          orderBy: filters.orderBy,
-        }),
-        fastify.db.category.findMany({
-          select: categoryListSelect,
-          orderBy: { name: 'asc' },
-        }),
+      const [listingResult, categoryData] = await Promise.all([
+        getListingData(fastify.db, filters, requestedPage),
+        getShopCategories(fastify.db),
       ])
+      const {
+        hit: cacheHit,
+        value: {
+          products,
+          totalProducts,
+          totalPages,
+          currentPage,
+          pageSize,
+        },
+      } = listingResult
+      const { categories, allProductsCount } = categoryData
       const breadcrumbs = [
         { name: 'Sākums', path: '/' },
         { name: 'Veikals', path: '/veikals/' },
         { name: category.name, path: `/kategorija/${category.slug}/` },
       ]
+      const paginationPath = `/kategorija/${category.slug}/`
+
+      fastify.log.info({
+        route: '/veikals/kategorija/',
+        category: category.slug,
+        cacheHit,
+        q: filters.q || null,
+        sort: filters.sort,
+        page: currentPage,
+        totalProducts,
+        returnedProducts: products.length,
+        durationMs: Date.now() - startedAt,
+      }, 'Route timing')
 
       return reply.publicView('pages/shop/index', {
         title: `${category.name} | Laiks Drukāt ✅`,
         description: `${category.name} kategorija Laiks Drukāt e-veikalā.`,
         products,
         categories,
+        allProductsCount,
         activeCategory: slug,
         q: filters.q,
         sort: filters.sort,
+        currentPage,
+        totalPages,
+        totalProducts,
+        pageSize,
+        pagination: {
+          currentPage,
+          totalPages,
+          totalProducts,
+          items: buildPaginationItems(currentPage, totalPages),
+          prevUrl: currentPage > 1 ? buildPaginationUrl(paginationPath, filters, currentPage - 1) : null,
+          nextUrl: currentPage < totalPages ? buildPaginationUrl(paginationPath, filters, currentPage + 1) : null,
+          buildUrl: (page) => buildPaginationUrl(paginationPath, filters, page),
+        },
         breadcrumbs,
         robots: shouldNoindexListing(filters)
           ? 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'
@@ -203,7 +359,6 @@ async function shopRoutes(fastify, opts = {}) {
             })),
           },
         }, buildBreadcrumbSchema(baseUrl, breadcrumbs)),
-        csrf: await reply.generateCsrf(),
       })
     })
   }

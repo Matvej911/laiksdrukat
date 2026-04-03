@@ -20,7 +20,7 @@
     <div class="shop-categories">
       <a href="/veikals/" class="shop-cat-pill <%= !it.activeCategory ? 'active' : '' %>">
         Visas preces
-        <span class="shop-cat-count"><%= it.products.length %></span>
+        <span class="shop-cat-count"><%= it.allProductsCount || it.totalProducts || it.products.length %></span>
       </a>
       <% for (const categoryInfo of it.site.shop.categories) { %>
         <% const dbCategory = it.categories.find((c) => c.slug === categoryInfo.slug) %>
@@ -61,7 +61,7 @@
       <% if (it.q) { %>
         <span>Rezultāti priekš "<strong><%= it.q %></strong>"</span>
       <% } %>
-      <span class="shop-meta-count"><%= it.products.length %> preces</span>
+      <span class="shop-meta-count"><%= it.totalProducts || it.products.length %> preces</span>
     </div>
 
     <!-- EMPTY -->
@@ -101,15 +101,32 @@
               </div>
             </a>
             <div class="shop-product-actions">
-              <form action="/grozs/add" method="POST">
-                <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-                <input type="hidden" name="productId" value="<%= p.id %>">
-                <input type="hidden" name="quantity" value="1">
-              </form>
             </div>
           </article>
         <% } %>
       </div>
+
+      <% if (it.pagination && it.pagination.totalPages > 1) { %>
+        <nav class="shop-pagination" aria-label="Produktu lapas">
+          <% if (it.pagination.prevUrl) { %>
+            <a href="<%= it.pagination.prevUrl %>" class="shop-page-link shop-page-link-nav">Iepriekšējā</a>
+          <% } %>
+
+          <% for (const page of it.pagination.items) { %>
+            <a
+              href="<%= it.pagination.buildUrl(page) %>"
+              class="shop-page-link <%= page === it.pagination.currentPage ? 'active' : '' %>"
+              <%= page === it.pagination.currentPage ? 'aria-current="page"' : '' %>
+            >
+              <%= page %>
+            </a>
+          <% } %>
+
+          <% if (it.pagination.nextUrl) { %>
+            <a href="<%= it.pagination.nextUrl %>" class="shop-page-link shop-page-link-nav">Nākamā</a>
+          <% } %>
+        </nav>
+      <% } %>
 
     <% } %>
   </div>

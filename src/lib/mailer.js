@@ -5,6 +5,8 @@ const viewsPath = path.join(process.cwd(), 'src/views')
 import { getNotificationRecipients } from './notification-recipients.js'
 import path from 'path'
 const eta = new Eta({ views: viewsPath })
+let cachedTransporter = null
+let cachedTransporterKey = null
 
 function getAppUrl() {
   const configuredUrl = process.env.APP_URL?.trim()
@@ -59,18 +61,38 @@ async function createTransporter() {
   const config = getMailConfig()
 
   if (!config.configured) {
+    cachedTransporter = null
+    cachedTransporterKey = null
     return null
   }
 
-  return nodemailer.createTransport({
+  const cacheKey = JSON.stringify({
+    host: config.host,
+    port: config.port,
+    user: config.user,
+    secure: config.secure,
+    from: config.from,
+  })
+
+  if (cachedTransporter && cachedTransporterKey === cacheKey) {
+    return cachedTransporter
+  }
+
+  cachedTransporter = nodemailer.createTransport({
     host: config.host,
     port: config.port,
     secure: config.secure,
+    connectionTimeout: 10 * 1000,
+    greetingTimeout: 10 * 1000,
+    socketTimeout: 15 * 1000,
     auth: {
       user: config.user,
       pass: config.pass,
     },
   })
+
+  cachedTransporterKey = cacheKey
+  return cachedTransporter
 }
 
 async function sendMail({ to, subject, text, html, attachments = [] }) {

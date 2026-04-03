@@ -10,6 +10,7 @@ import {
   resolvePublicBaseUrl,
   toAbsoluteUrl,
 } from '../lib/seo.js'
+import { getOrSetCache } from '../lib/runtime-cache.js'
 import {
   contentTypeFromFilename,
   persistUpload,
@@ -20,6 +21,7 @@ import {
 
 const CONTACT_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const CONTACT_RATE_LIMIT_MAX = 5
+const HOME_CACHE_TTL_MS = 60 * 1000
 const contactAttempts = new Map()
 const currentYear = new Date().getFullYear()
 
@@ -179,46 +181,67 @@ async function storefrontRoutes(fastify) {
 
   // Homepage
   fastify.get('/', async (request, reply) => {
+    const startedAt = Date.now()
     const site = getSiteContent()
+    const homepageSite = {
+      ...site,
+      portfolioSlider: site.portfolioSlider.slice(0, 18),
+    }
     const baseUrl = resolvePublicBaseUrl()
     const canonicalUrl = `${baseUrl}/`
     const breadcrumbs = [
       { name: 'Sākums', path: '/' },
     ]
     const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
-    const [products, categories] = await Promise.all([
-      fastify.db.product.findMany({
-        where: { active: true, featured: true, },
-        select: productCardSelect,
-        orderBy: { sortOrder: 'asc' },
-      }),
-      fastify.db.category.findMany({
-        select: categoryListSelect,
-        orderBy: { name: 'asc' },
-      }),
-    ])
+    const { hit: cacheHit, value: homeData } = await getOrSetCache(
+      'storefront:home',
+      HOME_CACHE_TTL_MS,
+      async () => {
+        const [products, categories] = await Promise.all([
+          fastify.db.product.findMany({
+            where: { active: true, featured: true },
+            select: productCardSelect,
+            orderBy: { sortOrder: 'asc' },
+          }),
+          fastify.db.category.findMany({
+            select: categoryListSelect,
+            orderBy: { name: 'asc' },
+          }),
+        ])
+
+        return { products, categories }
+      },
+    )
+
+    fastify.log.info({
+      route: '/',
+      cacheHit,
+      featuredProducts: homeData.products.length,
+      categories: homeData.categories.length,
+      durationMs: Date.now() - startedAt,
+    }, 'Route timing')
 
     return reply.publicView('pages/home', {
       title: 'Laiks Drukāt | Poligrāfijas un reklāmas pakalpojumi ✅',
       description:
         `Druka Jelgavā – piedāvājam zīmogus, banerus, uzlīmes, auto aplīmēšanu, kā arī vizītkartes un gaismas kastes | 1000+ projekti ⭐ Kvalitāte ✓ Ātra izpilde 🚀 ${currentYear}`,
-      products,
-      categories,
+      products: homeData.products,
+      categories: homeData.categories,
       cart: fastify.getCart(request),
-      site,
+      site: homepageSite,
       breadcrumbs,
-      seoImage: site.home.heroImage,
+      seoImage: homepageSite.home.heroImage,
       structuredData: [
         {
           '@context': 'https://schema.org',
           '@type': 'Organization',
-          name: site.company.name,
-          legalName: site.company.legalName,
+          name: homepageSite.company.name,
+          legalName: homepageSite.company.legalName,
           url: canonicalUrl,
-          logo: toAbsoluteUrl(baseUrl, site.meta.defaultShareImage),
-          image: toAbsoluteUrl(baseUrl, site.home.heroImage),
-          email: site.contact.email,
-          telephone: site.contact.phones[0]?.label,
+          logo: toAbsoluteUrl(baseUrl, homepageSite.meta.defaultShareImage),
+          image: toAbsoluteUrl(baseUrl, homepageSite.home.heroImage),
+          email: homepageSite.contact.email,
+          telephone: homepageSite.contact.phones[0]?.label,
           address: {
             '@type': 'PostalAddress',
             streetAddress: 'Asteru iela 16A',
@@ -226,12 +249,12 @@ async function storefrontRoutes(fastify) {
             postalCode: 'LV-3001',
             addressCountry: 'LV',
           },
-          sameAs: [site.contact.facebook.url],
+          sameAs: [homepageSite.contact.facebook.url],
         },
         {
           '@context': 'https://schema.org',
           '@type': 'WebSite',
-          name: site.company.name,
+          name: homepageSite.company.name,
           url: canonicalUrl,
           potentialAction: {
             '@type': 'SearchAction',

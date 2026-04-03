@@ -8,6 +8,7 @@ const portfolioImageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gi
 const galleryMetaFiles = new Set(['_order.json', '_alt.json'])
 const isProduction = process.env.NODE_ENV === 'production'
 const SITE_CONTENT_TTL_MS = isProduction ? 10 * 60 * 1000 : 5 * 1000
+const shouldCloneSiteContent = !isProduction
 
 let cachedSiteContent = null
 let cachedSiteContentAt = 0
@@ -69,7 +70,7 @@ const autoGalleryTrack = new URL('../../public/images/car-portfolio/', import.me
 export function getSiteContent() {
   const now = Date.now()
   if (cachedSiteContent && now - cachedSiteContentAt < SITE_CONTENT_TTL_MS) {
-    return structuredClone(cachedSiteContent)
+    return shouldCloneSiteContent ? structuredClone(cachedSiteContent) : cachedSiteContent
   }
 
   const portfolioItems = readGallery(portfolioDir, '/images/portfolio')
@@ -229,7 +230,7 @@ export function getSiteContent() {
   cachedSiteContent = content
   cachedSiteContentAt = now
 
-  return structuredClone(content)
+  return shouldCloneSiteContent ? structuredClone(content) : content
 }
 
 

@@ -269,6 +269,7 @@ async function storefrontRoutes(fastify) {
 
   // Contact page
   fastify.get('/kontakti/', async (request, reply) => {
+    const startedAt = Date.now()
     const success = request.session.contactFormSent === true
     delete request.session.contactFormSent
     const baseUrl = resolvePublicBaseUrl()
@@ -276,6 +277,12 @@ async function storefrontRoutes(fastify) {
       { name: 'Sākums', path: '/' },
       { name: 'Kontakti', path: '/kontakti/' },
     ]
+
+    fastify.log.info({
+      route: '/kontakti/',
+      success,
+      durationMs: Date.now() - startedAt,
+    }, 'Route timing')
 
     return reply.publicView('pages/kontakti', {
       title: 'Kontakti | Laiks Drukāt – Druka un reklāma »',

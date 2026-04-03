@@ -35,21 +35,38 @@ async function checkoutRoutes(fastify) {
 
   // Checkout form
   fastify.get('/', async (request, reply) => {
+    const startedAt = Date.now()
     const cart = await fastify.getValidatedCart(request)
-    if (cart.length === 0) return reply.redirect('/grozs/')
+    if (cart.length === 0) {
+      fastify.log.info({
+        route: '/pasutijums/',
+        items: 0,
+        redirectedTo: '/grozs/',
+        durationMs: Date.now() - startedAt,
+      }, 'Route timing')
+      return reply.redirect('/grozs/')
+    }
     const baseUrl = resolvePublicBaseUrl()
     const breadcrumbs = [
       { name: 'Sākums', path: '/' },
       { name: 'Grozs', path: '/grozs/' },
       { name: 'Pasūtījums', path: '/pasutijums/' },
     ]
+    const total = await fastify.validatedCartTotal(request)
+
+    fastify.log.info({
+      route: '/pasutijums/',
+      items: cart.length,
+      total,
+      durationMs: Date.now() - startedAt,
+    }, 'Route timing')
 
     return reply.publicView('pages/checkout', {
       title: 'Checkout | Laiks Drukāt',
       robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
       breadcrumbs,
       cart,
-      total: await fastify.validatedCartTotal(request), //
+      total,
       omnivaLockerGroups,
       csrf: await reply.generateCsrf(),
       structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),

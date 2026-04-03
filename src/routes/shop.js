@@ -366,6 +366,7 @@ async function shopRoutes(fastify, opts = {}) {
   if (includeProduct) {
     // Product detail page
     fastify.get('/:slug/', async (request, reply) => {
+      const startedAt = Date.now()
       const baseUrl = resolvePublicBaseUrl()
       const { slug } = request.params
 
@@ -443,6 +444,15 @@ async function shopRoutes(fastify, opts = {}) {
         { name: product.category.name, path: `/kategorija/${product.category.slug}/` },
         { name: product.name, path: `/veikals/${product.slug}/` },
       ]
+
+      fastify.log.info({
+        route: '/veikals/:slug/',
+        slug: product.slug,
+        productId: product.id,
+        category: product.category.slug,
+        recentlyViewed: recentlyViewed.length,
+        durationMs: Date.now() - startedAt,
+      }, 'Route timing')
 
       return reply.publicView('pages/shop/product', {
         title: `${product.name} | Laiks Drukāt`,

@@ -9,6 +9,7 @@ function normalizeImageUrl(baseUrl, value) {
 
 async function sitemapRoutes(fastify) {
   fastify.get('/sitemap.xml', async (request, reply) => {
+    const startedAt = Date.now()
     const baseUrl = 'https://www.laiksdrukat.lv'
     const site = getSiteContent()
 
@@ -79,6 +80,14 @@ async function sitemapRoutes(fastify) {
         })),
       },
     })
+
+    fastify.log.info({
+      route: '/sitemap.xml',
+      products: products.length,
+      categories: categories.length,
+      urls: urls.length,
+      durationMs: Date.now() - startedAt,
+    }, 'Route timing')
 
     reply.header('Content-Type', 'application/xml')
     return xml

@@ -89,12 +89,20 @@ async function cartRoutes(fastify) {
 
   // View cart
   fastify.get('/', async (request, reply) => {
+    const startedAt = Date.now()
     const cart = await fastify.getValidatedCart(request)
     const baseUrl = resolvePublicBaseUrl()
     const breadcrumbs = [
       { name: 'Sākums', path: '/' },
       { name: 'Grozs', path: '/grozs/' },
     ]
+
+    fastify.log.info({
+      route: '/grozs/',
+      items: cart.length,
+      total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      durationMs: Date.now() - startedAt,
+    }, 'Route timing')
 
     return reply.publicView('pages/cart', {
       title: 'Grozs | Laiks Drukāt',

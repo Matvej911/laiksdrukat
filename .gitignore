@@ -1,6 +1,5 @@
 node_modules/
 .env
-prisma/migrations/
 public/images/uploads/
 public/uploads/contact-attachments/
 data/contact-submissions/

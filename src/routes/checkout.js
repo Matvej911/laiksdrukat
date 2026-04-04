@@ -30,6 +30,34 @@ function recordCheckoutAttempt(ip) {
   checkoutAttempts.set(ip, attempts)
 }
 
+function notifyOrderEmails(fastify, { order, cart, attachments }) {
+  setImmediate(async () => {
+    try {
+      const ownerResult = await sendOwnerOrderNotification({
+        order,
+        cart,
+        attachments,
+        db: fastify.db,
+      })
+
+      if (!ownerResult.sent) {
+        fastify.log.warn({ reason: ownerResult.reason, orderId: order.id }, 'Owner order notification email was not sent')
+      }
+
+      const customerResult = await sendCustomerOrderConfirmation({
+        order,
+        cart,
+      })
+
+      if (!customerResult.sent) {
+        fastify.log.warn({ reason: customerResult.reason, orderId: order.id }, 'Customer order confirmation email was not sent')
+      }
+    } catch (error) {
+      fastify.log.error({ error, orderId: order.id }, 'Failed to send order emails')
+    }
+  })
+}
+
 async function checkoutRoutes(fastify) {
   const omnivaLockerGroups = getOmnivaLockerGroups()
 
@@ -186,62 +214,40 @@ async function checkoutRoutes(fastify) {
 
     recordCheckoutAttempt(request.ip)
 
-    try {
-      const uploadTokens = new Set()
-      for (const item of cart) {
-        const token = item?.options && typeof item.options === 'object'
-          ? item.options.__uploadToken
-          : null
-        if (typeof token === 'string' && token.trim()) {
-          uploadTokens.add(token.trim())
-        }
+    const uploadTokens = new Set()
+    for (const item of cart) {
+      const token = item?.options && typeof item.options === 'object'
+        ? item.options.__uploadToken
+        : null
+      if (typeof token === 'string' && token.trim()) {
+        uploadTokens.add(token.trim())
       }
-
-      const attachments = []
-      if (uploadTokens.size > 0) {
-        const uploads = await fastify.db.upload.findMany({
-          where: {
-            token: { in: [...uploadTokens] },
-            isPrivate: true,
-          },
-          select: {
-            token: true,
-            originalName: true,
-            relativePath: true,
-          },
-        })
-
-        for (const upload of uploads) {
-          const filepath = resolveUploadPath(upload.relativePath)
-          attachments.push({
-            filename: upload.originalName,
-            path: filepath,
-          })
-        }
-      }
-
-      const ownerResult = await sendOwnerOrderNotification({
-        order,
-        cart,
-        attachments,
-        db: fastify.db,
-      })
-
-      if (!ownerResult.sent) {
-        fastify.log.warn({ reason: ownerResult.reason, orderId: order.id }, 'Owner order notification email was not sent')
-      }
-
-      const customerResult = await sendCustomerOrderConfirmation({
-        order,
-        cart,
-      })
-
-      if (!customerResult.sent) {
-        fastify.log.warn({ reason: customerResult.reason, orderId: order.id }, 'Customer order confirmation email was not sent')
-      }
-    } catch (error) {
-      fastify.log.error(error, 'Failed to send order emails')
     }
+
+    const attachments = []
+    if (uploadTokens.size > 0) {
+      const uploads = await fastify.db.upload.findMany({
+        where: {
+          token: { in: [...uploadTokens] },
+          isPrivate: true,
+        },
+        select: {
+          token: true,
+          originalName: true,
+          relativePath: true,
+        },
+      })
+
+      for (const upload of uploads) {
+        const filepath = resolveUploadPath(upload.relativePath)
+        attachments.push({
+          filename: upload.originalName,
+          path: filepath,
+        })
+      }
+    }
+
+    notifyOrderEmails(fastify, { order, cart, attachments })
 
     fastify.clearCart(request)
 

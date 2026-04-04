@@ -45,6 +45,11 @@ async function readLegacyRecipients() {
     : []
 }
 
+async function writeLegacyRecipients(recipients) {
+  await mkdir(join(process.cwd(), 'data'), { recursive: true })
+  await writeFile(recipientsPath(), JSON.stringify(recipients, null, 2), 'utf8')
+}
+
 function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase()
 }
@@ -97,12 +102,27 @@ async function seedRecipientsToDb(db) {
   }
 }
 
+async function syncRecipientsToLegacyFile(recipients) {
+  const normalized = recipients
+    .map((entry) => ({
+      email: normalizeEmail(entry.email),
+      createdAt: entry.createdAt
+        ? new Date(entry.createdAt).toISOString()
+        : new Date().toISOString(),
+    }))
+    .filter((entry) => entry.email)
+
+  await writeLegacyRecipients(normalized)
+}
+
 export async function getNotificationRecipients(db) {
   if (db && await hasNotificationRecipientTable(db)) {
     await seedRecipientsToDb(db)
-    return db.notificationRecipient.findMany({
+    const recipients = await db.notificationRecipient.findMany({
       orderBy: { createdAt: 'asc' },
     })
+    await syncRecipientsToLegacyFile(recipients)
+    return recipients
   }
 
   return readLegacyRecipients()
@@ -124,7 +144,11 @@ export async function addNotificationRecipient(email, db) {
       create: { email: normalizedEmail },
     })
 
-    return getNotificationRecipients(db)
+    const recipients = await db.notificationRecipient.findMany({
+      orderBy: { createdAt: 'asc' },
+    })
+    await syncRecipientsToLegacyFile(recipients)
+    return recipients
   }
 
   const recipients = await readLegacyRecipients()
@@ -141,7 +165,7 @@ export async function addNotificationRecipient(email, db) {
     },
   ]
 
-  await writeFile(recipientsPath(), JSON.stringify(updated, null, 2), 'utf8')
+  await writeLegacyRecipients(updated)
   return updated
 }
 
@@ -153,12 +177,16 @@ export async function deleteNotificationRecipient(email, db) {
     await db.notificationRecipient.deleteMany({
       where: { email: normalizedEmail },
     })
-    return getNotificationRecipients(db)
+    const recipients = await db.notificationRecipient.findMany({
+      orderBy: { createdAt: 'asc' },
+    })
+    await syncRecipientsToLegacyFile(recipients)
+    return recipients
   }
 
   const recipients = await readLegacyRecipients()
   const updated = recipients.filter((entry) => normalizeEmail(entry.email) !== normalizedEmail)
 
-  await writeFile(recipientsPath(), JSON.stringify(updated, null, 2), 'utf8')
+  await writeLegacyRecipients(updated)
   return updated
 }

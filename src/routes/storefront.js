@@ -1,8 +1,8 @@
-import { appendFile, mkdir } from 'fs/promises'
 import { randomUUID } from 'crypto'
 import { basename, join } from 'path'
 import { serviceRouteEntries, getSiteContent } from '../content/site.js'
 import { hasValidSessionCsrf } from '../lib/csrf.js'
+import { saveContactMessage } from '../lib/contact-messages.js'
 import { sendContactNotification } from '../lib/mailer.js'
 import {
   appendStructuredData,
@@ -134,6 +134,23 @@ async function collectContactForm(request) {
   }
 
   return { fields, uploadedFile, invalidCsrf: false }
+}
+
+function notifyContactSubmission(fastify, entry) {
+  setImmediate(async () => {
+    try {
+      const result = await sendContactNotification({
+        ...entry,
+        db: fastify.db,
+      })
+
+      if (!result.sent) {
+        fastify.log.warn({ reason: result.reason, entryId: entry.id }, 'Contact notification email was not sent')
+      }
+    } catch (error) {
+      fastify.log.error({ error, entryId: entry.id }, 'Failed to send contact notification email')
+    }
+  })
 }
 
 
@@ -351,8 +368,6 @@ async function storefrontRoutes(fastify) {
       })
     }
 
-    const submissionsDir = join(process.cwd(), 'data', 'contact-submissions')
-    await mkdir(submissionsDir, { recursive: true })
     const entry = {
       id: randomUUID(),
       createdAt: new Date().toISOString(),
@@ -369,24 +384,9 @@ async function storefrontRoutes(fastify) {
         : null,
     }
 
-    await appendFile(
-      join(submissionsDir, 'messages.jsonl'),
-      `${JSON.stringify(entry)}\n`,
-      'utf8',
-    )
+    await saveContactMessage(entry, fastify.db)
 
-    try {
-      const result = await sendContactNotification({
-        ...entry,
-        db: fastify.db,
-      })
-
-      if (!result.sent) {
-        fastify.log.warn({ reason: result.reason }, 'Contact notification email was not sent')
-      }
-    } catch (error) {
-      fastify.log.error(error, 'Failed to send contact notification email')
-    }
+    notifyContactSubmission(fastify, entry)
     recordContactAttempt(request.ip)
     request.session.contactFormSent = true
     return reply.redirect('/kontakti/')
@@ -745,8 +745,6 @@ async function storefrontRoutes(fastify) {
       return reply.redirect(redirectPage)
     }
 
-    const submissionsDir = join(process.cwd(), 'data', 'contact-submissions')
-    await mkdir(submissionsDir, { recursive: true })
     const entry = {
       id: randomUUID(),
       createdAt: new Date().toISOString(),
@@ -762,20 +760,9 @@ async function storefrontRoutes(fastify) {
       } : null,
     }
 
-    await appendFile(
-      join(submissionsDir, 'messages.jsonl'),
-      `${JSON.stringify(entry)}\n`,
-      'utf8',
-    )
+    await saveContactMessage(entry, fastify.db)
 
-    try {
-      await sendContactNotification({
-        ...entry,
-        db: fastify.db,
-      })
-    } catch (error) {
-      fastify.log.error(error, 'Failed to send notification')
-    }
+    notifyContactSubmission(fastify, entry)
 
     recordContactAttempt(request.ip)
     request.session.contactFormSent = true

@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { mkdir, readFile, writeFile } from 'fs/promises'
+import { mkdir, writeFile } from 'fs/promises'
 import { randomUUID } from 'crypto'
 import { extname, join } from 'path'
 
@@ -26,6 +26,7 @@ import {
   upsertProductInCatalogCsv,
 } from '../../lib/catalog-csv.js'
 import { invalidateSiteContentCache } from '../../content/site.js'
+import { listContactMessages } from '../../lib/contact-messages.js'
 
 
 const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
@@ -132,27 +133,6 @@ function buildProductPayload(fields, uploads, existingProduct = null) {
       normalizeOptionalText(fields.imprintImage) ||
       existingProduct?.imprintImage ||
       null,
-  }
-}
-
-async function readContactMessages() {
-  try {
-    const file = await readFile(
-      join(process.cwd(), 'data', 'contact-submissions', 'messages.jsonl'),
-      'utf8',
-    )
-
-    return file
-      .split(/\r?\n/)
-      .filter(Boolean)
-      .map((line) => JSON.parse(line))
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      return []
-    }
-
-    throw error
   }
 }
 
@@ -304,7 +284,7 @@ async function adminRoutes(fastify) {
         orderBy: { createdAt: 'desc' },
         include: { items: true },
       }),
-      readContactMessages(),
+      listContactMessages(fastify.db),
     ])
 
     return reply.view('admin/dashboard', {
@@ -558,7 +538,7 @@ async function adminRoutes(fastify) {
   // --- CONTACT MESSAGES ---
 
   fastify.get('/messages', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const messages = await readContactMessages()
+    const messages = await listContactMessages(fastify.db)
 
     return reply.view('admin/messages', {
       title: 'Admin | Ziņas',
@@ -568,7 +548,7 @@ async function adminRoutes(fastify) {
   })
 
   fastify.get('/messages/:id', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const messages = await readContactMessages()
+    const messages = await listContactMessages(fastify.db)
     const message = messages.find((entry) => entry.id === request.params.id)
 
     if (!message) {

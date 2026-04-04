@@ -32,6 +32,16 @@ function normalizeEntry(entry) {
   }
 }
 
+function toMysqlDateTime(value) {
+  const date = value instanceof Date ? value : new Date(value || Date.now())
+
+  if (Number.isNaN(date.getTime())) {
+    return toMysqlDateTime(new Date())
+  }
+
+  return date.toISOString().replace('T', ' ').replace('Z', '')
+}
+
 async function readFileMessages() {
   try {
     const file = await readFile(getContactMessagesFilepath(), 'utf8')
@@ -152,7 +162,7 @@ async function writeDatabaseMessage(entry, db) {
     entry.attachment?.name || null,
     entry.attachment?.url || null,
     entry.attachment?.path || null,
-    entry.createdAt,
+    toMysqlDateTime(entry.createdAt),
   )
 }
 

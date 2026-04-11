@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer'
 import { Eta } from 'eta'
+import { readFile } from 'fs/promises'
 
 const viewsPath = path.join(process.cwd(), 'src/views')
 import { getNotificationRecipients } from './notification-recipients.js'
@@ -35,6 +36,11 @@ function toAbsoluteUrl(value) {
 }
 
 function getMailConfig() {
+  const resendApiKey = process.env.RESEND_API_KEY?.trim()
+  const resendFrom = process.env.RESEND_FROM?.trim()
+    || process.env.SMTP_FROM
+    || process.env.SMTP_USER
+    || ''
   const host = process.env.SMTP_HOST
   const port = Number(process.env.SMTP_PORT || 587)
   const user = process.env.SMTP_USER
@@ -43,6 +49,10 @@ function getMailConfig() {
   const secure = process.env.SMTP_SECURE === 'true' || port === 465
 
   return {
+    resendApiKey,
+    resendFrom,
+    resendReplyTo: process.env.RESEND_REPLY_TO?.trim() || user || null,
+    resendConfigured: Boolean(resendApiKey && resendFrom),
     host,
     port,
     user,
@@ -54,7 +64,8 @@ function getMailConfig() {
 }
 
 export function isMailConfigured() {
-  return getMailConfig().configured
+  const config = getMailConfig()
+  return config.resendConfigured || config.configured
 }
 
 async function createTransporter() {
@@ -95,8 +106,73 @@ async function createTransporter() {
   return cachedTransporter
 }
 
-async function sendMail({ to, subject, text, html, attachments = [] }) {
-  const config = getMailConfig()
+async function normalizeResendAttachment(attachment) {
+  if (!attachment) return null
+
+  if (attachment.content && attachment.filename) {
+    return {
+      filename: attachment.filename,
+      content: attachment.content,
+    }
+  }
+
+  if (attachment.path && attachment.filename) {
+    const content = await readFile(attachment.path)
+    return {
+      filename: attachment.filename,
+      content: content.toString('base64'),
+    }
+  }
+
+  if (attachment.path) {
+    return {
+      path: attachment.path,
+      filename: attachment.filename || 'attachment',
+    }
+  }
+
+  return null
+}
+
+async function sendViaResend({ config, to, subject, text, html, attachments = [], replyTo = null }) {
+  const normalizedAttachments = (
+    await Promise.all(attachments.map(normalizeResendAttachment))
+  ).filter(Boolean)
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${config.resendApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: config.resendFrom,
+      to,
+      subject,
+      text,
+      html,
+      reply_to: replyTo || config.resendReplyTo || undefined,
+      attachments: normalizedAttachments.length > 0 ? normalizedAttachments : undefined,
+    }),
+  })
+
+  if (!response.ok) {
+    let detail = ''
+
+    try {
+      const data = await response.json()
+      detail = data?.message || data?.error || JSON.stringify(data)
+    } catch {
+      detail = await response.text()
+    }
+
+    throw new Error(`Resend request failed (${response.status}): ${detail}`)
+  }
+
+  return { sent: true }
+}
+
+async function sendViaSmtp({ config, to, subject, text, html, attachments = [], replyTo = null }) {
   const transporter = await createTransporter()
 
   if (!transporter) {
@@ -110,9 +186,34 @@ async function sendMail({ to, subject, text, html, attachments = [] }) {
     text,
     html,
     attachments,
+    replyTo: replyTo || undefined,
   })
 
   return { sent: true }
+}
+
+async function sendMail({ to, subject, text, html, attachments = [] }) {
+  const config = getMailConfig()
+
+  if (config.resendConfigured) {
+    return sendViaResend({
+      config,
+      to,
+      subject,
+      text,
+      html,
+      attachments,
+    })
+  }
+
+  return sendViaSmtp({
+    config,
+    to,
+    subject,
+    text,
+    html,
+    attachments,
+  })
 }
 
 async function sendOwnerNotificationMail({ subject, text, html, attachments = [], db = null }) {

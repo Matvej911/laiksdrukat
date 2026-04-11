@@ -102,6 +102,7 @@ const contentSecurityPolicy = {
     ],
     connectSrc: [
       "'self'",
+      'https://www.google.com',
       'https://www.googletagmanager.com',
       'https://www.google-analytics.com',
       'https://ssl.google-analytics.com',

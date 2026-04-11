@@ -224,7 +224,7 @@ async function sendOwnerNotificationMail({ subject, text, html, attachments = []
   }
 
   const result = await sendMail({
-    to: recipients.map((entry) => entry.email).join(', '),
+    to: recipients.map((entry) => entry.email),
     subject,
     text,
     html,

@@ -37,7 +37,7 @@
     <link rel="apple-touch-icon" href="<%= it.site.meta.favicon.appleTouch %>">
   <% } %>
   <% if (it.structuredData) { %>
-    <script type="application/ld+json"><%= JSON.stringify(it.structuredData) %></script>
+    <script type="application/ld+json"><%~ JSON.stringify(it.structuredData) %></script>
   <% } %>
   <link rel="stylesheet" href="/css/main.css?v=<%= it.assetVersion %>">
   <%~ it.extraHead || '' %>

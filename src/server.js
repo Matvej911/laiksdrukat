@@ -223,8 +223,8 @@ if (isProduction) {
       .toLowerCase()
       .replace(/:\d+$/, '')
 
-    if (normalizedHost === 'laiksdrukat.eu') {
-      return reply.redirect(`https://www.laiksdrukat.eu${request.raw.url || '/'}`, 301)
+    if (normalizedHost === 'laiksdrukat.lv') {
+      return reply.redirect(`https://www.laiksdrukat.lv${request.raw.url || '/'}`, 301)
     }
   })
 }

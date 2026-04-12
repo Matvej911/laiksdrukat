@@ -110,6 +110,7 @@ const contentSecurityPolicy = {
       "'self'",
       'https://www.clarity.ms',
       'https://c.clarity.ms',
+      'https://n.clarity.ms',
       'https://www.google.com',
       'https://www.googletagmanager.com',
       'https://region1.analytics.google.com',

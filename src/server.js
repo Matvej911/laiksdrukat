@@ -70,6 +70,8 @@ const contentSecurityPolicy = {
     scriptSrc: [
       "'self'",
       "'unsafe-inline'",
+      'https://www.clarity.ms',
+      'https://googleads.g.doubleclick.net',
       'https://www.googletagmanager.com',
       'https://www.google-analytics.com',
       'https://ssl.google-analytics.com',
@@ -77,6 +79,8 @@ const contentSecurityPolicy = {
     scriptSrcElem: [
       "'self'",
       "'unsafe-inline'",
+      'https://www.clarity.ms',
+      'https://googleads.g.doubleclick.net',
       'https://www.googletagmanager.com',
       'https://www.google-analytics.com',
       'https://ssl.google-analytics.com',
@@ -102,8 +106,11 @@ const contentSecurityPolicy = {
     ],
     connectSrc: [
       "'self'",
+      'https://www.clarity.ms',
+      'https://c.clarity.ms',
       'https://www.google.com',
       'https://www.googletagmanager.com',
+      'https://region1.analytics.google.com',
       'https://www.google-analytics.com',
       'https://ssl.google-analytics.com',
       'https://stats.g.doubleclick.net',

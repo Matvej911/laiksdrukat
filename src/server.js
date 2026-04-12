@@ -112,6 +112,8 @@ const contentSecurityPolicy = {
       'https://c.clarity.ms',
       'https://n.clarity.ms',
       'https://www.google.com',
+      'https://www.google.lv',
+      'https://www.googleadservices.com',
       'https://www.googletagmanager.com',
       'https://region1.analytics.google.com',
       'https://www.google-analytics.com',

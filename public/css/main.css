@@ -3198,19 +3198,30 @@ body:has(.cart-section) .header-waves {
 /* ── LAYOUT ───────────────────────────────────── */
 .page-404-inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  grid-template-areas:
+    "breadcrumb breadcrumb"
+    "copy stamp";
+  column-gap: 80px;
+  row-gap: 32px;
   align-items: center;
   position: relative;
   z-index: 1;
 }
 
+.page-404-inner > .breadcrumb {
+  grid-area: breadcrumb;
+  margin-bottom: 0;
+}
+
 /* ── STAMP ────────────────────────────────────── */
 .stamp-wrap {
+  grid-area: stamp;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
+  justify-self: end;
 }
 
 .stamp {
@@ -3299,6 +3310,7 @@ body:has(.cart-section) .header-waves {
 
 /* ── COPY ─────────────────────────────────────── */
 .page-404-copy {
+  grid-area: copy;
   animation: fade-up 0.5s ease 0.4s both;
 }
 
@@ -3408,8 +3420,16 @@ body:has(.cart-section) .header-waves {
 @media (max-width: 800px) {
   .page-404-inner {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "breadcrumb"
+      "stamp"
+      "copy";
     gap: 48px;
     text-align: center;
+  }
+
+  .page-404-inner > .breadcrumb {
+    justify-content: center;
   }
 
   .stamp-wrap { margin: 0 auto; }

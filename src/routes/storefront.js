@@ -202,7 +202,7 @@ async function storefrontRoutes(fastify) {
     const site = getSiteContent()
     const homepageSite = {
       ...site,
-      portfolioSlider: site.portfolioSlider.slice(0, 18),
+      portfolioSlider: site.portfolioSlider.slice(0, 63),
     }
     const baseUrl = resolvePublicBaseUrl()
     const canonicalUrl = `${baseUrl}/`

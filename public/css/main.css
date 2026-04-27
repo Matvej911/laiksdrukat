@@ -316,6 +316,25 @@ p {
   color: #ffe84d;
 }
 
+.nav-link-language {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-link-language span {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.nav-link-language strong {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffd400;
+}
+
 /* ─── DROPDOWN ─────────────────────────────────── */
 .dropdown-menu {
   position: absolute;
@@ -1270,6 +1289,13 @@ p {
   border: 1px solid rgba(95, 75, 216, 0.1);
   border-radius: 24px;
   padding: 40px;
+}
+
+.contact-form-block--full {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 760px;
+  justify-self: center;
 }
 
 .contact-form-block .contact-eyebrow {

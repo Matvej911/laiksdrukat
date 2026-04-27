@@ -126,8 +126,9 @@ const fileInput = document.querySelector('[data-file-input]')
 const fileLabel = document.querySelector('[data-file-label]')
 
 if (fileInput && fileLabel) {
+  const defaultFileLabel = fileLabel.textContent
   fileInput.addEventListener('change', () => {
-    fileLabel.textContent = fileInput.files?.[0]?.name || 'Izvēlieties failu vai ievelciet to šeit'
+    fileLabel.textContent = fileInput.files?.[0]?.name || defaultFileLabel
   })
 }
 

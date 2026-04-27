@@ -1,9 +1,15 @@
 import { randomUUID } from 'crypto'
 import { basename, join } from 'path'
-import { serviceRouteEntries, getSiteContent } from '../content/site.js'
+import { getSiteContent } from '../content/site.js'
 import { hasValidSessionCsrf } from '../lib/csrf.js'
 import { saveContactMessage } from '../lib/contact-messages.js'
 import { sendContactNotification } from '../lib/mailer.js'
+import {
+  buildServiceRouteEntries,
+  getUiCopy,
+  localizePath,
+  localizeSiteContent,
+} from '../lib/marketing-locale.js'
 import {
   appendStructuredData,
   buildBreadcrumbSchema,
@@ -24,6 +30,36 @@ const CONTACT_RATE_LIMIT_MAX = 5
 const HOME_CACHE_TTL_MS = 60 * 1000
 const contactAttempts = new Map()
 const currentYear = new Date().getFullYear()
+const lvServiceTemplates = {
+  '/zimogs/': {
+    page: 'pages/services/zimogi',
+    title: 'Zīmogu izgatavošana Jelgavā⚡Ātra izgatavošana | Laiks Drukāt',
+  },
+  '/vides-reklama/': {
+    page: 'pages/services/vides-reklama',
+    title: '✨Izkārtnes, gaismas kastes un reklāmas burti | Vides reklāma',
+  },
+  '/vizitkartes/': {
+    page: 'pages/services/vizitkartes',
+    title: 'Vizītkartes – sietspiede, standarta druka | Laiks Drukāt ✅',
+  },
+  '/baneri/': {
+    page: 'pages/services/baneri/',
+    title: 'Baneri Jelgavā – Roll-up & PVC banneri | Laiks Drukāt⭐',
+  },
+  '/auto-aplimesana/': {
+    page: 'pages/services/auto-aplimesana',
+    title: 'Auto aplīmēšana Jelgavā – 3M & Oracal vinils | Laiks Drukāt⭐',
+  },
+  '/uzlimes/': {
+    page: 'pages/services/uzlimes',
+    title: 'Uzlīmju druka – ruļļu, UV un lielformāta | Laiks Drukāt ✅',
+  },
+  '/druka/': {
+    page: 'pages/services/druka',
+    title: 'Reklāmas, poligrāfijas pakalpojumi⚡Bukleti, brošūras, plakāti',
+  },
+}
 
 const productCardSelect = {
   id: true,
@@ -34,6 +70,7 @@ const productCardSelect = {
   category: {
     select: {
       name: true,
+      slug: true,
     },
   },
 }
@@ -148,19 +185,26 @@ function notifyContactSubmission(fastify, entry) {
         fastify.log.warn({ reason: result.reason, entryId: entry.id }, 'Contact notification email was not sent')
       }
     } catch (error) {
-      fastify.log.error({ error, entryId: entry.id }, 'Failed to send contact notification email')
+      fastify.log.error({ err: error, entryId: entry.id }, 'Failed to send contact notification email')
     }
   })
 }
 
 
 
-async function storefrontRoutes(fastify) {
-  fastify.get('/fails/:token', async (request, reply) => {
-    const token = String(request.params.token || '')
-    if (!token) {
-      return reply.code(404).send('File not found')
-    }
+async function storefrontRoutes(fastify, opts = {}) {
+  const locale = opts.locale === 'ru' ? 'ru' : 'lv'
+  const ui = getUiCopy(locale)
+  const localizedPath = (path) => localizePath(locale, path)
+  const getLocalizedSite = () => localizeSiteContent(getSiteContent(), locale)
+  const getServiceRoutes = () => buildServiceRouteEntries(getLocalizedSite())
+
+  if (locale === 'lv') {
+    fastify.get('/fails/:token', async (request, reply) => {
+      const token = String(request.params.token || '')
+      if (!token) {
+        return reply.code(404).send('File not found')
+      }
 
     const upload = await fastify.db.upload.findUnique({
       where: { token },
@@ -180,34 +224,35 @@ async function storefrontRoutes(fastify) {
       }
       throw error
     }
-  })
+    })
 
-  fastify.get('/media/admin-products/:filename', async (request, reply) => {
-    const filename = basename(String(request.params.filename || ''))
-    const filepath = join(resolveUploadPath('admin-product-images'), filename)
+    fastify.get('/media/admin-products/:filename', async (request, reply) => {
+      const filename = basename(String(request.params.filename || ''))
+      const filepath = join(resolveUploadPath('admin-product-images'), filename)
 
-    try {
-      return await sendStoredFile(reply, filepath, filename)
-    } catch (error) {
-      if (error.code === 'ENOENT') {
-        return reply.code(404).send('File not found')
+      try {
+        return await sendStoredFile(reply, filepath, filename)
+      } catch (error) {
+        if (error.code === 'ENOENT') {
+          return reply.code(404).send('File not found')
+        }
+        throw error
       }
-      throw error
-    }
-  })
+    })
+  }
 
   // Homepage
   fastify.get('/', async (request, reply) => {
     const startedAt = Date.now()
-    const site = getSiteContent()
+    const site = getLocalizedSite()
     const homepageSite = {
       ...site,
       portfolioSlider: site.portfolioSlider.slice(0, 63),
     }
     const baseUrl = resolvePublicBaseUrl()
-    const canonicalUrl = `${baseUrl}/`
+    const canonicalUrl = `${baseUrl}${localizedPath('/')}`
     const breadcrumbs = [
-      { name: 'Sākums', path: '/' },
+      { name: ui.breadcrumbs.home, path: localizedPath('/') },
     ]
     const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
     const { hit: cacheHit, value: homeData } = await getOrSetCache(
@@ -238,15 +283,27 @@ async function storefrontRoutes(fastify) {
       durationMs: Date.now() - startedAt,
     }, 'Route timing')
 
+    const localizedProducts = locale === 'ru'
+      ? homeData.products.map((product) => ({
+          ...product,
+          category: {
+            ...product.category,
+            name: site.shop.categories.find((category) => category.slug === product.category.slug)?.title || product.category.name,
+          },
+        }))
+      : homeData.products
+
     return reply.publicView('pages/home', {
-      title: 'Laiks Drukāt | Poligrāfijas un reklāmas pakalpojumi ✅',
-      description:
-        `Druka Jelgavā – piedāvājam zīmogus, banerus, uzlīmes, auto aplīmēšanu, kā arī vizītkartes un gaismas kastes | 1000+ projekti ⭐ Kvalitāte ✓ Ātra izpilde 🚀 ${currentYear}`,
-      products: homeData.products,
+      title: locale === 'ru'
+        ? 'Laiks Drukāt | Печать, реклама и визуальные решения'
+        : 'Laiks Drukāt | Poligrāfijas un reklāmas pakalpojumi ✅',
+      description: homepageSite.meta.description,
+      products: localizedProducts,
       categories: homeData.categories,
       cart: fastify.getCart(request),
       site: homepageSite,
       breadcrumbs,
+      locale,
       seoImage: homepageSite.home.heroImage,
       structuredData: [
         {
@@ -291,8 +348,8 @@ async function storefrontRoutes(fastify) {
     delete request.session.contactFormSent
     const baseUrl = resolvePublicBaseUrl()
     const breadcrumbs = [
-      { name: 'Sākums', path: '/' },
-      { name: 'Kontakti', path: '/kontakti/' },
+      { name: ui.breadcrumbs.home, path: localizedPath('/') },
+      { name: ui.breadcrumbs.contacts, path: localizedPath('/kontakti/') },
     ]
 
     fastify.log.info({
@@ -302,21 +359,26 @@ async function storefrontRoutes(fastify) {
     }, 'Route timing')
 
     return reply.publicView('pages/kontakti', {
-      title: 'Kontakti | Laiks Drukāt – Druka un reklāma »',
-      description:
-        `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
+      title: locale === 'ru'
+        ? 'Контакты | Laiks Drukāt'
+        : 'Kontakti | Laiks Drukāt – Druka un reklāma »',
+      description: locale === 'ru'
+        ? `Контакты, рабочее время и связь с Laiks Drukāt: печать, рекламные решения, штампы, баннеры и оклейка автомобилей в Елгаве. ${currentYear}`
+        : `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
       cart: fastify.getCart(request),
       success,
       breadcrumbs,
       csrf: await reply.generateCsrf(),
+      site: getLocalizedSite(),
+      locale,
       structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),
     })
   })
 
   fastify.post('/kontakti/', async (request, reply) => {
     const breadcrumbs = [
-      { name: 'Sākums', path: '/' },
-      { name: 'Kontakti', path: '/kontakti/' },
+      { name: ui.breadcrumbs.home, path: localizedPath('/') },
+      { name: ui.breadcrumbs.contacts, path: localizedPath('/kontakti/') },
     ]
     const contactBreadcrumbs = buildBreadcrumbSchema(resolvePublicBaseUrl(), breadcrumbs)
     const { fields, uploadedFile, invalidCsrf } = await collectContactForm(request)
@@ -330,40 +392,50 @@ async function storefrontRoutes(fastify) {
     const rateLimit = getContactRateLimitState(request.ip)
     if (rateLimit.limited) {
       return reply.publicView('pages/kontakti', {
-        title: `Kontakti | Laiks Drukāt – Druka un reklāma »`,
-        description: `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
+        title: locale === 'ru' ? 'Контакты | Laiks Drukāt' : `Kontakti | Laiks Drukāt – Druka un reklāma »`,
+        description: locale === 'ru'
+          ? `Контакты, рабочее время и связь с Laiks Drukāt: печать, рекламные решения, штампы, баннеры и оклейка автомобилей в Елгаве. ${currentYear}`
+          : `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
         cart: fastify.getCart(request),
-        error: 'Pārāk daudz ziņu. Lūdzu mēģiniet vēlreiz pēc 15 minūtēm.',
+        error: ui.contact.errors.rateLimit,
         formData: fields,
         breadcrumbs,
         csrf: await reply.generateCsrf(),
+        site: getLocalizedSite(),
+        locale,
         structuredData: contactBreadcrumbs,
       })
     }
     if (!name || !email || !normalizedMessage) {
       return reply.publicView('pages/kontakti', {
-        title: `Kontakti | Laiks Drukāt – Druka un reklāma »`,
-        description:
-          `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
+        title: locale === 'ru' ? 'Контакты | Laiks Drukāt' : `Kontakti | Laiks Drukāt – Druka un reklāma »`,
+        description: locale === 'ru'
+          ? `Контакты, рабочее время и связь с Laiks Drukāt: печать, рекламные решения, штампы, баннеры и оклейка автомобилей в Елгаве. ${currentYear}`
+          : `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
         cart: fastify.getCart(request),
-        error: 'Lūdzu aizpildiet vārdu, e-pastu un ziņu.',
+        error: ui.contact.errors.required,
         formData: fields,
         breadcrumbs,
         csrf: await reply.generateCsrf(),
+        site: getLocalizedSite(),
+        locale,
         structuredData: contactBreadcrumbs,
       })
     }
 
     if (normalizedMessage.length > 180) {
       return reply.publicView('pages/kontakti', {
-        title: `Kontakti | Laiks Drukāt – Druka un reklāma »`,
-        description:
-          `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
+        title: locale === 'ru' ? 'Контакты | Laiks Drukāt' : `Kontakti | Laiks Drukāt – Druka un reklāma »`,
+        description: locale === 'ru'
+          ? `Контакты, рабочее время и связь с Laiks Drukāt: печать, рекламные решения, штампы, баннеры и оклейка автомобилей в Елгаве. ${currentYear}`
+          : `Kontakti un darba laiks ⚡ Druka un reklāmas pakalpojumi – baneri, zīmogi, auto aplīmēšana | ☎ 29 109 703, Asteru iela 16A, Jelgava | Sazinieties ar mums! ${currentYear}`,
         cart: fastify.getCart(request),
-        error: 'Ziņa nedrīkst pārsniegt 180 rakstzīmes.',
+        error: ui.contact.errors.length,
         formData: fields,
         breadcrumbs,
         csrf: await reply.generateCsrf(),
+        site: getLocalizedSite(),
+        locale,
         structuredData: contactBreadcrumbs,
       })
     }
@@ -389,25 +461,62 @@ async function storefrontRoutes(fastify) {
     notifyContactSubmission(fastify, entry)
     recordContactAttempt(request.ip)
     request.session.contactFormSent = true
-    return reply.redirect('/kontakti/')
+    return reply.redirect(localizedPath('/kontakti/'))
   })
 
-  for (const route of serviceRouteEntries) {
+  for (const route of getServiceRoutes()) {
     fastify.get(route.path, async (request, reply) => {
+      const site = getLocalizedSite()
+      const service = route.service
+      const baseUrl = resolvePublicBaseUrl()
+      const breadcrumbs = [
+        { name: ui.breadcrumbs.home, path: localizedPath('/') },
+        { name: ui.breadcrumbs.services, path: localizedPath('/#pakalpojumi') },
+        { name: service.title, path: localizedPath(service.path) },
+      ]
+      const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
+
       if (!route.canonical) {
-        return reply.redirect(route.service.path, 301)
+        return reply.redirect(localizedPath(service.path), 301)
       }
 
-      // ← special case for zimogi
-      if (route.service.path === '/zimogs/') {
-        const site = getSiteContent()
-        const baseUrl = resolvePublicBaseUrl()
-        const breadcrumbs = [
-          { name: 'Sākums', path: '/' },
-          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
-          { name: route.service.title, path: route.service.path },
-        ]
-        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
+      if (locale === 'ru') {
+        const success = request.session.contactFormSent === true
+        const error = request.session.contactFormError || null
+        delete request.session.contactFormSent
+        delete request.session.contactFormError
+
+        return reply.publicView('pages/services/generic', {
+          title: `${service.title} | Laiks Drukāt`,
+          description: service.teaser,
+          service,
+          cart: fastify.getCart(request),
+          success,
+          error,
+          site,
+          breadcrumbs,
+          locale,
+          seoImage: service.heroImage || site.meta.defaultShareImage,
+          structuredData: appendStructuredData({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            name: service.title,
+            description: service.teaser,
+            serviceType: service.title,
+            areaServed: 'Latvia',
+            provider: {
+              '@type': 'Organization',
+              name: site.company.name,
+              url: `${baseUrl}${localizedPath('/')}`,
+            },
+            image: toAbsoluteUrl(baseUrl, service.heroImage || site.meta.defaultShareImage),
+            url: `${baseUrl}${localizedPath(service.path)}`,
+          }, breadcrumbSchema),
+          csrf: await reply.generateCsrf(),
+        })
+      }
+
+      if (service.path === '/zimogs/') {
         const products = await fastify.db.product.findMany({
           where: {
             active: true,
@@ -420,284 +529,85 @@ async function storefrontRoutes(fastify) {
 
         return reply.publicView('pages/services/zimogi', {
           title: `Zīmogu izgatavošana Jelgavā⚡Ātra izgatavošana | Laiks Drukāt`,
-          description: route.service.teaser,
-          service: route.service,
+          description: service.teaser,
+          service,
           products,
           cart: fastify.getCart(request),
           site,
           breadcrumbs,
-          seoImage: route.service.heroImage || site.meta.defaultShareImage,
+          seoImage: service.heroImage || site.meta.defaultShareImage,
           seoType: 'website',
           structuredData: appendStructuredData({
             '@context': 'https://schema.org',
             '@type': 'Service',
-            name: route.service.title,
-            description: route.service.teaser,
-            serviceType: route.service.title,
+            name: service.title,
+            description: service.teaser,
+            serviceType: service.title,
             areaServed: 'Latvia',
             provider: {
               '@type': 'Organization',
               name: site.company.name,
               url: `${baseUrl}/`,
             },
-            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
-            url: `${baseUrl}${route.service.path}`,
+            image: toAbsoluteUrl(baseUrl, service.heroImage || site.meta.defaultShareImage),
+            url: `${baseUrl}${service.path}`,
           }, breadcrumbSchema),
         })
       }
+      const success = request.session.contactFormSent === true
+      const error = request.session.contactFormError || null
+      delete request.session.contactFormSent
+      delete request.session.contactFormError
+      const viewConfig = lvServiceTemplates[service.path]
 
-      
-      if (route.service.path === '/vides-reklama/') {
-        const site = getSiteContent()
-        const baseUrl = resolvePublicBaseUrl()
-        const breadcrumbs = [
-          { name: 'Sākums', path: '/' },
-          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
-          { name: route.service.title, path: route.service.path },
-        ]
-        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
-        const success = request.session.contactFormSent === true
-        const error = request.session.contactFormError || null
-        delete request.session.contactFormSent
-        delete request.session.contactFormError
-
-        return reply.publicView('pages/services/vides-reklama', {
-          title: '✨Izkārtnes, gaismas kastes un reklāmas burti | Vides reklāma',
-          description: route.service.teaser,
-          service: route.service,
+      if (viewConfig) {
+        return reply.publicView(viewConfig.page, {
+          title: viewConfig.title,
+          description: service.teaser,
+          service,
           cart: fastify.getCart(request),
           success,
           error,
           site,
           breadcrumbs,
-          seoImage: route.service.heroImage || site.meta.defaultShareImage,
+          seoImage: service.heroImage || site.meta.defaultShareImage,
           structuredData: appendStructuredData({
             '@context': 'https://schema.org',
             '@type': 'Service',
-            name: route.service.title,
-            description: route.service.teaser,
-            serviceType: route.service.title,
+            name: service.title,
+            description: service.teaser,
+            serviceType: service.title,
             areaServed: 'Latvia',
             provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
-            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
-            url: `${baseUrl}${route.service.path}`,
+            image: toAbsoluteUrl(baseUrl, service.heroImage || site.meta.defaultShareImage),
+            url: `${baseUrl}${service.path}`,
           }, breadcrumbSchema),
           csrf: await reply.generateCsrf(),
         })
       }
 
-      if (route.service.path === '/vizitkartes/') {
-        const site = getSiteContent()
-        const baseUrl = resolvePublicBaseUrl()
-        const breadcrumbs = [
-          { name: 'Sākums', path: '/' },
-          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
-          { name: route.service.title, path: route.service.path },
-        ]
-        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
-        const success = request.session.contactFormSent === true
-        const error = request.session.contactFormError || null
-        delete request.session.contactFormSent
-        delete request.session.contactFormError
-
-        return reply.publicView('pages/services/vizitkartes', {
-          title: 'Vizītkartes – sietspiede, standarta druka | Laiks Drukāt ✅',
-          description: route.service.teaser,
-          service: route.service,
-          cart: fastify.getCart(request),
-          success,
-          error,
-          site,
-          breadcrumbs,
-          seoImage: route.service.heroImage || site.meta.defaultShareImage,
-          structuredData: appendStructuredData({
-            '@context': 'https://schema.org',
-            '@type': 'Service',
-            name: route.service.title,
-            description: route.service.teaser,
-            serviceType: route.service.title,
-            areaServed: 'Latvia',
-            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
-            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
-            url: `${baseUrl}${route.service.path}`,
-          }, breadcrumbSchema),
-          csrf: await reply.generateCsrf(),
-        })
-      }
-
-      if (route.service.path === '/baneri/') {
-        const site = getSiteContent()
-        const baseUrl = resolvePublicBaseUrl()
-        const breadcrumbs = [
-          { name: 'Sākums', path: '/' },
-          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
-          { name: route.service.title, path: route.service.path },
-        ]
-        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
-        const success = request.session.contactFormSent === true
-        const error = request.session.contactFormError || null
-        delete request.session.contactFormSent
-        delete request.session.contactFormError
-
-        return reply.publicView('pages/services/baneri/', {
-          title: 'Baneri Jelgavā – Roll-up & PVC banneri | Laiks Drukāt⭐',
-          description: route.service.teaser,
-          service: route.service,
-          cart: fastify.getCart(request),
-          success,
-          error,
-          site,
-          breadcrumbs,
-          seoImage: route.service.heroImage || site.meta.defaultShareImage,
-          structuredData: appendStructuredData({
-            '@context': 'https://schema.org',
-            '@type': 'Service',
-            name: route.service.title,
-            description: route.service.teaser,
-            serviceType: route.service.title,
-            areaServed: 'Latvia',
-            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
-            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
-            url: `${baseUrl}${route.service.path}`,
-          }, breadcrumbSchema),
-          csrf: await reply.generateCsrf(),
-        })
-      }
-
-      if (route.service.path === '/auto-aplimesana/') {
-        const site = getSiteContent()
-        const baseUrl = resolvePublicBaseUrl()
-        const breadcrumbs = [
-          { name: 'Sākums', path: '/' },
-          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
-          { name: route.service.title, path: route.service.path },
-        ]
-        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
-        const success = request.session.contactFormSent === true
-        const error = request.session.contactFormError || null
-        delete request.session.contactFormSent
-        delete request.session.contactFormError
-
-        return reply.publicView('pages/services/auto-aplimesana', {
-          title: 'Auto aplīmēšana Jelgavā – 3M & Oracal vinils | Laiks Drukāt⭐',
-          description: route.service.teaser,
-          service: route.service,
-          cart: fastify.getCart(request),
-          success,
-          error,
-          site,
-          breadcrumbs,
-          seoImage: route.service.heroImage || site.meta.defaultShareImage,
-          structuredData: appendStructuredData({
-            '@context': 'https://schema.org',
-            '@type': 'Service',
-            name: route.service.title,
-            description: route.service.teaser,
-            serviceType: route.service.title,
-            areaServed: 'Latvia',
-            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
-            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
-            url: `${baseUrl}${route.service.path}`,
-          }, breadcrumbSchema),
-          csrf: await reply.generateCsrf(),
-        })
-      }
-
-      if (route.service.path === '/uzlimes/') {
-        const site = getSiteContent()
-        const baseUrl = resolvePublicBaseUrl()
-        const breadcrumbs = [
-          { name: 'Sākums', path: '/' },
-          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
-          { name: route.service.title, path: route.service.path },
-        ]
-        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
-        const success = request.session.contactFormSent === true
-        const error = request.session.contactFormError || null
-        delete request.session.contactFormSent
-        delete request.session.contactFormError
-
-        return reply.publicView('pages/services/uzlimes', {
-          title: 'Uzlīmju druka – ruļļu, UV un lielformāta | Laiks Drukāt ✅',
-          description: route.service.teaser,
-          service: route.service,
-          cart: fastify.getCart(request),
-          success,
-          error,
-          site,
-          breadcrumbs,
-          seoImage: route.service.heroImage || site.meta.defaultShareImage,
-          structuredData: appendStructuredData({
-            '@context': 'https://schema.org',
-            '@type': 'Service',
-            name: route.service.title,
-            description: route.service.teaser,
-            serviceType: route.service.title,
-            areaServed: 'Latvia',
-            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
-            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
-            url: `${baseUrl}${route.service.path}`,
-          }, breadcrumbSchema),
-          csrf: await reply.generateCsrf(),
-        })
-      }
-
-      if (route.service.path === '/druka/') {
-        const site = getSiteContent()
-        const baseUrl = resolvePublicBaseUrl()
-        const breadcrumbs = [
-          { name: 'Sākums', path: '/' },
-          { name: 'Pakalpojumi', path: '/#pakalpojumi' },
-          { name: route.service.title, path: route.service.path },
-        ]
-        const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
-        const success = request.session.contactFormSent === true
-        const error = request.session.contactFormError || null
-        delete request.session.contactFormSent
-        delete request.session.contactFormError
-
-        return reply.publicView('pages/services/druka', {
-          title: 'Reklāmas, poligrāfijas pakalpojumi⚡Bukleti, brošūras, plakāti',
-          description: route.service.teaser,
-          service: route.service,
-          cart: fastify.getCart(request),
-          success,
-          error,
-          site,
-          breadcrumbs,
-          seoImage: route.service.heroImage || site.meta.defaultShareImage,
-          structuredData: appendStructuredData({
-            '@context': 'https://schema.org',
-            '@type': 'Service',
-            name: route.service.title,
-            description: route.service.teaser,
-            serviceType: route.service.title,
-            areaServed: 'Latvia',
-            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
-            image: toAbsoluteUrl(baseUrl, route.service.heroImage || site.meta.defaultShareImage),
-            url: `${baseUrl}${route.service.path}`,
-          }, breadcrumbSchema),
-          csrf: await reply.generateCsrf(),
-        })
-      }
-
-      
-
-      // all other services use service-page
-      const breadcrumbs = [
-        { name: 'Sākums', path: '/' },
-        { name: 'Pakalpojumi', path: '/#pakalpojumi' },
-        { name: route.service.title, path: route.service.path },
-      ]
-      return reply.publicView('partials/service-page', {
-        title: `${route.service.title} | Laiks Drukāt`,
-        description: route.service.teaser,
-        service: route.service,
+      return reply.publicView('pages/services/generic', {
+        title: `${service.title} | Laiks Drukāt`,
+        description: service.teaser,
+        service,
         cart: fastify.getCart(request),
-        site: getSiteContent(),
+        success,
+        error,
+        site,
         breadcrumbs,
-        seoImage: route.service.heroImage,
-        structuredData: buildBreadcrumbSchema(resolvePublicBaseUrl(), breadcrumbs),
+        seoImage: service.heroImage || site.meta.defaultShareImage,
+        structuredData: appendStructuredData({
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          name: service.title,
+          description: service.teaser,
+          serviceType: service.title,
+          areaServed: 'Latvia',
+          provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
+          image: toAbsoluteUrl(baseUrl, service.heroImage || site.meta.defaultShareImage),
+          url: `${baseUrl}${service.path}`,
+        }, breadcrumbSchema),
+        csrf: await reply.generateCsrf(),
       })
     })
   }
@@ -705,14 +615,16 @@ async function storefrontRoutes(fastify) {
   fastify.get('/privatuma-politika/', async (request, reply) => {
     const baseUrl = resolvePublicBaseUrl()
     const breadcrumbs = [
-      { name: 'Sākums', path: '/' },
-      { name: 'Privātuma politika', path: '/privatuma-politika/' },
+      { name: ui.breadcrumbs.home, path: localizedPath('/') },
+      { name: ui.breadcrumbs.privacy, path: localizedPath('/privatuma-politika/') },
     ]
     return reply.publicView('pages/privatuma-politika', {
-      title: 'Privātuma politika | Laiks Drukāt',
-      description: 'Privātuma politika un personas datu apstrāde.',
+      title: locale === 'ru' ? 'Политика конфиденциальности | Laiks Drukāt' : 'Privātuma politika | Laiks Drukāt',
+      description: locale === 'ru' ? 'Политика конфиденциальности и обработка персональных данных.' : 'Privātuma politika un personas datu apstrāde.',
       cart: fastify.getCart(request),
+      site: getLocalizedSite(),
       breadcrumbs,
+      locale,
       structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),
     })
   })
@@ -726,22 +638,22 @@ async function storefrontRoutes(fastify) {
 
     const { name, email, phone, message, returnTo } = fields
     const normalizedMessage = String(message || '').trim()
-    const redirectPage = returnTo || '/kontakti/'
+    const redirectPage = returnTo || ui.contact.serviceReturnDefault
 
     // rate limit check
     const rateLimit = getContactRateLimitState(request.ip)
     if (rateLimit.limited) {
-      request.session.contactFormError = 'Pārāk daudz ziņu. Lūdzu mēģiniet vēlreiz pēc 15 minūtēm.'
+      request.session.contactFormError = ui.contact.errors.rateLimit
       return reply.redirect(redirectPage)
     }
 
     if (!name || !email || !normalizedMessage) {
-      request.session.contactFormError = 'Lūdzu aizpildiet vārdu, e-pastu un ziņu.'
+      request.session.contactFormError = ui.contact.errors.required
       return reply.redirect(redirectPage)
     }
 
     if (normalizedMessage.length > 180) {
-      request.session.contactFormError = 'Ziņa nedrīkst pārsniegt 180 rakstzīmes.'
+      request.session.contactFormError = ui.contact.errors.length
       return reply.redirect(redirectPage)
     }
 

@@ -17,6 +17,12 @@ import dbPlugin from './plugins/db.js'
 import cartPlugin from './plugins/cart.js'
 import authPlugin from './plugins/auth.js'
 import { siteContent, getSiteContent } from './content/site.js'
+import {
+  buildLanguageSwitcher,
+  getLocaleMeta,
+  getUiCopy,
+  localizePath,
+} from './lib/marketing-locale.js'
 
 import storefrontRoutes from './routes/storefront.js'
 import sitemapRoutes from './routes/sitemap.js'
@@ -212,10 +218,17 @@ fastify.decorateReply('publicView', function publicView(page, data = {}) {
   const canonicalBase = publicAppUrl.replace(/\/+$/, '')
   const requestPath = new URL(this.request.raw.url || '/', 'http://localhost').pathname
   const canonicalUrl = data.canonicalUrl || new URL(requestPath, `${canonicalBase}/`).toString()
+  const locale = data.locale || 'lv'
 
   return this.view(page, {
     ...data,
     canonicalUrl,
+    locale,
+    localeMeta: data.localeMeta || getLocaleMeta(locale),
+    t: data.t || getUiCopy(locale),
+    currentPath: data.currentPath || requestPath,
+    languageSwitcher: data.languageSwitcher || buildLanguageSwitcher(requestPath, locale),
+    localizedPath: data.localizedPath || ((path) => localizePath(locale, path)),
   })
 })
 
@@ -252,6 +265,11 @@ await fastify.register(FastifyView, {
     siteUrl: publicAppUrl.replace(/\/+$/, ''),
     isProduction,
     assetVersion,
+    locale: 'lv',
+    localeMeta: getLocaleMeta('lv'),
+    t: getUiCopy('lv'),
+    languageSwitcher: buildLanguageSwitcher('/', 'lv'),
+    localizedPath: (path) => localizePath('lv', path),
   },
 })
 
@@ -320,6 +338,7 @@ await fastify.register(authPlugin)
 
 // Routes
 await fastify.register(storefrontRoutes)
+await fastify.register(storefrontRoutes, { prefix: '/ru', locale: 'ru' })
 await fastify.register(shopRoutes, {
   prefix: '/veikals/',
   includeListing: true,

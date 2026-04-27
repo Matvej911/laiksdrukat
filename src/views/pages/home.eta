@@ -1,28 +1,29 @@
 <% layout('../partials/layout', { bodyClass: 'page-home' }) %>
+<% const home = it.t.home %>
 
 <!-- HERO -->
 <section class="hero-section">
   <div class="container hero-shell">
     <div class="hero-copy">
-      <span class="hero-eyebrow">Jelgava, Latvija</span>
+      <span class="hero-eyebrow"><%= home.city %></span>
       <h1><%= it.site.home.title %></h1>
       <p><%= it.site.home.intro %></p>
       <div class="hero-actions">
-        <a href="/kontakti/" class="btn btn-yellow">Sazināties ar mums</a>
-        <a href="/veikals/" class="hero-btn-outline">E-veikals</a>
+        <a href="<%= it.localizedPath('/kontakti/') %>" class="btn btn-yellow"><%= home.contactCta %></a>
+        <a href="/veikals/" class="hero-btn-outline"><%= home.shopCta %></a>
       </div>
       <div class="hero-trust">
         <div class="hero-trust-item">
           <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          Augsta kvalitāte
+          <%= home.trustQuality %>
         </div>
         <div class="hero-trust-item">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Ātra izpilde
+          <%= home.trustSpeed %>
         </div>
         <div class="hero-trust-item">
           <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          Jelgavā
+          <%= home.trustLocation %>
         </div>
       </div>
     </div>
@@ -36,12 +37,12 @@
 <section class="section" id="pakalpojumi">
   <div class="container">
     <div class="section-heading">
-      <h2>Piedāvājam arī:</h2>
+      <h2><%= home.servicesHeading %></h2>
     </div>
 
     <div class="portfolio-grid">
       <% for (const item of it.site.portfolio) { %>
-        <a href="<%= item.path %>" class="portfolio-card">
+        <a href="<%= it.localizedPath(item.path) %>" class="portfolio-card">
           <img src="<%= item.image %>" alt="<%= item.title %>" width="1200" height="900">
         </a>
       <% } %>
@@ -53,9 +54,9 @@
 <section class="section portfolio-showcase" id="portfolio">
   <div class="container">
     <div class="portfolio-showcase-copy">
-      <span class="home-eyebrow-light">Darbu piemēri</span>
-      <h2>Galerija</h2>
-      <p>Apskatiet dažādus projektus, lai iegūtu priekšstatu par mūsu iespējām</p>
+      <span class="home-eyebrow-light"><%= home.galleryEyebrow %></span>
+      <h2><%= home.galleryTitle %></h2>
+      <p><%= home.galleryText %></p>
     </div>
     <div class="home-gallery-slider" data-portfolio-slider>
       <button class="home-gallery-btn left" type="button" onclick="portfolioSlide(this, -1)">
@@ -87,11 +88,11 @@
   <div class="container">
     <div class="home-shop-header">
       <div>
-        <span class="home-eyebrow-dark">E-veikals</span>
-        <h2>Populārākās preces</h2>
-        <p>Iepērcieties ērti un ātri mūsu tiešsaistes veikalā</p>
+        <span class="home-eyebrow-dark"><%= home.shopEyebrow %></span>
+        <h2><%= home.shopTitle %></h2>
+        <p><%= home.shopText %></p>
       </div>
-      <a href="/veikals/" class="home-shop-btn">Skatīt veikalu</a>
+      <a href="/veikals/" class="home-shop-btn"><%= home.shopButton %></a>
     </div>
 
     <div class="products-slider-wrapper">
@@ -115,7 +116,7 @@
                 <div class="product-name"><%= p.name %></div>
                 <div class="product-price">
                   <%= Number(p.price).toFixed(2) %> €
-                  <span class="product-price-vat">+ PVN</span>
+                  <span class="product-price-vat"><%= home.vat %></span>
                 </div>
               </div>
             </a>

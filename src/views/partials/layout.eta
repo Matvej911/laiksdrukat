@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="lv">
+<html lang="<%= it.localeMeta.htmlLang %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,7 @@
   <% const seoImage = it.seoImage || it.site.meta.defaultShareImage %>
   <% const seoType = it.seoType || 'website' %>
   <% const absoluteSeoImage = seoImage ? (seoImage.startsWith('http') ? seoImage : `${it.siteUrl}${seoImage.startsWith('/') ? seoImage : `/${seoImage}`}`) : null %>
-  <meta property="og:locale" content="lv_LV">
+  <meta property="og:locale" content="<%= it.localeMeta.ogLocale %>">
   <meta property="og:site_name" content="<%= it.site.company.name %>">
   <meta property="og:type" content="<%= seoType %>">
   <meta property="og:title" content="<%= it.title || it.site.meta.title %>">
@@ -80,6 +80,8 @@
   </script>
 </head>
 <body class="<%= it.bodyClass || '' %>">
+<% const common = it.t.common %>
+<% const cookie = it.t.cookie %>
 <header class="site-header">
   <div class="topbar">
     <div class="container topbar-inner">
@@ -93,30 +95,34 @@
   </div>
   <nav class="nav">
     <div class="container nav-inner">
-      <a href="/" class="nav-logo">
-        <span>Laiks Drukāt</span>
+      <a href="<%= it.localizedPath('/') %>" class="nav-logo">
+        <span><%= common.brand %></span>
       </a>
 
       <button class="hamburger" type="button" aria-expanded="false" aria-controls="nav-menu">
-        Izvēlne
+        <%= common.menu %>
       </button>
 
       <div class="nav-links" id="nav-menu">
         <div class="dropdown">
-          <a href="/#pakalpojumi" class="nav-link">Pakalpojumi</a>
+          <a href="<%= it.localizedPath('/#pakalpojumi') %>" class="nav-link"><%= common.services %></a>
           <div class="dropdown-menu">
             <% for (const service of it.site.services) { %>
-              <a href="<%= service.path %>"><%= service.menuTitle %></a>
+              <a href="<%= it.localizedPath(service.path) %>"><%= service.menuTitle %></a>
             <% } %>
           </div>
         </div>
-        <a href="/veikals/" class="nav-link">Veikals</a>
-        <a href="/kontakti/" class="nav-link">Kontakti</a>
+        <a href="/veikals/" class="nav-link"><%= common.shop %></a>
+        <a href="<%= it.localizedPath('/kontakti/') %>" class="nav-link"><%= common.contacts %></a>
+        <a href="<%= it.languageSwitcher.href %>" class="nav-link nav-link-language" aria-label="<%= common.languageSwitcherLabel %>: <%= it.languageSwitcher.name %>">
+          <span><%= common.languageSwitcherLabel %></span>
+          <strong><%= it.languageSwitcher.label %></strong>
+        </a>
        
       </div>
 
-      <a href="/grozs/" class="nav-cart" aria-label="Skatīt grozu">
-        <span>Grozs</span>
+      <a href="/grozs/" class="nav-cart" aria-label="<%= common.viewCart %>">
+        <span><%= common.cart %></span>
         <% const cartCount = (it.cart || []).reduce((sum, item) => sum + item.quantity, 0) %>
         <% if (cartCount > 0) { %>
           <span class="nav-cart-count"><%= cartCount %></span>
@@ -145,33 +151,33 @@
   </div>
   <div class="container">
     <div class="footer-grid">
-      <div class="footer-brand">
-        <span class="eyebrow">Laiks Drukāt</span>
-        <h3>Piedāvājam dažādus drukas un reklāmas risinājumus – no zīmogiem un vizītkartēm līdz banneriem un vides reklāmai.</h3>
-        <p>Palīdzam realizēt jūsu idejas ātri un kvalitatīvi.</p>
-      </div>
+        <div class="footer-brand">
+          <span class="eyebrow"><%= common.brand %></span>
+          <h3><%= common.footerBrandLead %></h3>
+          <p><%= common.footerBrandBody %></p>
+        </div>
 
-      <div>
-        <h4>Pakalpojumi</h4>
-        <ul class="footer-links">
-          <% for (const service of it.site.services) { %>
-            <li><a href="<%= service.path %>"><%= service.menuTitle %></a></li>
-          <% } %>
-        </ul>
-      </div>
+        <div>
+          <h4><%= common.footerServices %></h4>
+          <ul class="footer-links">
+            <% for (const service of it.site.services) { %>
+              <li><a href="<%= it.localizedPath(service.path) %>"><%= service.menuTitle %></a></li>
+            <% } %>
+          </ul>
+        </div>
 
-      <div>
-        <h4>E-veikals</h4>
-        <ul class="footer-links">
-          <li><a href="/veikals/">Visas preces</a></li>
-          <li><a href="/kategorija/zimogi/">Zīmogi</a></li>
-          <li><a href="/kategorija/zimogu-tintes">Zīmogu tintes</a></li>
-          <li><a href="/grozs/">Grozs</a></li>
-        </ul>
-      </div>
+        <div>
+          <h4><%= common.footerStore %></h4>
+          <ul class="footer-links">
+            <li><a href="/veikals/"><%= common.footerAllProducts %></a></li>
+            <li><a href="/kategorija/zimogi/"><%= it.site.shop.categories[0]?.title || 'Zīmogi' %></a></li>
+            <li><a href="/kategorija/zimogu-tintes"><%= common.footerStampInk %></a></li>
+            <li><a href="/grozs/"><%= common.cart %></a></li>
+          </ul>
+        </div>
 
-      <div>
-        <h4>Kontakti</h4>
+        <div>
+          <h4><%= common.footerContacts %></h4>
         <ul class="footer-links">
           <li><a href="<%= it.site.contact.mapUrl %>" target="_blank" rel="noreferrer"><%= it.site.contact.address %></a></li>
           <% for (const phone of it.site.contact.phones) { %>
@@ -184,29 +190,28 @@
     </div>
 
     <div class="footer-bottom">
-      <p>© <%= it.currentYear %> <%= it.site.company.name %> · <%= it.site.company.legalName %> · Reģ. Nr. <%= it.site.company.registrationNumber %></p>
-      <p>Latvija</p>
+      <p>© <%= it.currentYear %> <%= it.site.company.name %> · <%= it.site.company.legalName %> · <%= common.footerRegistration %> <%= it.site.company.registrationNumber %></p>
+      <p><%= common.footerCountry %></p>
     </div>
   </div>
 </footer>
 
 <div class="cookie-consent" data-cookie-banner hidden>
   <div class="cookie-consent__glow"></div>
-  <div class="cookie-consent__eyebrow">Privātums</div>
-  <h3>Mēs cienām jūsu privātumu</h3>
+  <div class="cookie-consent__eyebrow"><%= cookie.eyebrow %></div>
+  <h3><%= cookie.title %></h3>
   <p>
-    Izmantojam sīkfailus, lai nodrošinātu vietnes darbību, analizētu apmeklējumu un uzlabotu pieredzi.
-    Vairāk lasiet <a href="/privatuma-politika/">privātuma politikā</a>.
+    <%= cookie.bodyBeforeLink %><a href="<%= it.localizedPath('/privatuma-politika/') %>"><%= cookie.bodyLink %></a><%= cookie.bodyAfterLink %>
   </p>
   <div class="cookie-consent__actions">
-    <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-action="preferences">Pielāgot</button>
-    <button type="button" class="cookie-btn cookie-btn--outline" data-cookie-action="reject">Noraidīt visu</button>
-    <button type="button" class="cookie-btn cookie-btn--primary" data-cookie-action="accept">Pieņemt visus</button>
+    <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-action="preferences"><%= cookie.preferences %></button>
+    <button type="button" class="cookie-btn cookie-btn--outline" data-cookie-action="reject"><%= cookie.reject %></button>
+    <button type="button" class="cookie-btn cookie-btn--primary" data-cookie-action="accept"><%= cookie.accept %></button>
   </div>
 </div>
 
 <button type="button" class="cookie-manage-btn" data-cookie-manage hidden>
-  Sīkfailu iestatījumi
+  <%= cookie.manage %>
 </button>
 
 <div class="cookie-modal" data-cookie-modal hidden>
@@ -214,30 +219,29 @@
   <div class="cookie-modal__panel" role="dialog" aria-modal="true" aria-labelledby="cookie-modal-title">
     <div class="cookie-modal__header">
       <div>
-        <div class="cookie-consent__eyebrow">Sīkfaili</div>
-        <h3 id="cookie-modal-title">Pielāgojiet piekrišanas preferences</h3>
+        <div class="cookie-consent__eyebrow"><%= cookie.modalEyebrow %></div>
+        <h3 id="cookie-modal-title"><%= cookie.modalTitle %></h3>
       </div>
-      <button type="button" class="cookie-modal__close" aria-label="Aizvērt" data-cookie-close>×</button>
+      <button type="button" class="cookie-modal__close" aria-label="<%= cookie.close %>" data-cookie-close>×</button>
     </div>
 
     <p class="cookie-modal__lead">
-      Izvēlieties, kādus sīkfailus drīkstam izmantot. Nepieciešamie sīkfaili vienmēr ir aktīvi,
-      pārējās kategorijas varat ieslēgt vai izslēgt.
+      <%= cookie.modalLead %>
     </p>
 
     <div class="cookie-settings">
       <div class="cookie-setting is-locked">
         <div class="cookie-setting__copy">
-          <strong>Nepieciešamie</strong>
-          <p>Nodrošina vietnes pamatfunkcijas, drošību un groza darbību.</p>
+          <strong><%= cookie.necessaryTitle %></strong>
+          <p><%= cookie.necessaryBody %></p>
         </div>
-        <span class="cookie-setting__badge">Vienmēr aktīvs</span>
+        <span class="cookie-setting__badge"><%= cookie.alwaysOn %></span>
       </div>
 
       <label class="cookie-setting">
         <div class="cookie-setting__copy">
-          <strong>Preferences</strong>
-          <p>Saglabā jūsu izvēles un palīdz padarīt vietni ērtāku atkārtotos apmeklējumos.</p>
+          <strong><%= cookie.preferencesTitle %></strong>
+          <p><%= cookie.preferencesBody %></p>
         </div>
         <span class="cookie-switch">
           <input type="checkbox" data-consent-toggle="preferences">
@@ -247,8 +251,8 @@
 
       <label class="cookie-setting">
         <div class="cookie-setting__copy">
-          <strong>Analītika</strong>
-          <p>Ļauj Google Analytics un Google Tag Manager saprast, kā apmeklētāji izmanto vietni.</p>
+          <strong><%= cookie.analyticsTitle %></strong>
+          <p><%= cookie.analyticsBody %></p>
         </div>
         <span class="cookie-switch">
           <input type="checkbox" data-consent-toggle="analytics">
@@ -258,8 +262,8 @@
 
       <label class="cookie-setting">
         <div class="cookie-setting__copy">
-          <strong>Mārketings</strong>
-          <p>Atļauj reklāmas un atkārtotās mārketinga funkcijas, ja tās vēlāk tiks izmantotas.</p>
+          <strong><%= cookie.marketingTitle %></strong>
+          <p><%= cookie.marketingBody %></p>
         </div>
         <span class="cookie-switch">
           <input type="checkbox" data-consent-toggle="marketing">
@@ -269,9 +273,9 @@
     </div>
 
     <div class="cookie-modal__actions">
-      <button type="button" class="cookie-btn cookie-btn--outline" data-cookie-action="reject">Noraidīt visu</button>
-      <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-action="save">Saglabāt manas preferences</button>
-      <button type="button" class="cookie-btn cookie-btn--primary" data-cookie-action="accept">Pieņemt visus</button>
+      <button type="button" class="cookie-btn cookie-btn--outline" data-cookie-action="reject"><%= cookie.reject %></button>
+      <button type="button" class="cookie-btn cookie-btn--ghost" data-cookie-action="save"><%= cookie.save %></button>
+      <button type="button" class="cookie-btn cookie-btn--primary" data-cookie-action="accept"><%= cookie.accept %></button>
     </div>
   </div>
 </div>

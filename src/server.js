@@ -344,11 +344,27 @@ await fastify.register(shopRoutes, {
   includeListing: true,
   includeCategory: false,
   includeProduct: true,
+  locale: 'lv',
+})
+await fastify.register(shopRoutes, {
+  prefix: '/ru/veikals/',
+  includeListing: true,
+  includeCategory: false,
+  includeProduct: true,
+  locale: 'ru',
 })
 await fastify.register(shopRoutes, {
   includeListing: false,
   includeCategory: true,
   includeProduct: false,
+  locale: 'lv',
+})
+await fastify.register(shopRoutes, {
+  prefix: '/ru',
+  includeListing: false,
+  includeCategory: true,
+  includeProduct: false,
+  locale: 'ru',
 })
 await fastify.register(cartRoutes, { prefix: '/grozs/' })
 await fastify.register(checkoutRoutes, { prefix: '/pasutijums/' })

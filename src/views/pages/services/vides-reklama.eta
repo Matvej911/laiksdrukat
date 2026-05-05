@@ -1,4 +1,7 @@
 <% layout('../../partials/layout', { bodyClass: 'page-vides-reklama' }) %>
+<% const isRu = it.locale === 'ru' %>
+<% const servicePage = it.t.servicePage %>
+<% const contact = it.t.contact %>
 
 <!-- HERO -->
 <section class="vr-hero">
@@ -6,11 +9,11 @@
     <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="vr-hero-inner">
       <div class="vr-hero-copy">
-        <span class="vr-eyebrow">Pakalpojums</span>
-        <h1>Vides reklāma — izkārtnes, gaismas kastes un reklāmas burti</h1>
-        <p>Vides reklāma palīdz uzņēmumiem kļūt pamanāmiem un piesaistīt klientu uzmanību gan dienā, gan naktī. Izgatavojam dažādus reklāmas risinājumus — no klasiskām izkārtnēm līdz gaismas kastēm un telpiskiem burtiem.</p>
+        <span class="vr-eyebrow"><%= isRu ? 'Услуга' : 'Pakalpojums' %></span>
+        <h1><%= it.service.title %></h1>
+        <p><%= it.service.intro %></p>
         <div class="vr-hero-actions">
-          <a href="/kontakti/" class="vr-btn-primary">Pieprasīt piedāvājumu</a>
+          <a href="<%= it.localizedPath('/kontakti/') %>" class="vr-btn-primary"><%= servicePage.requestOffer %></a>
           <a href="tel:+37129109703" class="vr-btn-outline">
             <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             +371 29 109 703
@@ -25,7 +28,7 @@
           <div class="vr-lightbox-glass"></div>
 
           <div class="vr-lightbox-content">
-            <span class="vr-lightbox-title">GAISMAS KASTE</span>
+            <span class="vr-lightbox-title"><%= isRu ? 'СВЕТОВОЙ КОРОБ' : 'GAISMAS KASTE' %></span>
             <span class="vr-lightbox-sub">Laiks Drukāt</span>
           </div>
 
@@ -35,7 +38,7 @@
         <!-- floating badges -->
         <div class="vr-float vr-float-1">LED</div>
         <div class="vr-float vr-float-2">24/7</div>
-        <div class="vr-float vr-float-3">OUTDOOR</div>
+        <div class="vr-float vr-float-3"><%= isRu ? 'УЛИЦА' : 'OUTDOOR' %></div>
       </div>
     </div>
   </div>
@@ -45,30 +48,30 @@
 <section class="vr-extras">
   <div class="container">
     <div class="vr-section-header">
-      <span class="vr-eyebrow-dark">Iekļautie pakalpojumi</span>
-      <h2>Papildus pakalpojumi</h2>
+      <span class="vr-eyebrow-dark"><%= isRu ? 'Что входит' : 'Iekļautie pakalpojumi' %></span>
+      <h2><%= isRu ? 'Дополнительные услуги' : 'Papildus pakalpojumi' %></h2>
     </div>
     <div class="vr-extras-grid">
       <div class="vr-extra-card">
         <div class="vr-extra-icon">
           <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         </div>
-        <h4>Saskaņošana ar pašvaldību</h4>
-        <p>Dokumentu sagatavošana un iesniegšana pašvaldībā.</p>
+        <h4><%= isRu ? 'Согласование с самоуправлением' : 'Saskaņošana ar pašvaldību' %></h4>
+        <p><%= isRu ? 'Подготовка документов и подача в муниципальные учреждения.' : 'Dokumentu sagatavošana un iesniegšana pašvaldībā.' %></p>
       </div>
       <div class="vr-extra-card">
         <div class="vr-extra-icon">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
         </div>
-        <h4>Reklāmas konstrukciju montāža</h4>
-        <p>Uzstādīšana uz ēkas vai iekštelpās.</p>
+        <h4><%= isRu ? 'Монтаж рекламных конструкций' : 'Reklāmas konstrukciju montāža' %></h4>
+        <p><%= isRu ? 'Установка на фасад здания или внутри помещений.' : 'Uzstādīšana uz ēkas vai iekštelpās.' %></p>
       </div>
       <div class="vr-extra-card">
         <div class="vr-extra-icon">
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         </div>
-        <h4>Dizaina izstrāde un maketēšana</h4>
-        <p>Maketa sagatavošana atbilstoši jūsu vēlmēm.</p>
+        <h4><%= isRu ? 'Разработка дизайна и макета' : 'Dizaina izstrāde un maketēšana' %></h4>
+        <p><%= isRu ? 'Подготавливаем макет с учётом ваших задач, места размещения и фирменного стиля.' : 'Maketa sagatavošana atbilstoši jūsu vēlmēm.' %></p>
       </div>
     </div>
   </div>
@@ -82,11 +85,11 @@
         <img src="/images/web-design/laiksdrukatbistro.webp" alt="Neona reklāma" loading="lazy">
       </div>
       <div class="vr-neon-copy">
-        <span class="vr-new-badge">JAUNUMS</span>
-        <h2>Neona reklāma</h2>
-        <p>Piedāvājam arī neona burtu izgatavošanu, kas ir moderns un pamanāms risinājums uzņēmumu nosaukumiem, logotipiem un interjera reklāmai.</p>
-        <p>Neona reklāma izceļas jebkurā apkārtnē — gan ārpus telpām, gan iekštelpu dekorācijām. Pieejams plašs krāsu klāsts un izmēri pēc pasūtījuma.</p>
-        <a href="/kontakti/" class="vr-btn-primary">Pieprasīt neona piedāvājumu</a>
+        <span class="vr-new-badge"><%= isRu ? 'НОВИНКА' : 'JAUNUMS' %></span>
+        <h2><%= isRu ? 'Неоновая реклама' : 'Neona reklāma' %></h2>
+        <p><%= isRu ? 'Изготавливаем неоновые буквы и декоративные световые элементы для названий компаний, логотипов и интерьерной рекламы.' : 'Piedāvājam arī neona burtu izgatavošanu, kas ir moderns un pamanāms risinājums uzņēmumu nosaukumiem, logotipiem un interjera reklāmai.' %></p>
+        <p><%= isRu ? 'Такое решение хорошо работает и снаружи, и внутри помещений: в витринах, салонах, студиях и зонах ожидания. Доступны разные цвета и размеры по заказу.' : 'Neona reklāma izceļas jebkurā apkārtnē — gan ārpus telpām, gan iekštelpu dekorācijām. Pieejams plašs krāsu klāsts un izmēri pēc pasūtījuma.' %></p>
+        <a href="<%= it.localizedPath('/kontakti/') %>" class="vr-btn-primary"><%= servicePage.requestOffer %></a>
       </div>
     </div>
   </div>
@@ -96,20 +99,20 @@
 <section class="vr-types">
   <div class="container">
     <div class="vr-section-header">
-      <span class="vr-eyebrow-dark">Ko piedāvājam</span>
-      <h2>Reklāmas veidi</h2>
+      <span class="vr-eyebrow-dark"><%= isRu ? 'Что мы предлагаем' : 'Ko piedāvājam' %></span>
+      <h2><%= isRu ? 'Виды наружной рекламы' : 'Reklāmas veidi' %></h2>
     </div>
 
     <div class="vr-type-block">
       <div class="vr-type-copy">
-        <h3>Reklāmas izkārtnes</h3>
-        <p>Izgatavojam dažādu veidu izkārtnes:</p>
+        <h3><%= isRu ? 'Вывески' : 'Reklāmas izkārtnes' %></h3>
+        <p><%= isRu ? 'Изготавливаем разные типы вывесок:' : 'Izgatavojam dažādu veidu izkārtnes:' %></p>
         <ul class="vr-type-list">
-          <li>Fasādes izkārtnes</li>
-          <li>Iekštelpu izkārtnes</li>
-          <li>Reklāmas paneļus</li>
+          <li><%= isRu ? 'Фасадные вывески' : 'Fasādes izkārtnes' %></li>
+          <li><%= isRu ? 'Вывески для интерьера' : 'Iekštelpu izkārtnes' %></li>
+          <li><%= isRu ? 'Рекламные панели' : 'Reklāmas paneļus' %></li>
         </ul>
-        <p class="vr-type-note">Cena ir atkarīga no plāksnes izmēra, montāžas sarežģītības, dizaina, izvēlētā materiāla (biezuma un veida), kā arī no drukas tehnoloģijas — UV druka vai druka uz plēves.</p>
+        <p class="vr-type-note"><%= isRu ? 'Цена зависит от размера конструкции, сложности монтажа, дизайна, выбранного материала и технологии печати — UV-печати или печати на плёнке.' : 'Cena ir atkarīga no plāksnes izmēra, montāžas sarežģītības, dizaina, izvēlētā materiāla (biezuma un veida), kā arī no drukas tehnoloģijas — UV druka vai druka uz plēves.' %></p>
       </div>
       <div class="vr-type-img">
         <img src="/images/web-design/ambro_auto (1).webp" alt="Reklāmas izkārtne" loading="lazy">
@@ -118,9 +121,9 @@
 
     <div class="vr-type-block vr-type-block-reverse">
       <div class="vr-type-copy">
-        <h3>3D Telpiskie burti</h3>
-        <p class="vr-type-sub">Reklāmas burti uz sienas</p>
-        <p>Telpiskie burti ir moderns un elegants reklāmas risinājums uzņēmuma nosaukuma vai logotipa attēlošanai. Tie var tikt uzstādīti uz ēkas fasādes, sienas vai interjerā.</p>
+        <h3><%= isRu ? 'Объёмные 3D-буквы' : '3D Telpiskie burti' %></h3>
+        <p class="vr-type-sub"><%= isRu ? 'Буквы для фасада и интерьера' : 'Reklāmas burti uz sienas' %></p>
+        <p><%= isRu ? 'Объёмные буквы подходят для названия компании, логотипа или заметного навигационного акцента. Их можно устанавливать на фасаде, стене или внутри помещения.' : 'Telpiskie burti ir moderns un elegants reklāmas risinājums uzņēmuma nosaukuma vai logotipa attēlošanai. Tie var tikt uzstādīti uz ēkas fasādes, sienas vai interjerā.' %></p>
       </div>
       <div class="vr-type-img">
         <img src="/images/web-design/carmena_laiks-1.webp" alt="3D Telpiskie burti" loading="lazy">
@@ -129,12 +132,12 @@
 
     <div class="vr-type-block">
       <div class="vr-type-copy">
-        <h3>Gaismas kastes</h3>
-        <p>Gaismas kaste ir efektīvs reklāmas risinājums, kas nodrošina labi redzamu zīmolu gan dienas, gan nakts laikā. Izgatavojam pēc individuāliem izmēriem un dizaina.</p>
+        <h3><%= isRu ? 'Световые короба' : 'Gaismas kastes' %></h3>
+        <p><%= isRu ? 'Световой короб помогает сделать бренд заметным и днём, и вечером. Изготавливаем конструкции по индивидуальному размеру и визуальной концепции.' : 'Gaismas kaste ir efektīvs reklāmas risinājums, kas nodrošina labi redzamu zīmolu gan dienas, gan nakts laikā. Izgatavojam pēc individuāliem izmēriem un dizaina.' %></p>
         <ul class="vr-type-list">
-          <li>Vienpusējas un divpusējas</li>
-          <li>Fasādes un kronšteinu kastes</li>
-          <li>LED apgaismojums ar ilgu kalpošanas laiku</li>
+          <li><%= isRu ? 'Односторонние и двусторонние' : 'Vienpusējas un divpusējas' %></li>
+          <li><%= isRu ? 'Фасадные и консольные конструкции' : 'Fasādes un kronšteinu kastes' %></li>
+          <li><%= isRu ? 'LED-подсветка с долгим сроком службы' : 'LED apgaismojums ar ilgu kalpošanas laiku' %></li>
         </ul>
       </div>
       <div class="vr-type-img">
@@ -149,38 +152,38 @@
 <section class="vr-process">
   <div class="container">
     <div class="vr-section-header">
-      <span class="vr-eyebrow-dark">Kā strādājam</span>
-      <h2>Darba process</h2>
+      <span class="vr-eyebrow-dark"><%= isRu ? 'Как мы работаем' : 'Kā strādājam' %></span>
+      <h2><%= isRu ? 'Этапы работы' : 'Darba process' %></h2>
     </div>
     <div class="vr-process-steps">
       <div class="vr-process-step">
         <div class="vr-process-num">1</div>
-        <h4>Konsultācija</h4>
-        <p>Apspriežam jūsu vajadzības, izmērus, novietojumu un budžetu.</p>
+        <h4><%= isRu ? 'Консультация' : 'Konsultācija' %></h4>
+        <p><%= isRu ? 'Обсуждаем задачу, формат, место размещения и бюджет проекта.' : 'Apspriežam jūsu vajadzības, izmērus, novietojumu un budžetu.' %></p>
       </div>
       <div class="vr-process-line"></div>
       <div class="vr-process-step">
         <div class="vr-process-num">2</div>
-        <h4>Maketa izstrāde</h4>
-        <p>Sagatavosim vizuālo maketu apstiprināšanai.</p>
+        <h4><%= isRu ? 'Разработка макета' : 'Maketa izstrāde' %></h4>
+        <p><%= isRu ? 'Подготавливаем визуальный макет и согласовываем внешний вид.' : 'Sagatavosim vizuālo maketu apstiprināšanai.' %></p>
       </div>
       <div class="vr-process-line"></div>
       <div class="vr-process-step">
         <div class="vr-process-num">3</div>
-        <h4>Saskaņošana</h4>
-        <p>Ja nepieciešams, nokārtojam pašvaldības atļaujas.</p>
+        <h4><%= isRu ? 'Согласование' : 'Saskaņošana' %></h4>
+        <p><%= isRu ? 'При необходимости помогаем с согласованием и разрешениями.' : 'Ja nepieciešams, nokārtojam pašvaldības atļaujas.' %></p>
       </div>
       <div class="vr-process-line"></div>
       <div class="vr-process-step">
         <div class="vr-process-num">4</div>
-        <h4>Izgatavošana</h4>
-        <p>Ražošanas process.</p>
+        <h4><%= isRu ? 'Изготовление' : 'Izgatavošana' %></h4>
+        <p><%= isRu ? 'Запускаем производство и готовим конструкцию к установке.' : 'Ražošanas process.' %></p>
       </div>
       <div class="vr-process-line"></div>
       <div class="vr-process-step">
         <div class="vr-process-num">5</div>
-        <h4>Uzstādīšana</h4>
-        <p>Reklāmas montāža.</p>
+        <h4><%= isRu ? 'Монтаж' : 'Uzstādīšana' %></h4>
+        <p><%= isRu ? 'Аккуратно устанавливаем рекламу на объекте.' : 'Reklāmas montāža.' %></p>
       </div>
     </div>
   </div>
@@ -192,9 +195,9 @@
     <div class="vr-contact-inner">
 
       <div class="vr-contact-copy">
-        <span class="vr-eyebrow-dark">Sazināties</span>
-        <h2>Saņem piedāvājumu</h2>
-        <p>Nepieciešama vides reklāma jūsu uzņēmumam? Sazinieties ar mums, lai saņemtu konsultāciju un piedāvājumu.</p>
+        <span class="vr-eyebrow-dark"><%= isRu ? 'Связаться с нами' : 'Sazināties' %></span>
+        <h2><%= servicePage.contactTitle %></h2>
+        <p><%= isRu ? 'Нужна наружная реклама для вашего бизнеса? Напишите нам, и мы поможем подобрать формат, подготовить расчёт и предложить рабочее решение.' : 'Nepieciešama vides reklāma jūsu uzņēmumam? Sazinieties ar mums, lai saņemtu konsultāciju un piedāvājumu.' %></p>
         <div class="vr-contact-info">
           <a href="tel:+37129109703" class="vr-contact-link">
             <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -222,50 +225,49 @@
       <div class="vr-success">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#255f31" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         <div>
-          <strong>Ziņa veiksmīgi nosūtīta!</strong>
-          <span>Sazināsimies ar jums pēc iespējas ātrāk.</span>
+          <strong><%= servicePage.contactSuccess %></strong>
         </div>
       </div>
 
     <% } else { %>
-      <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="vr-form">
+      <form action="<%= it.localizedPath('/pakalpojumi-kontakts') %>" method="POST" enctype="multipart/form-data" class="vr-form">
         <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-        <input type="hidden" name="returnTo" value="/vides-reklama/">
+        <input type="hidden" name="returnTo" value="<%= it.localizedPath(it.service.path) %>">
         <div class="vr-form-row">
           <div class="form-group">
-            <label class="vr-label">Vārds <span class="required">*</span></label>
-            <input type="text" name="name" class="vr-input" required placeholder="Jānis Bērziņš">
+          <label class="vr-label"><%= contact.name %> <span class="required">*</span></label>
+            <input type="text" name="name" class="vr-input" required placeholder="<%= isRu ? 'Иван Петров' : 'Jānis Bērziņš' %>">
           </div>
           <div class="form-group">
-            <label class="vr-label">E-pasts <span class="required">*</span></label>
-            <input type="email" name="email" class="vr-input" required placeholder="janis@example.lv">
+          <label class="vr-label"><%= contact.email %> <span class="required">*</span></label>
+            <input type="email" name="email" class="vr-input" required placeholder="<%= isRu ? 'ivan@example.lv' : 'janis@example.lv' %>">
           </div>
         </div>
         <div class="form-group">
-          <label class="vr-label">Tālrunis</label>
-          <input type="tel" name="phone" class="vr-input" placeholder="+371 2X XXX XXX">
+          <label class="vr-label"><%= contact.phone %></label>
+          <input type="tel" name="phone" class="vr-input" placeholder="<%= isRu ? '+371 2X XXX XXX' : '+371 2X XXX XXX' %>">
         </div>
         <div class="form-group">
-          <label class="vr-label">Jūsu ziņa <span class="required">*</span></label>
-          <textarea name="message" class="vr-input vr-textarea" required maxlength="180" data-message-input placeholder="Aprakstiet savu projektu — izmērs, novietojums, materiāls..."></textarea>
+          <label class="vr-label"><%= contact.message %> <span class="required">*</span></label>
+          <textarea name="message" class="vr-input vr-textarea" required maxlength="180" data-message-input placeholder="<%= isRu ? 'Опишите проект: размер, место установки, материал, подсветка...' : 'Aprakstiet savu projektu — izmērs, novietojums, materiāls...' %>"></textarea>
           <div style="text-align:right;font-size:12px;color:#a099cc;margin-top:4px;"><span data-message-count>0</span> / 180</div>
         </div>
 
         <!-- ← FILE UPLOAD -->
         <div class="form-group">
-          <label class="vr-label">Faila pielikums</label>
+          <label class="vr-label"><%= contact.attachment %></label>
           <label class="upload-dropzone">
             <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
             <span class="upload-dropzone-copy">
-              <strong>Pievienot failu</strong>
-              <small data-file-label>PDF, JPG, PNG, SVG, AI, EPS, DOC</small>
+              <strong><%= contact.uploadTitle %></strong>
+              <small data-file-label><%= contact.uploadHint %></small>
             </span>
           </label>
         </div>
 
         <button type="submit" class="vr-btn-primary vr-btn-full">
           <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          Nosūtīt pieprasījumu
+          <%= servicePage.contactSubmit %>
         </button>
       </form>
     <% } %>

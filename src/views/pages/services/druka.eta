@@ -1,4 +1,7 @@
 <% layout('../../partials/layout', { bodyClass: 'page-druka' }) %>
+<% const isRu = it.locale === 'ru' %>
+<% const servicePage = it.t.servicePage %>
+<% const contact = it.t.contact %>
 
 <!-- HERO -->
 <section class="dr-hero">
@@ -6,19 +9,19 @@
     <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="dr-hero-inner">
       <div class="dr-hero-copy">
-        <span class="dr-eyebrow">Pakalpojums</span>
-        <h1>Reklāmas un poligrāfijas drukas pakalpojumi</h1>
-        <p>Piedāvājam dažādu drukas produktu izgatavošanu uzņēmumiem, pasākumiem un reklāmai. No vienkāršiem flajeriem līdz pilnvērtīgām brošūrām un kalendāriem.</p>
+        <span class="dr-eyebrow"><%= isRu ? 'Услуга' : 'Pakalpojums' %></span>
+        <h1><%= it.service.title %></h1>
+        <p><%= it.service.intro %></p>
         <div class="dr-hero-actions">
-          <a href="#dr-contact" class="dr-btn-primary">Saņemt piedāvājumu</a>
-          <a href="#dr-types" class="dr-btn-outline">Skatīt produktus</a>
+          <a href="#dr-contact" class="dr-btn-primary"><%= servicePage.requestOffer %></a>
+          <a href="#dr-types" class="dr-btn-outline"><%= isRu ? 'Смотреть виды продукции' : 'Skatīt produktus' %></a>
         </div>
         <div class="dr-hero-tags">
-          <span>Bukleti</span>
-          <span>Brošūras</span>
-          <span>Flajeri</span>
-          <span>Plakāti</span>
-          <span>Kalendāri</span>
+          <span><%= isRu ? 'Буклеты' : 'Bukleti' %></span>
+          <span><%= isRu ? 'Брошюры' : 'Brošūras' %></span>
+          <span><%= isRu ? 'Флаеры' : 'Flajeri' %></span>
+          <span><%= isRu ? 'Плакаты' : 'Plakāti' %></span>
+          <span><%= isRu ? 'Календари' : 'Kalendāri' %></span>
         </div>
       </div>
       <div class="dr-hero-visual">
@@ -26,13 +29,13 @@
           <div class="dr-mockup dr-mockup-1">
             <div class="dr-mockup-inner">
               <div class="dr-mock-wave"></div>
-              <span class="dr-mock-title">Brošūras</span>
+              <span class="dr-mock-title"><%= isRu ? 'Брошюры' : 'Brošūras' %></span>
               <span class="dr-mock-sub">A4 / A5</span>
             </div>
           </div>
           <div class="dr-mockup dr-mockup-2">
             <div class="dr-mockup-inner dr-mockup-dark">
-              <span class="dr-mock-title">Flajeri</span>
+              <span class="dr-mock-title"><%= isRu ? 'Флаеры' : 'Flajeri' %></span>
               <div class="dr-mock-lines">
                 <span></span><span></span><span></span>
               </div>
@@ -40,7 +43,7 @@
           </div>
           <div class="dr-mockup dr-mockup-3">
             <div class="dr-mockup-inner dr-mockup-yellow">
-              <span class="dr-mock-title">Plakāti</span>
+              <span class="dr-mock-title"><%= isRu ? 'Плакаты' : 'Plakāti' %></span>
               <span class="dr-mock-sub">A2 / A1</span>
             </div>
           </div>
@@ -49,7 +52,7 @@
               <div class="dr-mock-calendar">
                 <span>Marts</span>
                 <div class="dr-cal-grid">
-                  <span>P</span><span>O</span><span>T</span><span>C</span><span>P</span><span>S</span><span>Sv</span>
+                  <% if (isRu) { %><span>П</span><span>В</span><span>С</span><span>Ч</span><span>П</span><span>С</span><span>Вс</span><% } else { %><span>P</span><span>O</span><span>T</span><span>C</span><span>P</span><span>S</span><span>Sv</span><% } %>
                 </div>
               </div>
             </div>
@@ -64,9 +67,9 @@
 <section class="dr-types" id="dr-types">
   <div class="container">
     <div class="dr-section-header">
-      <span class="dr-eyebrow-dark">Ko piedāvājam</span>
-      <h2>Drukas produkti</h2>
-      <p>Izgatavojam visu veidu poligrāfijas un reklāmas drukas materiālus.</p>
+      <span class="dr-eyebrow-dark"><%= isRu ? 'Что мы предлагаем' : 'Ko piedāvājam' %></span>
+      <h2><%= isRu ? 'Печатная продукция' : 'Drukas produkti' %></h2>
+      <p><%= isRu ? 'Изготавливаем разные виды полиграфии и рекламных печатных материалов для бизнеса, мероприятий и промо.' : 'Izgatavojam visu veidu poligrāfijas un reklāmas drukas materiālus.' %></p>
     </div>
 
     <div class="dr-types-list">
@@ -74,43 +77,43 @@
         <div class="dr-type-icon">
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         </div>
-        <h4>Bukleti</h4>
-        <p>Dažādi formāti un locījumi — ideāli uzņēmuma prezentācijai.</p>
+        <h4><%= isRu ? 'Буклеты' : 'Bukleti' %></h4>
+        <p><%= isRu ? 'Разные форматы и варианты сгиба для презентации услуг и предложений компании.' : 'Dažādi formāti un locījumi — ideāli uzņēmuma prezentācijai.' %></p>
       </div>
       <div class="dr-type-card">
         <div class="dr-type-icon">
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         </div>
-        <h4>Brošūras</h4>
-        <p>Vairāku lapu drukas materiāli katalogiem un informācijai.</p>
+        <h4><%= isRu ? 'Брошюры' : 'Brošūras' %></h4>
+        <p><%= isRu ? 'Многостраничные материалы для каталогов, презентаций и подробной информации.' : 'Vairāku lapu drukas materiāli katalogiem un informācijai.' %></p>
       </div>
       <div class="dr-type-card">
         <div class="dr-type-icon">
           <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/></svg>
         </div>
-        <h4>Flajeri / Skrejlapas</h4>
-        <p>Reklāmas un informatīvie materiāli akcijām un kampaņām.</p>
+        <h4><%= isRu ? 'Флаеры / листовки' : 'Flajeri / Skrejlapas' %></h4>
+        <p><%= isRu ? 'Рекламные и информационные материалы для акций, открытий и локальных кампаний.' : 'Reklāmas un informatīvie materiāli akcijām un kampaņām.' %></p>
       </div>
       <div class="dr-type-card">
         <div class="dr-type-icon">
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
         </div>
-        <h4>Plakāti un afišas</h4>
-        <p>Dažādi izmēri un papīra veidi vizuālai komunikācijai.</p>
+        <h4><%= isRu ? 'Плакаты и афиши' : 'Plakāti un afišas' %></h4>
+        <p><%= isRu ? 'Разные размеры и типы бумаги для заметной визуальной коммуникации.' : 'Dažādi izmēri un papīra veidi vizuālai komunikācijai.' %></p>
       </div>
       <div class="dr-type-card">
         <div class="dr-type-icon">
           <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         </div>
-        <h4>Kalendāri</h4>
-        <p>Sienas un galda kalendāri ar jūsu zīmolu un dizainu.</p>
+        <h4><%= isRu ? 'Календари' : 'Kalendāri' %></h4>
+        <p><%= isRu ? 'Настенные и настольные календари с вашим брендом и фирменным оформлением.' : 'Sienas un galda kalendāri ar jūsu zīmolu un dizainu.' %></p>
       </div>
       <div class="dr-type-card">
         <div class="dr-type-icon">
           <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         </div>
-        <h4>Etiķetes un birkas</h4>
-        <p>No idejas līdz gatavam produktam — birkas, etiķetes un cenu zīmes.</p>
+        <h4><%= isRu ? 'Этикетки и бирки' : 'Etiķetes un birkas' %></h4>
+        <p><%= isRu ? 'От идеи до готового результата: бирки, этикетки и ценники под ваш ассортимент.' : 'No idejas līdz gatavam produktam — birkas, etiķetes un cenu zīmes.' %></p>
       </div>
     </div>
   </div>
@@ -120,8 +123,8 @@
 <section class="dr-showcase">
   <div class="container">
     <div class="dr-section-header center">
-      <span class="dr-eyebrow-dark">Piemēri</span>
-      <h2>Mūsu drukas produkti</h2>
+      <span class="dr-eyebrow-dark"><%= isRu ? 'Примеры' : 'Piemēri' %></span>
+      <h2><%= isRu ? 'Наши печатные продукты' : 'Mūsu drukas produkti' %></h2>
     </div>
 
     <div class="dr-showcase-grid">
@@ -131,8 +134,8 @@
           <img src="/images/web-design/brosuras-laiksdrukat_new.webp" alt="Brošūras" loading="lazy">
         </div>
         <div class="dr-showcase-label">
-          <strong>Brošūras</strong>
-          <span>A4 — Piedāvājam skvotu brošūru druku</span>
+          <strong><%= isRu ? 'Брошюры' : 'Brošūras' %></strong>
+          <span><%= isRu ? 'A4 — аккуратная и выразительная печать брошюр' : 'A4 — Piedāvājam skvotu brošūru druku' %></span>
         </div>
       </div>
 
@@ -173,48 +176,48 @@
   <div class="container">
     <div class="dr-design-inner">
       <div class="dr-design-copy">
-        <span class="dr-eyebrow-dark">Papildus pakalpojumi</span>
-        <h2>Maketēšana un dizaina izstrāde</h2>
-        <p>Maketēšanas un dizaina izmaksas tiek aprēķinātas, ņemot vērā projekta sarežģītību, darba apjomu un klienta sniegto materiālu kvalitāti.</p>
-        <p>Darba procesā ietilpst informācijas apkopošana, dizaina idejas izstrāde, vizuālā noformējuma sagatavošana un failu pielāgošana drukas prasībām.</p>
-        <p>Ja nepieciešams, tiek sagatavoti vairāki dizaina varianti, lai atrastu piemērotāko risinājumu.</p>
+      <span class="dr-eyebrow-dark"><%= isRu ? 'Дополнительные услуги' : 'Papildus pakalpojumi' %></span>
+      <h2><%= isRu ? 'Верстка и разработка дизайна' : 'Maketēšana un dizaina izstrāde' %></h2>
+      <p><%= isRu ? 'Стоимость верстки и дизайна зависит от сложности проекта, объёма работы и качества исходных материалов.' : 'Maketēšanas un dizaina izmaksas tiek aprēķinātas, ņemot vērā projekta sarežģītību, darba apjomu un klienta sniegto materiālu kvalitāti.' %></p>
+      <p><%= isRu ? 'В работу входит сбор информации, разработка визуальной идеи, оформление макета и подготовка файлов под печатные требования.' : 'Darba procesā ietilpst informācijas apkopošana, dizaina idejas izstrāde, vizuālā noformējuma sagatavošana un failu pielāgošana drukas prasībām.' %></p>
+      <p><%= isRu ? 'При необходимости подготавливаем несколько вариантов, чтобы выбрать наиболее удачное решение для задачи.' : 'Ja nepieciešams, tiek sagatavoti vairāki dizaina varianti, lai atrastu piemērotāko risinājumu.' %></p>
         <div class="dr-design-prices">
           <div class="dr-design-price">
-            <span class="dr-dp-label">Maketēšanas darbu stundas likme</span>
+            <span class="dr-dp-label"><%= isRu ? 'Почасовая ставка за верстку и дизайн' : 'Maketēšanas darbu stundas likme' %></span>
             <span class="dr-dp-val">18–30 €/h</span>
             <span class="dr-dp-note">bez PVN</span>
           </div>
         </div>
-        <p class="dr-design-note">Cena var mainīties atkarībā no darba sarežģītības un apjoma. Lielākiem vai ilgtermiņa projektiem izmaksas tiek aprēķinātas individuāli.</p>
+        <p class="dr-design-note"><%= isRu ? 'Стоимость может меняться в зависимости от сложности и объёма. Для больших и долгосрочных проектов расчёт делаем индивидуально.' : 'Cena var mainīties atkarībā no darba sarežģītības un apjoma. Lielākiem vai ilgtermiņa projektiem izmaksas tiek aprēķinātas individuāli.' %></p>
       </div>
       <div class="dr-design-visual">
         <div class="dr-design-card">
           <div class="dr-design-step">
             <div class="dr-design-step-num">1</div>
             <div>
-              <strong>Informācijas apkopošana</strong>
-              <p>Saņemam jūsu materiālus, logo un vēlmes.</p>
+              <strong><%= isRu ? 'Сбор информации' : 'Informācijas apkopošana' %></strong>
+              <p><%= isRu ? 'Получаем ваши материалы, логотип и пожелания по проекту.' : 'Saņemam jūsu materiālus, logo un vēlmes.' %></p>
             </div>
           </div>
           <div class="dr-design-step">
             <div class="dr-design-step-num">2</div>
             <div>
-              <strong>Dizaina izstrāde</strong>
-              <p>Veidojam maketu atbilstoši jūsu zīmolam.</p>
+              <strong><%= isRu ? 'Разработка дизайна' : 'Dizaina izstrāde' %></strong>
+              <p><%= isRu ? 'Создаём макет в соответствии с вашим брендом и задачей.' : 'Veidojam maketu atbilstoši jūsu zīmolam.' %></p>
             </div>
           </div>
           <div class="dr-design-step">
             <div class="dr-design-step-num">3</div>
             <div>
-              <strong>Apstiprināšana</strong>
-              <p>Nosūtām maketu pārskatīšanai un komentāriem.</p>
+              <strong><%= isRu ? 'Согласование' : 'Apstiprināšana' %></strong>
+              <p><%= isRu ? 'Отправляем макет на просмотр и собираем ваши правки.' : 'Nosūtām maketu pārskatīšanai un komentāriem.' %></p>
             </div>
           </div>
           <div class="dr-design-step">
             <div class="dr-design-step-num">4</div>
             <div>
-              <strong>Sagatavošana drukai</strong>
-              <p>Pielāgojam failus visiem drukas tehniskajiem parametriem.</p>
+              <strong><%= isRu ? 'Подготовка к печати' : 'Sagatavošana drukai' %></strong>
+              <p><%= isRu ? 'Адаптируем файлы под все технические требования печати.' : 'Pielāgojam failus visiem drukas tehniskajiem parametriem.' %></p>
             </div>
           </div>
         </div>
@@ -228,25 +231,25 @@
   <div class="container">
     <div class="dr-contact-inner">
       <div class="dr-contact-copy">
-        <span class="dr-eyebrow-dark">Sazināties</span>
-        <h2>Saņem piedāvājumu</h2>
-        <p>Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.</p>
+        <span class="dr-eyebrow-dark"><%= isRu ? 'Связаться с нами' : 'Sazināties' %></span>
+        <h2><%= servicePage.contactTitle %></h2>
+        <p><%= isRu ? 'Заполните форму, и мы свяжемся с вами, чтобы обсудить детали, тираж и подготовить предложение.' : 'Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.' %></p>
         <div class="dr-contact-tips">
           <div class="dr-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Drukas produkta veids (bukleti, brošūras, flajeri utt.)
+            <%= isRu ? 'Тип продукции: буклеты, брошюры, флаеры и т.д.' : 'Drukas produkta veids (bukleti, brošūras, flajeri utt.)' %>
           </div>
           <div class="dr-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Izmērs, papīrs un aptuvenā tirāža
+            <%= isRu ? 'Размер, бумага и примерный тираж' : 'Izmērs, papīrs un aptuvenā tirāža' %>
           </div>
           <div class="dr-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Vai ir gatavs dizains vai nepieciešama izstrāde
+            <%= isRu ? 'Есть ли готовый дизайн или нужна разработка' : 'Vai ir gatavs dizains vai nepieciešama izstrāde' %>
           </div>
           <div class="dr-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Pievienojiet dizaina failu vai logo, ja ir
+            <%= isRu ? 'Прикрепите файл дизайна или логотип, если он уже есть' : 'Pievienojiet dizaina failu vai logo, ja ir' %>
           </div>
         </div>
         <div class="dr-contact-phones">
@@ -265,8 +268,7 @@
         <div class="vk-success">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#255f31" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <div>
-            <strong>Ziņa veiksmīgi nosūtīta!</strong>
-            <span>Sazināsimies ar jums pēc iespējas ātrāk.</span>
+            <strong><%= servicePage.contactSuccess %></strong>
           </div>
         </div>
       <% } else { %>
@@ -276,41 +278,41 @@
             <%= it.error %>
           </div>
         <% } %>
-        <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="dr-form">
+        <form action="<%= it.localizedPath('/pakalpojumi-kontakts') %>" method="POST" enctype="multipart/form-data" class="dr-form">
           <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-          <input type="hidden" name="returnTo" value="/druka/">
+          <input type="hidden" name="returnTo" value="<%= it.localizedPath(it.service.path) %>">
           <div class="dr-form-row">
             <div class="form-group">
-              <label class="dr-label">Vārds <span class="required">*</span></label>
-              <input type="text" name="name" class="dr-input" required placeholder="Jānis Bērziņš">
+              <label class="dr-label"><%= contact.name %> <span class="required">*</span></label>
+            <input type="text" name="name" class="dr-input" required placeholder="<%= isRu ? 'Иван Петров' : 'Jānis Bērziņš' %>">
             </div>
             <div class="form-group">
-              <label class="dr-label">E-pasts <span class="required">*</span></label>
-              <input type="email" name="email" class="dr-input" required placeholder="janis@example.lv">
+              <label class="dr-label"><%= contact.email %> <span class="required">*</span></label>
+            <input type="email" name="email" class="dr-input" required placeholder="<%= isRu ? 'ivan@example.lv' : 'janis@example.lv' %>">
             </div>
           </div>
           <div class="form-group">
-            <label class="dr-label">Tālrunis</label>
+            <label class="dr-label"><%= contact.phone %></label>
             <input type="tel" name="phone" class="dr-input" placeholder="+371 2X XXX XXX">
           </div>
           <div class="form-group">
-            <label class="dr-label">Jūsu ziņa <span class="required">*</span></label>
-            <textarea name="message" class="dr-input dr-textarea" required maxlength="180" data-message-input placeholder="Produkta veids, izmērs, tirāža, vai ir dizains..."></textarea>
+            <label class="dr-label"><%= contact.message %> <span class="required">*</span></label>
+            <textarea name="message" class="dr-input dr-textarea" required maxlength="180" data-message-input placeholder="<%= isRu ? 'Вид продукции, формат, тираж, нужен ли дизайн...' : 'Produkta veids, izmērs, tirāža, vai ir dizains...' %>"></textarea>
             <div style="text-align:right;font-size:12px;color:#a099cc;margin-top:4px;"><span data-message-count>0</span> / 180</div>
           </div>
           <div class="form-group">
-            <label class="dr-label">Dizaina fails vai logo</label>
+            <label class="dr-label"><%= contact.attachment %></label>
             <label class="upload-dropzone">
               <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
               <span class="upload-dropzone-copy">
-                <strong>Pievienot failu</strong>
-                <small data-file-label>PDF, AI, EPS, JPG, PNG, SVG</small>
+                <strong><%= contact.uploadTitle %></strong>
+                <small data-file-label><%= contact.uploadHint %></small>
               </span>
             </label>
           </div>
           <button type="submit" class="dr-btn-primary dr-btn-full">
             <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Nosūtīt pieprasījumu
+            <%= servicePage.contactSubmit %>
           </button>
         </form>
       <% } %>

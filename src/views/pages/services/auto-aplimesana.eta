@@ -1,4 +1,7 @@
 <% layout('../../partials/layout', { bodyClass: 'page-auto' }) %>
+<% const isRu = it.locale === 'ru' %>
+<% const servicePage = it.t.servicePage %>
+<% const contact = it.t.contact %>
 
 <!-- HERO -->
 <section class="au-hero">
@@ -6,27 +9,27 @@
     <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="au-hero-inner">
       <div class="au-hero-copy">
-        <span class="au-eyebrow">Pakalpojums</span>
-        <h1>Auto un logu aplīmēšana</h1>
-        <p>Auto aplīmēšana un reklāma, kas piesaista skatienus un piešķir automašīnai unikālu tēlu. Izmantojam 3M un Oracal vinila plēves ilgstošam rezultātam.</p>
+        <span class="au-eyebrow"><%= isRu ? 'Услуга' : 'Pakalpojums' %></span>
+        <h1><%= it.service.title %></h1>
+        <p><%= it.service.intro %></p>
         <div class="au-hero-actions">
-          <a href="#au-prices" class="au-btn-secondary">Skatīt cenas</a>
-          <a href="#au-contact" class="au-btn-primary">Rakstīt mums</a>
+          <a href="#au-prices" class="au-btn-secondary"><%= isRu ? 'Смотреть цены' : 'Skatīt cenas' %></a>
+          <a href="#au-contact" class="au-btn-primary"><%= isRu ? 'Написать нам' : 'Rakstīt mums' %></a>
         </div>
         <div class="au-hero-stats">
           <div class="au-stat">
             <span class="au-stat-num">3M</span>
-            <span class="au-stat-label">un Oracal plēves</span>
+              <span class="au-stat-label"><%= isRu ? 'и плёнки Oracal' : 'un Oracal plēves' %></span>
           </div>
           <div class="au-stat-divider"></div>
           <div class="au-stat">
             <span class="au-stat-num">2–4h</span>
-            <span class="au-stat-label">vienkāršiem darbiem</span>
+              <span class="au-stat-label"><%= isRu ? 'для простых работ' : 'vienkāršiem darbiem' %></span>
           </div>
           <div class="au-stat-divider"></div>
           <div class="au-stat">
             <span class="au-stat-num">100%</span>
-            <span class="au-stat-label">individuāli</span>
+              <span class="au-stat-label"><%= isRu ? 'индивидуально' : 'individuāli' %></span>
           </div>
         </div>
       </div>
@@ -36,11 +39,11 @@
           <div class="au-car-glow"></div>
           <div class="au-floating-badge au-badge-1">
             <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            3M materiāls
+            <%= isRu ? 'Материал 3M' : '3M materiāls' %>
           </div>
           <div class="au-floating-badge au-badge-2">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            2-3 stundas
+            <%= isRu ? '2–3 часа' : '2-3 stundas' %>
           </div>
         </div>
       </div>
@@ -52,30 +55,30 @@
 <section class="au-features">
   <div class="container">
     <div class="au-section-header center">
-      <span class="au-eyebrow-dark">Pakalpojuma priekšrocības</span>
-      <h2>Kāpēc izvēlēties mūs</h2>
+      <span class="au-eyebrow-dark"><%= isRu ? 'Преимущества услуги' : 'Pakalpojuma priekšrocības' %></span>
+      <h2><%= isRu ? 'Почему выбирают нас' : 'Kāpēc izvēlēties mūs' %></h2>
     </div>
     <div class="au-features-grid">
       <div class="au-feature">
         <div class="au-feature-icon">
           <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
-        <h3>Augstas kvalitātes materiāli</h3>
-        <p>Izmantotas 3M un Oracal vinila plēves, kas nodrošina spilgtas krāsas, izturību un ilgstošu rezultātu.</p>
+        <h3><%= isRu ? 'Качественные материалы' : 'Augstas kvalitātes materiāli' %></h3>
+        <p><%= isRu ? 'Используем виниловые плёнки 3M и Oracal, которые дают насыщенный цвет, стойкость и долговечный результат.' : 'Izmantotas 3M un Oracal vinila plēves, kas nodrošina spilgtas krāsas, izturību un ilgstošu rezultātu.' %></p>
       </div>
       <div class="au-feature">
         <div class="au-feature-icon">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
-        <h3>Ātrs rezultāts</h3>
-        <p>Plēves uzklāšana notiek 2–4 stundu laikā nelieliem auto dizainiem.</p>
+        <h3><%= isRu ? 'Быстрый результат' : 'Ātrs rezultāts' %></h3>
+        <p><%= isRu ? 'Для небольших проектов оклейка обычно занимает 2–4 часа.' : 'Plēves uzklāšana notiek 2–4 stundu laikā nelieliem auto dizainiem.' %></p>
       </div>
       <div class="au-feature">
         <div class="au-feature-icon">
           <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </div>
-        <h3>Individuāli risinājumi</h3>
-        <p>Katrs auto vai logs tiek aplīmēts pēc jūsu dizaina idejām, ar pielāgotām krāsām, formām un stiliem.</p>
+        <h3><%= isRu ? 'Индивидуальные решения' : 'Individuāli risinājumi' %></h3>
+        <p><%= isRu ? 'Каждый автомобиль или витрина оформляется по вашей идее, с индивидуальными цветами, формами и стилем.' : 'Katrs auto vai logs tiek aplīmēts pēc jūsu dizaina idejām, ar pielāgotām krāsām, formām un stiliem.' %></p>
       </div>
     </div>
   </div>
@@ -85,8 +88,8 @@
 <section class="au-gallery">
   <div class="container">
     <div class="au-section-header">
-      <span class="au-eyebrow-dark">Darbu piemēri</span>
-      <h2>Mūsu darbi</h2>
+      <span class="au-eyebrow-dark"><%= isRu ? 'Примеры работ' : 'Darbu piemēri' %></span>
+      <h2><%= isRu ? 'Наши работы' : 'Mūsu darbi' %></h2>
     </div>
     <div class="au-gallery-slider" data-portfolio-slider>
       <button class="au-gallery-btn left" type="button" onclick="portfolioSlide(this, -1)">
@@ -112,8 +115,8 @@
 <section class="au-prices" id="au-prices">
   <div class="container">
     <div class="au-section-header center">
-      <span class="au-eyebrow-dark">Cenas</span>
-      <h2>Aplīmēšanas pakalpojumi</h2>
+      <span class="au-eyebrow-dark"><%= isRu ? 'Цены' : 'Cenas' %></span>
+      <h2><%= isRu ? 'Виды оклейки' : 'Aplīmēšanas pakalpojumi' %></h2>
     </div>
 
     <div class="au-price-block">
@@ -123,13 +126,13 @@
       </div>
       <div class="au-price-copy">
         <div class="au-price-num">01</div>
-        <h3>Logo + info</h3>
-        <p>Uzlīmēsim jūsu logotipu uz auto sāniem un motora pārsega, bet aizmugurē izvietosim skaidri redzamu kontaktinformāciju — lai klienti jūs pamana un viegli sazinās.</p>
+        <h3><%= isRu ? 'Логотип + контакты' : 'Logo + info' %></h3>
+        <p><%= isRu ? 'Разместим ваш логотип на бортах и капоте автомобиля, а сзади добавим хорошо заметную контактную информацию, чтобы вас легче запомнили и нашли.' : 'Uzlīmēsim jūsu logotipu uz auto sāniem un motora pārsega, bet aizmugurē izvietosim skaidri redzamu kontaktinformāciju — lai klienti jūs pamana un viegli sazinās.' %></p>
         <div class="au-price-amount">
-          <span class="au-price-from">Aptuvenās izmaksas</span>
+          <span class="au-price-from"><%= isRu ? 'Ориентировочная стоимость' : 'Aptuvenās izmaksas' %></span>
           <span class="au-price-value">sākot no €50</span>
         </div>
-        <a href="#au-contact" class="au-btn-primary">Rakstīt mums</a>
+        <a href="#au-contact" class="au-btn-primary"><%= isRu ? 'Написать нам' : 'Rakstīt mums' %></a>
       </div>
     </div>
 
@@ -140,13 +143,13 @@
       </div>
       <div class="au-price-copy">
         <div class="au-price-num">02</div>
-        <h3>Daļēja auto aplīmēšana</h3>
-        <p>Aplīmējam līdz pat 50% no automašīnas virsbūves un logu laukuma — efektīvs veids, kā izcelt dizainu un reklāmu, saglabājot sabalansētu kopskatu.</p>
+        <h3><%= isRu ? 'Частичная оклейка автомобиля' : 'Daļēja auto aplīmēšana' %></h3>
+        <p><%= isRu ? 'Оклеиваем до 50% кузова и остекления автомобиля. Это заметное рекламное решение, которое сохраняет аккуратный общий вид машины.' : 'Aplīmējam līdz pat 50% no automašīnas virsbūves un logu laukuma — efektīvs veids, kā izcelt dizainu un reklāmu, saglabājot sabalansētu kopskatu.' %></p>
         <div class="au-price-amount">
-          <span class="au-price-from">Aptuvenās izmaksas</span>
+          <span class="au-price-from"><%= isRu ? 'Ориентировочная стоимость' : 'Aptuvenās izmaksas' %></span>
           <span class="au-price-value">€300 – €650</span>
         </div>
-        <a href="#au-contact" class="au-btn-primary">Rakstīt mums</a>
+        <a href="#au-contact" class="au-btn-primary"><%= isRu ? 'Написать нам' : 'Rakstīt mums' %></a>
       </div>
     </div>
 
@@ -157,19 +160,19 @@
       </div>
       <div class="au-price-copy">
         <div class="au-price-num">03</div>
-        <h3>Pilna auto aplīmēšana</h3>
-        <p>Pilnībā pārklājam automašīnas virsbūvi — maksimālai vizuālai ietekmei un vienotam izskatam.</p>
+        <h3><%= isRu ? 'Полная оклейка автомобиля' : 'Pilna auto aplīmēšana' %></h3>
+        <p><%= isRu ? 'Полностью оклеиваем кузов автомобиля для максимального визуального эффекта и цельного фирменного образа.' : 'Pilnībā pārklājam automašīnas virsbūvi — maksimālai vizuālai ietekmei un vienotam izskatam.' %></p>
         <div class="au-price-amount">
-          <span class="au-price-from">Aptuvenās izmaksas</span>
+          <span class="au-price-from"><%= isRu ? 'Ориентировочная стоимость' : 'Aptuvenās izmaksas' %></span>
           <span class="au-price-value">€1000 – €2000</span>
         </div>
-        <a href="#au-contact" class="au-btn-primary">Rakstīt mums</a>
+        <a href="#au-contact" class="au-btn-primary"><%= isRu ? 'Написать нам' : 'Rakstīt mums' %></a>
       </div>
     </div>
 
     <div class="au-price-note">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      Cenas ir orientējošas un atkarīgas no automašīnas izmēra, dizaina sarežģītības un materiālu izvēles. Precīzu piedāvājumu sagatavosim pēc projekta apskates.
+      <%= isRu ? 'Цены ориентировочные и зависят от размера автомобиля, сложности дизайна и выбранных материалов. Точное предложение подготовим после оценки проекта.' : 'Cenas ir orientējošas un atkarīgas no automašīnas izmēra, dizaina sarežģītības un materiālu izvēles. Precīzu piedāvājumu sagatavosim pēc projekta apskates.' %>
     </div>
   </div>
 </section>
@@ -178,38 +181,38 @@
 <section class="au-process">
   <div class="container">
     <div class="au-section-header center">
-      <span class="au-eyebrow-dark">Kā strādājam</span>
-      <h2>Darba process</h2>
+      <span class="au-eyebrow-dark"><%= isRu ? 'Как мы работаем' : 'Kā strādājam' %></span>
+      <h2><%= isRu ? 'Этапы работы' : 'Darba process' %></h2>
     </div>
     <div class="au-process-steps">
       <div class="au-process-step">
         <div class="au-process-num">1</div>
-        <h4>Konsultācija</h4>
-        <p>Apspriežam jūsu vajadzības un vēlamo rezultātu.</p>
+        <h4><%= isRu ? 'Консультация' : 'Konsultācija' %></h4>
+        <p><%= isRu ? 'Обсуждаем задачу, формат оклейки и желаемый результат.' : 'Apspriežam jūsu vajadzības un vēlamo rezultātu.' %></p>
       </div>
       <div class="au-process-arrow">→</div>
       <div class="au-process-step">
         <div class="au-process-num">2</div>
-        <h4>Izmēru noteikšana</h4>
-        <p>Pirms maketa izstrādes nosakām auto virsbūves izmērus.</p>
+        <h4><%= isRu ? 'Замеры' : 'Izmēru noteikšana' %></h4>
+        <p><%= isRu ? 'Перед подготовкой макета снимаем размеры кузова и нужных зон оклейки.' : 'Pirms maketa izstrādes nosakām auto virsbūves izmērus.' %></p>
       </div>
       <div class="au-process-arrow">→</div>
       <div class="au-process-step">
         <div class="au-process-num">3</div>
-        <h4>Dizains</h4>
-        <p>Sagatavosim maketu un nosūtīsim apstiprināšanai.</p>
+        <h4><%= isRu ? 'Дизайн' : 'Dizains' %></h4>
+        <p><%= isRu ? 'Готовим макет и отправляем его вам на согласование.' : 'Sagatavosim maketu un nosūtīsim apstiprināšanai.' %></p>
       </div>
       <div class="au-process-arrow">→</div>
       <div class="au-process-step">
         <div class="au-process-num">4</div>
-        <h4>Plēves druka</h4>
-        <p>Drukājam uz vinila plēvi ar jūsu dizainu.</p>
+        <h4><%= isRu ? 'Печать плёнки' : 'Plēves druka' %></h4>
+        <p><%= isRu ? 'Печатаем ваш дизайн на качественной виниловой плёнке.' : 'Drukājam uz vinila plēvi ar jūsu dizainu.' %></p>
       </div>
       <div class="au-process-arrow">→</div>
       <div class="au-process-step">
         <div class="au-process-num">5</div>
-        <h4>Uzklāšana</h4>
-        <p>Uzklājam plēvi uz automašīnas 2–4 stundu laikā.</p>
+        <h4><%= isRu ? 'Оклейка' : 'Uzklāšana' %></h4>
+        <p><%= isRu ? 'Аккуратно наносим плёнку на автомобиль, обычно за 2–4 часа.' : 'Uzklājam plēvi uz automašīnas 2–4 stundu laikā.' %></p>
       </div>
     </div>
   </div>
@@ -220,21 +223,21 @@
   <div class="container">
     <div class="au-contact-inner">
       <div class="au-contact-copy">
-        <span class="au-eyebrow-dark">Sazināties</span>
-        <h2>Saņem piedāvājumu</h2>
-        <p>Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.</p>
+        <span class="au-eyebrow-dark"><%= isRu ? 'Связаться с нами' : 'Sazināties' %></span>
+        <h2><%= servicePage.contactTitle %></h2>
+        <p><%= isRu ? 'Оставьте сообщение, и мы свяжемся с вами, чтобы обсудить формат оклейки, материалы и сроки.' : 'Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.' %></p>
         <div class="au-contact-tips">
           <div class="au-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Aplīmēšanas veids (logo, daļēja vai pilna)
+            <%= isRu ? 'Тип оклейки: логотип, частичная или полная' : 'Aplīmēšanas veids (logo, daļēja vai pilna)' %>
           </div>
           <div class="au-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Vai ir gatavs dizains vai nepieciešama izstrāde
+            <%= isRu ? 'Есть ли готовый дизайн или нужна разработка' : 'Vai ir gatavs dizains vai nepieciešama izstrāde' %>
           </div>
           <div class="au-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Pievienojiet dizaina failu vai logo, ja ir
+            <%= isRu ? 'Прикрепите файл дизайна или логотип, если он уже есть' : 'Pievienojiet dizaina failu vai logo, ja ir' %>
           </div>
         </div>
         <div class="au-contact-phones">
@@ -253,8 +256,7 @@
         <div class="vr-success">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#255f31" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <div>
-            <strong>Ziņa veiksmīgi nosūtīta!</strong>
-            <span>Sazināsimies ar jums pēc iespējas ātrāk.</span>
+            <strong><%= servicePage.contactSuccess %></strong>
           </div>
         </div>
       <% } else { %>
@@ -264,41 +266,41 @@
             <%= it.error %>
           </div>
         <% } %>
-        <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="au-form">
+        <form action="<%= it.localizedPath('/pakalpojumi-kontakts') %>" method="POST" enctype="multipart/form-data" class="au-form">
           <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-          <input type="hidden" name="returnTo" value="/auto-aplimesana/">
+          <input type="hidden" name="returnTo" value="<%= it.localizedPath(it.service.path) %>">
           <div class="au-form-row">
             <div class="form-group">
-              <label class="au-label">Vārds <span class="required">*</span></label>
-              <input type="text" name="name" class="au-input" required placeholder="Jānis Bērziņš">
+              <label class="au-label"><%= contact.name %> <span class="required">*</span></label>
+              <input type="text" name="name" class="au-input" required placeholder="<%= isRu ? 'Иван Петров' : 'Jānis Bērziņš' %>">
             </div>
             <div class="form-group">
-              <label class="au-label">E-pasts <span class="required">*</span></label>
-              <input type="email" name="email" class="au-input" required placeholder="janis@example.lv">
+              <label class="au-label"><%= contact.email %> <span class="required">*</span></label>
+              <input type="email" name="email" class="au-input" required placeholder="<%= isRu ? 'ivan@example.lv' : 'janis@example.lv' %>">
             </div>
           </div>
           <div class="form-group">
-            <label class="au-label">Tālrunis</label>
+            <label class="au-label"><%= contact.phone %></label>
             <input type="tel" name="phone" class="au-input" placeholder="+371 2X XXX XXX">
           </div>
           <div class="form-group">
-            <label class="au-label">Jūsu ziņa <span class="required">*</span></label>
-            <textarea name="message" class="au-input au-textarea" required maxlength="180" data-message-input placeholder="Aplīmēšanas veids..."></textarea>
+            <label class="au-label"><%= contact.message %> <span class="required">*</span></label>
+            <textarea name="message" class="au-input au-textarea" required maxlength="180" data-message-input placeholder="<%= isRu ? 'Тип оклейки, автомобиль, нужен ли дизайн...' : 'Aplīmēšanas veids...' %>"></textarea>
             <div style="text-align:right;font-size:12px;color:#a099cc;margin-top:4px;"><span data-message-count>0</span> / 180</div>
           </div>
           <div class="form-group">
-            <label class="au-label">Dizaina fails vai logo</label>
+            <label class="au-label"><%= contact.attachment %></label>
             <label class="upload-dropzone">
               <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
               <span class="upload-dropzone-copy">
-                <strong>Pievienot failu</strong>
-                <small data-file-label>PDF, AI, EPS, JPG, PNG, SVG</small>
+                <strong><%= contact.uploadTitle %></strong>
+                <small data-file-label><%= contact.uploadHint %></small>
               </span>
             </label>
           </div>
           <button type="submit" class="au-btn-primary au-btn-full">
             <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Nosūtīt pieprasījumu
+            <%= servicePage.contactSubmit %>
           </button>
         </form>
       <% } %>

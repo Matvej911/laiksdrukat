@@ -1,6 +1,6 @@
 const RU_PREFIX = '/ru'
 
-const localizablePaths = new Set([
+const localizableExactPaths = new Set([
   '/',
   '/kontakti/',
   '/privatuma-politika/',
@@ -15,6 +15,11 @@ const localizablePaths = new Set([
   '/druka/',
   '/poligrafija',
 ])
+
+const localizablePrefixes = [
+  '/veikals/',
+  '/kategorija/',
+]
 
 const localeMeta = {
   lv: {
@@ -154,6 +159,64 @@ const ui = {
       contactSubmit: 'Nosūtīt pieprasījumu',
       contactHint: 'Jo vairāk detaļu par apjomu, termiņu un materiāliem, jo precīzāku piedāvājumu varēsim sagatavot.',
     },
+    shopPage: {
+      heroEyebrow: 'E-veikals',
+      heroTitle: 'Zīmogi un zīmogu tintes',
+      heroText: 'Izvēlieties piemērotāko COLOP zīmogu vai tintes risinājumu ikdienas darbam.',
+      allProducts: 'Visas preces',
+      searchPlaceholder: 'Meklēt produktu...',
+      sortLabel: 'Kārtot',
+      sortName: 'Pēc nosaukuma',
+      sortPriceAsc: 'Cena: zemākā',
+      sortPriceDesc: 'Cena: augstākā',
+      searchButton: 'Meklēt',
+      clearButton: 'Notīrīt',
+      resultsFor: 'Rezultāti priekš',
+      productCount: 'preces',
+      emptyTitle: 'Nekas netika atrasts',
+      emptyText: 'Mēģiniet citu meklēšanas vārdu vai sazinieties ar mums.',
+      contactButton: 'Sazināties',
+      paginationLabel: 'Produktu lapas',
+      prevPage: 'Iepriekšējā',
+      nextPage: 'Nākamā',
+      vatLabel: '+ PVN',
+      breadcrumbsShop: 'Veikals',
+    },
+    productPage: {
+      priceTax: '+ PVN (21%)',
+      totalLabel: 'Kopā:',
+      inStock: 'Pieejams noliktavā',
+      piecesShort: 'gab.',
+      inkColorLabel: 'Tintes krāsa',
+      stampTextLabel: 'Teksts zīmogam',
+      stampTextPlaceholder: 'Rakstiet zīmoga tekstu brīvā formā vai pievienojiet failu zemāk...',
+      attachmentLabel: 'Faila pielikums',
+      uploadTitle: 'Pievienot failu',
+      uploadHint: 'PDF, JPG, PNG, SVG, AI, EPS',
+      quantityLabel: 'Daudzums',
+      addToCart: 'Pievienot grozam',
+      outOfStock: 'Prece pagaidām nav pieejama',
+      availabilityTitle: 'Pieejamība pēc pieprasījuma',
+      availabilityText: 'Rakstiet mums un precizēsim piegādes iespējas.',
+      contactButton: 'Sazināties',
+      supportTitle: 'Jautājumi par produktu?',
+      supportText: 'Palīdzēsim izvēlēties pareizo zīmoga modeli un tekstu.',
+      supportLink: 'Jautāt →',
+      descriptionEyebrow: 'Apraksts',
+      descriptionTitle: 'Produkta informācija',
+      descriptionText: 'Detalizēta informācija par zīmoga izmēriem, lietošanu un pielietojumu.',
+      imprintPreviewTitle: 'Nospieduma paraugs',
+      recentlyViewedEyebrow: 'Nesen skatītie produkti',
+      recentlyViewedTitle: 'Nesen skatītie produkti',
+      breadcrumbsShop: 'Veikals',
+      inkColors: {
+        black: 'Melna',
+        blue: 'Zila',
+        red: 'Sarkana',
+        green: 'Zaļa',
+        purple: 'Violeta',
+      },
+    },
     breadcrumbs: {
       home: 'Sākums',
       contacts: 'Kontakti',
@@ -282,6 +345,64 @@ const ui = {
       contactSuccess: 'Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.',
       contactSubmit: 'Отправить запрос',
       contactHint: 'Чем точнее вы опишете тираж, размеры, материал и сроки, тем быстрее мы подготовим точный ответ.',
+    },
+    shopPage: {
+      heroEyebrow: 'Интернет-магазин',
+      heroTitle: 'Штампы и краски для штампов',
+      heroText: 'Подберите подходящий штамп COLOP или расходные материалы для повседневной работы.',
+      allProducts: 'Все товары',
+      searchPlaceholder: 'Найти товар...',
+      sortLabel: 'Сортировка',
+      sortName: 'По названию',
+      sortPriceAsc: 'Цена: ниже',
+      sortPriceDesc: 'Цена: выше',
+      searchButton: 'Искать',
+      clearButton: 'Сбросить',
+      resultsFor: 'Результаты по запросу',
+      productCount: 'товаров',
+      emptyTitle: 'Ничего не найдено',
+      emptyText: 'Попробуйте другой запрос или свяжитесь с нами.',
+      contactButton: 'Связаться',
+      paginationLabel: 'Страницы товаров',
+      prevPage: 'Предыдущая',
+      nextPage: 'Следующая',
+      vatLabel: '+ НДС',
+      breadcrumbsShop: 'Магазин',
+    },
+    productPage: {
+      priceTax: '+ НДС (21%)',
+      totalLabel: 'Итого:',
+      inStock: 'Есть в наличии',
+      piecesShort: 'шт.',
+      inkColorLabel: 'Цвет чернил',
+      stampTextLabel: 'Текст для штампа',
+      stampTextPlaceholder: 'Напишите текст для штампа в свободной форме или прикрепите файл ниже...',
+      attachmentLabel: 'Вложение',
+      uploadTitle: 'Прикрепить файл',
+      uploadHint: 'PDF, JPG, PNG, SVG, AI, EPS',
+      quantityLabel: 'Количество',
+      addToCart: 'Добавить в корзину',
+      outOfStock: 'Товар временно недоступен',
+      availabilityTitle: 'Доступность по запросу',
+      availabilityText: 'Напишите нам, и мы уточним сроки и варианты поставки.',
+      contactButton: 'Связаться',
+      supportTitle: 'Есть вопросы по товару?',
+      supportText: 'Поможем подобрать подходящую модель штампа и текст для него.',
+      supportLink: 'Спросить →',
+      descriptionEyebrow: 'Описание',
+      descriptionTitle: 'Информация о товаре',
+      descriptionText: 'Подробная информация о размерах штампа, использовании и вариантах применения.',
+      imprintPreviewTitle: 'Образец оттиска',
+      recentlyViewedEyebrow: 'Недавно просмотренные',
+      recentlyViewedTitle: 'Недавно просмотренные товары',
+      breadcrumbsShop: 'Магазин',
+      inkColors: {
+        black: 'Чёрный',
+        blue: 'Синий',
+        red: 'Красный',
+        green: 'Зелёный',
+        purple: 'Фиолетовый',
+      },
     },
     breadcrumbs: {
       home: 'Главная',
@@ -575,6 +696,14 @@ export function isRussianLocale(locale = 'lv') {
   return locale === 'ru'
 }
 
+function isPathLocalizable(pathname = '/') {
+  if (localizableExactPaths.has(pathname)) {
+    return true
+  }
+
+  return localizablePrefixes.some((prefix) => pathname.startsWith(prefix))
+}
+
 function splitPathParts(path = '/') {
   const value = String(path || '/')
   const hashIndex = value.indexOf('#')
@@ -616,7 +745,7 @@ export function localizePath(locale = 'lv', path = '/') {
     return normalized === '/' ? `/${suffix}` : `${normalized}${suffix}`
   }
 
-  if (!localizablePaths.has(normalized)) {
+  if (!isPathLocalizable(normalized)) {
     return normalized === '/' ? `${RU_PREFIX}/${suffix}`.replace(/\/+$/, '/') : `${normalized}${suffix}`
   }
 
@@ -634,7 +763,7 @@ export function buildLanguageSwitcher(currentPath = '/', currentLocale = 'lv') {
   let href = localizePath(targetLocale, basePath)
   const { pathname } = splitPathParts(basePath)
 
-  if (!localizablePaths.has(pathname) && href === basePath) {
+  if (!isPathLocalizable(pathname) && href === basePath) {
     href = localizePath(targetLocale, '/')
   }
 

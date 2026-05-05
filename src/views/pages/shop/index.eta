@@ -1,4 +1,5 @@
 <% layout('../../partials/layout', { bodyClass: 'page-shop' }) %>
+<% const shopPage = it.t.shopPage %>
 
 <!-- HERO -->
 <section class="shop-hero">
@@ -6,8 +7,8 @@
     <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="shop-hero-inner">
       <div>
-        <span class="shop-eyebrow">E-veikals</span>
-        <h1>Zīmogi un zīmogu tintes</h1>
+        <span class="shop-eyebrow"><%= shopPage.heroEyebrow %></span>
+        <h1><%= shopPage.heroTitle %></h1>
         <p><%= it.site.shop.intro %></p>
       </div>
     </div>
@@ -18,13 +19,13 @@
 <section class="shop-categories-section">
   <div class="container">
     <div class="shop-categories">
-      <a href="/veikals/" class="shop-cat-pill <%= !it.activeCategory ? 'active' : '' %>">
-        Visas preces
+      <a href="<%= it.localizedPath('/veikals/') %>" class="shop-cat-pill <%= !it.activeCategory ? 'active' : '' %>">
+        <%= shopPage.allProducts %>
         <span class="shop-cat-count"><%= it.allProductsCount || it.totalProducts || it.products.length %></span>
       </a>
       <% for (const categoryInfo of it.site.shop.categories) { %>
         <% const dbCategory = it.categories.find((c) => c.slug === categoryInfo.slug) %>
-        <a href="/kategorija/<%= categoryInfo.slug %>/" class="shop-cat-pill <%= it.activeCategory === categoryInfo.slug ? 'active' : '' %>">
+        <a href="<%= it.localizedPath('/kategorija/' + categoryInfo.slug + '/') %>" class="shop-cat-pill <%= it.activeCategory === categoryInfo.slug ? 'active' : '' %>">
           <%= categoryInfo.title %>
           <span class="shop-cat-count"><%= dbCategory ? dbCategory._count.products : 0 %></span>
         </a>
@@ -36,22 +37,23 @@
 <!-- TOOLBAR + PRODUCTS -->
 <section class="shop-main">
   <div class="container">
+    <% const activeListingPath = it.activeCategory ? it.localizedPath('/kategorija/' + it.activeCategory + '/') : it.localizedPath('/veikals/') %>
 
     <!-- TOOLBAR -->
-    <form action="<%= it.activeCategory ? ('/kategorija/' + it.activeCategory + '/') : '/veikals/' %>" method="GET" class="shop-toolbar-new">
+    <form action="<%= activeListingPath %>" method="GET" class="shop-toolbar-new">
       <div class="shop-search-wrap">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="search" name="q" value="<%= it.q || '' %>" class="shop-search-input" placeholder="Meklēt produktu...">
+        <input type="search" name="q" value="<%= it.q || '' %>" class="shop-search-input" placeholder="<%= shopPage.searchPlaceholder %>">
       </div>
       <div class="shop-toolbar-right">
         <select name="sort" class="shop-sort-select">
-          <option value="name-asc" <%= it.sort === 'name-asc' ? 'selected' : '' %>>Pēc nosaukuma</option>
-          <option value="price-asc" <%= it.sort === 'price-asc' ? 'selected' : '' %>>Cena: zemākā</option>
-          <option value="price-desc" <%= it.sort === 'price-desc' ? 'selected' : '' %>>Cena: augstākā</option>
+          <option value="name-asc" <%= it.sort === 'name-asc' ? 'selected' : '' %>><%= shopPage.sortName %></option>
+          <option value="price-asc" <%= it.sort === 'price-asc' ? 'selected' : '' %>><%= shopPage.sortPriceAsc %></option>
+          <option value="price-desc" <%= it.sort === 'price-desc' ? 'selected' : '' %>><%= shopPage.sortPriceDesc %></option>
         </select>
-        <button type="submit" class="shop-search-btn">Meklēt</button>
+        <button type="submit" class="shop-search-btn"><%= shopPage.searchButton %></button>
         <% if (it.q) { %>
-          <a href="<%= it.activeCategory ? ('/kategorija/' + it.activeCategory + '/') : '/veikals/' %>" class="shop-clear-btn">Notīrīt</a>
+          <a href="<%= activeListingPath %>" class="shop-clear-btn"><%= shopPage.clearButton %></a>
         <% } %>
       </div>
     </form>
@@ -59,9 +61,9 @@
     <!-- RESULTS META -->
     <div class="shop-meta">
       <% if (it.q) { %>
-        <span>Rezultāti priekš "<strong><%= it.q %></strong>"</span>
+        <span><%= shopPage.resultsFor %> "<strong><%= it.q %></strong>"</span>
       <% } %>
-      <span class="shop-meta-count"><%= it.totalProducts || it.products.length %> preces</span>
+      <span class="shop-meta-count"><%= it.totalProducts || it.products.length %> <%= shopPage.productCount %></span>
     </div>
 
     <!-- EMPTY -->
@@ -70,9 +72,9 @@
         <div class="shop-empty-icon">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
-        <h2>Nekas netika atrasts</h2>
-        <p>Mēģiniet citu meklēšanas vārdu vai sazinieties ar mums.</p>
-        <a href="/kontakti/" class="btn btn-primary">Sazināties</a>
+        <h2><%= shopPage.emptyTitle %></h2>
+        <p><%= shopPage.emptyText %></p>
+        <a href="<%= it.localizedPath('/kontakti/') %>" class="btn btn-primary"><%= shopPage.contactButton %></a>
       </div>
 
     <% } else { %>
@@ -81,7 +83,7 @@
       <div class="shop-grid">
         <% for (const p of it.products) { %>
           <article class="shop-product-card">
-            <a href="/veikals/<%= p.slug %>/" class="shop-product-link">
+            <a href="<%= it.localizedPath('/veikals/' + p.slug + '/') %>" class="shop-product-link">
               <div class="shop-product-img">
                 <% if (p.image) { %>
                   <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy" width="800" height="800">
@@ -95,7 +97,7 @@
                 <div class="shop-product-footer">
                   <div class="shop-product-price">
                     <%= Number(p.price).toFixed(2) %> €
-                    <span class="shop-product-vat">+ PVN</span>
+                    <span class="shop-product-vat"><%= shopPage.vatLabel %></span>
                   </div>
                 </div>
               </div>
@@ -107,9 +109,9 @@
       </div>
 
       <% if (it.pagination && it.pagination.totalPages > 1) { %>
-        <nav class="shop-pagination" aria-label="Produktu lapas">
+        <nav class="shop-pagination" aria-label="<%= shopPage.paginationLabel %>">
           <% if (it.pagination.prevUrl) { %>
-            <a href="<%= it.pagination.prevUrl %>" class="shop-page-link shop-page-link-nav">Iepriekšējā</a>
+            <a href="<%= it.pagination.prevUrl %>" class="shop-page-link shop-page-link-nav"><%= shopPage.prevPage %></a>
           <% } %>
 
           <% for (const page of it.pagination.items) { %>
@@ -123,7 +125,7 @@
           <% } %>
 
           <% if (it.pagination.nextUrl) { %>
-            <a href="<%= it.pagination.nextUrl %>" class="shop-page-link shop-page-link-nav">Nākamā</a>
+            <a href="<%= it.pagination.nextUrl %>" class="shop-page-link shop-page-link-nav"><%= shopPage.nextPage %></a>
           <% } %>
         </nav>
       <% } %>

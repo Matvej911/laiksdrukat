@@ -1,4 +1,6 @@
 <% layout('../../partials/layout', { bodyClass: 'page-product' }) %>
+<% const productPage = it.t.productPage %>
+<% const inkColors = productPage.inkColors %>
 
 <!-- BREADCRUMB -->
 <section class="product-hero-section">
@@ -34,17 +36,17 @@
 
       <div class="product-price-block">
         <span class="product-price-main"><%= Number(it.product.price).toFixed(2) %> €</span>
-        <span class="product-price-tax">+ PVN (21%)</span>
-        <span class="product-price-total">Kopā: <%= (Number(it.product.price) * 1.21).toFixed(2) %> €</span>
+        <span class="product-price-tax"><%= productPage.priceTax %></span>
+        <span class="product-price-total"><%= productPage.totalLabel %> <%= (Number(it.product.price) * 1.21).toFixed(2) %> €</span>
       </div>
 
       <% if (it.product.stock > 0) { %>
         <div class="product-stock-row">
           <span class="product-in-stock">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Pieejams noliktavā
+            <%= productPage.inStock %>
           </span>
-          <span class="product-stock-count"><%= it.product.stock %> gab.</span>
+          <span class="product-stock-count"><%= it.product.stock %> <%= productPage.piecesShort %></span>
         </div>
 
         <div class="product-divider"></div>
@@ -56,36 +58,36 @@
 
             <div class="product-form-row">
               <div class="form-group">
-                <label class="form-label">Tintes krāsa <span class="required">*</span></label>
+                <label class="form-label"><%= productPage.inkColorLabel %> <span class="required">*</span></label>
                 <select name="inkColor" class="form-input" required>
-                  <option value="Melna">Melna</option>
-                  <option value="Zila">Zila</option>
-                  <option value="Sarkana">Sarkana</option>
-                  <option value="Zaļa">Zaļa</option>
-                  <option value="Violeta">Violeta</option>
+                  <option value="Melna"><%= inkColors.black %></option>
+                  <option value="Zila"><%= inkColors.blue %></option>
+                  <option value="Sarkana"><%= inkColors.red %></option>
+                  <option value="Zaļa"><%= inkColors.green %></option>
+                  <option value="Violeta"><%= inkColors.purple %></option>
                 </select>
               </div>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Teksts zīmogam</label>
-              <textarea name="stampText" class="form-input form-textarea" placeholder="Rakstiet zīmoga tekstu brīvā formā vai pievienojiet failu zemāk..."></textarea>
+              <label class="form-label"><%= productPage.stampTextLabel %></label>
+              <textarea name="stampText" class="form-input form-textarea" placeholder="<%= productPage.stampTextPlaceholder %>"></textarea>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Faila pielikums</label>
+              <label class="form-label"><%= productPage.attachmentLabel %></label>
               <label class="upload-dropzone">
                 <input type="file" name="stampFile" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
                 <span class="upload-dropzone-copy">
-                  <strong>Pievienot failu</strong>
-                  <small data-file-label>PDF, JPG, PNG, SVG, AI, EPS</small>
+                  <strong><%= productPage.uploadTitle %></strong>
+                  <small data-file-label><%= productPage.uploadHint %></small>
                 </span>
               </label>
             </div>
 
             <div class="product-buy-row">
               <div class="product-qty-wrap">
-                <label class="form-label">Daudzums</label>
+                <label class="form-label"><%= productPage.quantityLabel %></label>
                 <div class="product-qty-control">
                   <button type="button" class="qty-btn" onclick="this.nextElementSibling.stepDown()">−</button>
                   <input type="number" name="quantity" value="1" min="1" max="<%= it.product.stock %>" class="qty-input">
@@ -94,7 +96,7 @@
               </div>
               <button type="submit" class="product-add-btn">
                 <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                Pievienot grozam
+                <%= productPage.addToCart %>
               </button>
             </div>
           </form>
@@ -105,7 +107,7 @@
             <input type="hidden" name="productId" value="<%= it.product.id %>">
             <div class="product-buy-row">
               <div class="product-qty-wrap">
-                <label class="form-label">Daudzums</label>
+                <label class="form-label"><%= productPage.quantityLabel %></label>
                 <div class="product-qty-control">
                   <button type="button" class="qty-btn" onclick="this.nextElementSibling.stepDown()">−</button>
                   <input type="number" name="quantity" value="1" min="1" max="<%= it.product.stock %>" class="qty-input">
@@ -114,7 +116,7 @@
               </div>
               <button type="submit" class="product-add-btn">
                 <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                Pievienot grozam
+                <%= productPage.addToCart %>
               </button>
             </div>
           </form>
@@ -123,12 +125,12 @@
       <% } else { %>
         <div class="product-out-of-stock">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Prece pagaidām nav pieejama
+          <%= productPage.outOfStock %>
         </div>
         <div class="note-card">
-          <h3>Pieejamība pēc pieprasījuma</h3>
-          <p>Rakstiet mums un precizēsim piegādes iespējas.</p>
-          <a href="/kontakti/" class="btn btn-primary">Sazināties</a>
+          <h3><%= productPage.availabilityTitle %></h3>
+          <p><%= productPage.availabilityText %></p>
+          <a href="<%= it.localizedPath('/kontakti/') %>" class="btn btn-primary"><%= productPage.contactButton %></a>
         </div>
       <% } %>
 
@@ -138,10 +140,10 @@
           <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
         <div>
-          <strong>Jautājumi par produktu?</strong>
-          <p>Palīdzēsim izvēlēties pareizo zīmoga modeli un tekstu.</p>
+          <strong><%= productPage.supportTitle %></strong>
+          <p><%= productPage.supportText %></p>
         </div>
-        <a href="/kontakti/" class="product-support-link">Jautāt →</a>
+        <a href="<%= it.localizedPath('/kontakti/') %>" class="product-support-link"><%= productPage.supportLink %></a>
       </div>
 
     </div>
@@ -153,16 +155,16 @@
 <section class="product-desc-section">
   <div class="container product-desc-grid">
     <div class="product-desc-sidebar">
-      <span class="product-desc-eyebrow">Apraksts</span>
-      <h2>Produkta informācija</h2>
-      <p>Detalizēta informācija par zīmoga izmēriem, lietošanu un pielietojumu.</p>
+      <span class="product-desc-eyebrow"><%= productPage.descriptionEyebrow %></span>
+      <h2><%= productPage.descriptionTitle %></h2>
+      <p><%= productPage.descriptionText %></p>
     </div>
     <div class="product-desc-content">
       <%~ it.product.description %>
       <% if (it.product.imprintImage) { %>
         <div class="product-imprint-preview">
-          <h3>Nospieduma paraugs</h3>
-          <img src="<%= it.product.imprintImage %>" alt="Nospieduma paraugs" loading="lazy">
+          <h3><%= productPage.imprintPreviewTitle %></h3>
+          <img src="<%= it.product.imprintImage %>" alt="<%= productPage.imprintPreviewTitle %>" loading="lazy">
         </div>
       <% } %>
     </div>
@@ -175,13 +177,13 @@
 <section class="product-related-section">
   <div class="container">
     <div class="product-related-header">
-      <span class="shop-eyebrow">Nesen skatītie produkti</span>
-      <h2>Nesen skatītie produkti</h2>
+      <span class="shop-eyebrow"><%= productPage.recentlyViewedEyebrow %></span>
+      <h2><%= productPage.recentlyViewedTitle %></h2>
     </div>
     <div class="shop-grid">
       <% for (const p of it.recentlyViewed) { %>
         <article class="shop-product-card">
-          <a href="/veikals/<%= p.slug %>/" class="shop-product-link">
+          <a href="<%= it.localizedPath('/veikals/' + p.slug + '/') %>" class="shop-product-link">
             <div class="shop-product-img">
               <% if (p.image) { %>
                 <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy" width="800" height="800">
@@ -195,7 +197,7 @@
               <% } %>
               <h3 class="shop-product-name"><%= p.name %></h3>
               <div class="shop-product-footer">
-                <div class="shop-product-price"><%= Number(p.price).toFixed(2) %> € <span class="shop-product-vat">+ PVN</span></div>
+                <div class="shop-product-price"><%= Number(p.price).toFixed(2) %> € <span class="shop-product-vat"><%= it.t.shopPage.vatLabel %></span></div>
               </div>
             </div>
           </a>

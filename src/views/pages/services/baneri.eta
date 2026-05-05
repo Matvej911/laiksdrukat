@@ -1,4 +1,7 @@
 <% layout('../../partials/layout', { bodyClass: 'page-baneri' }) %>
+<% const isRu = it.locale === 'ru' %>
+<% const servicePage = it.t.servicePage %>
+<% const contact = it.t.contact %>
 
 <!-- HERO -->
 <section class="bn-hero">
@@ -6,18 +9,18 @@
     <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="bn-hero-inner">
       <div class="bn-hero-copy">
-        <span class="bn-eyebrow">Pakalpojums</span>
-        <h1>Banneru izgatavošana un uzstādīšana</h1>
-        <p>Drukājam augstas kvalitātes bannerus gan iekštelpām, gan āra apstākļiem. Nodrošinām košas krāsas, izturīgus materiālus un skaistu rezultātu.</p>
+        <span class="bn-eyebrow"><%= isRu ? 'Услуга' : 'Pakalpojums' %></span>
+        <h1><%= it.service.title %></h1>
+        <p><%= it.service.intro %></p>
         <div class="bn-hero-actions">
-          <a href="#rollup" class="bn-btn-secondary">Roll-Up banneri</a>
-          <a href="#bn-contact" class="bn-btn-primary">Cenu pieprasījums</a>
+          <a href="#rollup" class="bn-btn-secondary"><%= isRu ? 'Roll-Up стенды' : 'Roll-Up banneri' %></a>
+          <a href="#bn-contact" class="bn-btn-primary"><%= servicePage.requestOffer %></a>
         </div>
         <div class="bn-hero-tags">
-          <span>PVC banneri</span>
+          <span><%= isRu ? 'PVC-баннеры' : 'PVC banneri' %></span>
           <span>Roll-Up</span>
-          <span>Lielformāta druka</span>
-          <span>Āra un iekštelpu</span>
+          <span><%= isRu ? 'Широкоформатная печать' : 'Lielformāta druka' %></span>
+          <span><%= isRu ? 'Для улицы и помещений' : 'Āra un iekštelpu' %></span>
         </div>
       </div>
       <div class="bn-hero-img">
@@ -39,34 +42,34 @@
   <div class="container">
     <div class="bn-pvc-inner">
       <div class="bn-pvc-copy">
-        <span class="bn-eyebrow-dark">PVC Banneri</span>
-        <h2>PVC Banneru drukas cenas</h2>
+        <span class="bn-eyebrow-dark"><%= isRu ? 'PVC-баннеры' : 'PVC Banneri' %></span>
+        <h2><%= isRu ? 'Цены на печать PVC-баннеров' : 'PVC Banneru drukas cenas' %></h2>
         <div class="bn-pvc-features">
           <div class="bn-pvc-feature">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Cenā iekļauts 440 g/m² laminēts PVC banneru materiāls
+            <%= isRu ? 'В стоимость включён ламинированный PVC-материал 440 г/м²' : 'Cenā iekļauts 440 g/m² laminēts PVC banneru materiāls' %>
           </div>
           <div class="bn-pvc-feature">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Banneram veikta pilna apstrāde ar metāla gredzeniem pa visu perimetru ērtai stiprināšanai
+            <%= isRu ? 'Баннер полностью обработан и снабжён металлическими люверсами по всему периметру для удобного крепления' : 'Banneram veikta pilna apstrāde ar metāla gredzeniem pa visu perimetru ērtai stiprināšanai' %>
           </div>
           <div class="bn-pvc-feature">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Maketēšana un sagatavošana drukai — 25 EUR/h*
+            <%= isRu ? 'Верстка и подготовка к печати — 25 EUR/ч*' : 'Maketēšana un sagatavošana drukai — 25 EUR/h*' %>
           </div>
           <div class="bn-pvc-note">
-            * Maketēšanas cenas ir atkarīgas no iesniegtajiem materiāliem, prasībām un apjomiem.
+            <%= isRu ? '* Стоимость верстки зависит от предоставленных материалов, требований и объёма работ.' : '* Maketēšanas cenas ir atkarīgas no iesniegtajiem materiāliem, prasībām un apjomiem.' %>
           </div>
         </div>
-        <a href="#bn-contact" class="bn-btn-primary" style="margin-top:24px;display:inline-flex;">Pieprasīt cenu</a>
+        <a href="#bn-contact" class="bn-btn-primary" style="margin-top:24px;display:inline-flex;"><%= servicePage.requestOffer %></a>
       </div>
 
       <div class="bn-pvc-table-wrap">
         <table class="bn-table">
           <thead>
             <tr>
-              <th>Laukums kv.m.</th>
-              <th>Cena EUR bez PVN</th>
+              <th><%= isRu ? 'Площадь, м²' : 'Laukums kv.m.' %></th>
+              <th><%= isRu ? 'Цена EUR без НДС' : 'Cena EUR bez PVN' %></th>
             </tr>
           </thead>
           <tbody>
@@ -77,7 +80,7 @@
             <tr><td>50+</td><td><strong>8,50</strong></td></tr>
           </tbody>
         </table>
-        <p class="bn-table-note">Visas cenas norādītas EUR bez PVN. Cena norādīta par 1 kv.m.</p>
+        <p class="bn-table-note"><%= isRu ? 'Все цены указаны в EUR без НДС. Цена указана за 1 м².' : 'Visas cenas norādītas EUR bez PVN. Cena norādīta par 1 kv.m.' %></p>
       </div>
     </div>
   </div>
@@ -90,30 +93,30 @@
     <div class="container">
       <div class="bn-rollup-inner">
         <div class="bn-rollup-copy">
-          <span class="bn-eyebrow-yellow">Roll-Up Banneri</span>
-          <h2>Roll-up banneri</h2>
-          <p>Piedāvājam roll-up banneru izgatavošanu izstādēm, prezentācijām, pasākumiem un tirdzniecības vietām. Kompakts un viegli uzstādāms reklāmas risinājums, kas nodrošina ērtu transportēšanu.</p>
+          <span class="bn-eyebrow-yellow"><%= isRu ? 'Roll-Up стенды' : 'Roll-Up Banneri' %></span>
+          <h2><%= isRu ? 'Roll-Up стенды' : 'Roll-up banneri' %></h2>
+          <p><%= isRu ? 'Изготавливаем roll-up стенды для выставок, презентаций, мероприятий и торговых точек. Это компактное и простое в установке рекламное решение, удобное для перевозки.' : 'Piedāvājam roll-up banneru izgatavošanu izstādēm, prezentācijām, pasākumiem un tirdzniecības vietām. Kompakts un viegli uzstādāms reklāmas risinājums, kas nodrošina ērtu transportēšanu.' %></p>
           <div class="bn-rollup-features">
-            <h4>Ko piedāvājam:</h4>
+            <h4><%= isRu ? 'Что входит:' : 'Ko piedāvājam:' %></h4>
             <div class="bn-rollup-feature">
               <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-              Dažādus izmērus
+              <%= isRu ? 'Разные размеры' : 'Dažādus izmērus' %>
             </div>
             <div class="bn-rollup-feature">
               <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-              Dizaina sagatavošanu vai faila pārbaudi
+              <%= isRu ? 'Подготовку дизайна или проверку готового файла' : 'Dizaina sagatavošanu vai faila pārbaudi' %>
             </div>
             <div class="bn-rollup-feature">
               <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-              Soma ērtai pārnēsāšanai iekļauta komplektā
+              <%= isRu ? 'Сумка для переноски входит в комплект' : 'Soma ērtai pārnēsāšanai iekļauta komplektā' %>
             </div>
             <div class="bn-rollup-feature">
               <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-              Ātru izgatavošanu
+              <%= isRu ? 'Быстрое изготовление' : 'Ātru izgatavošanu' %>
             </div>
             <div class="bn-rollup-feature">
               <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-              Esošā Roll-Up dizaina nomaiņa — 15 EUR
+              <%= isRu ? 'Замена существующего Roll-Up дизайна — 15 EUR' : 'Esošā Roll-Up dizaina nomaiņa — 15 EUR' %>
             </div>
           </div>
         </div>
@@ -124,30 +127,30 @@
 
       <!-- ROLLUP TABLE -->
       <div class="bn-rollup-table-section">
-        <h3>Roll-Up druka, cenas</h3>
+        <h3><%= isRu ? 'Печать Roll-Up, цены' : 'Roll-Up druka, cenas' %></h3>
         <table class="bn-table bn-table-dark">
           <thead>
             <tr>
-              <th>Tips</th>
-              <th>Izmērs (cm)</th>
-              <th>Cena EUR bez PVN</th>
+              <th><%= isRu ? 'Тип' : 'Tips' %></th>
+              <th><%= isRu ? 'Размер (см)' : 'Izmērs (cm)' %></th>
+              <th><%= isRu ? 'Цена EUR без НДС' : 'Cena EUR bez PVN' %></th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>Ar mehānismu</td><td>85 × 200</td><td><strong>68,00</strong></td></tr>
-            <tr><td>Ar mehānismu</td><td>100 × 200</td><td><strong>73,00</strong></td></tr>
-            <tr><td>Ar mehānismu</td><td>120 × 200</td><td><strong>98,00</strong></td></tr>
-            <tr><td>Ar mehānismu</td><td>150 × 200</td><td><strong>118,00</strong></td></tr>
-            <tr><td>Bez mehānisma</td><td>85 × 200</td><td><strong>32,00</strong></td></tr>
-            <tr><td>Bez mehānisma</td><td>100 × 200</td><td><strong>35,00</strong></td></tr>
-            <tr><td>Bez mehānisma</td><td>120 × 200</td><td><strong>62,00</strong></td></tr>
-            <tr><td>Bez mehānisma</td><td>150 × 200</td><td><strong>68,00</strong></td></tr>
+            <tr><td><%= isRu ? 'С механизмом' : 'Ar mehānismu' %></td><td>85 × 200</td><td><strong>68,00</strong></td></tr>
+            <tr><td><%= isRu ? 'С механизмом' : 'Ar mehānismu' %></td><td>100 × 200</td><td><strong>73,00</strong></td></tr>
+            <tr><td><%= isRu ? 'С механизмом' : 'Ar mehānismu' %></td><td>120 × 200</td><td><strong>98,00</strong></td></tr>
+            <tr><td><%= isRu ? 'С механизмом' : 'Ar mehānismu' %></td><td>150 × 200</td><td><strong>118,00</strong></td></tr>
+            <tr><td><%= isRu ? 'Без механизма' : 'Bez mehānisma' %></td><td>85 × 200</td><td><strong>32,00</strong></td></tr>
+            <tr><td><%= isRu ? 'Без механизма' : 'Bez mehānisma' %></td><td>100 × 200</td><td><strong>35,00</strong></td></tr>
+            <tr><td><%= isRu ? 'Без механизма' : 'Bez mehānisma' %></td><td>120 × 200</td><td><strong>62,00</strong></td></tr>
+            <tr><td><%= isRu ? 'Без механизма' : 'Bez mehānisma' %></td><td>150 × 200</td><td><strong>68,00</strong></td></tr>
           </tbody>
         </table>
         <div class="bn-table-notes">
-          <span>Visas cenas norādītas EUR bez PVN</span>
-          <span>Cena norādīta par 1 gab.</span>
-          <span>Maketēšana un sagatavošana drukai — 25 EUR/h*</span>
+          <span><%= isRu ? 'Все цены указаны в EUR без НДС' : 'Visas cenas norādītas EUR bez PVN' %></span>
+          <span><%= isRu ? 'Цена указана за 1 шт.' : 'Cena norādīta par 1 gab.' %></span>
+          <span><%= isRu ? 'Верстка и подготовка к печати — 25 EUR/ч*' : 'Maketēšana un sagatavošana drukai — 25 EUR/h*' %></span>
         </div>
       </div>
     </div>
@@ -164,30 +167,30 @@
 <section class="bn-why">
   <div class="container">
     <div class="bn-section-header center">
-      <span class="bn-eyebrow-dark">Kāpēc izvēlēties mūs</span>
-      <h2>Mūsu priekšrocības</h2>
+      <span class="bn-eyebrow-dark"><%= isRu ? 'Почему выбирают нас' : 'Kāpēc izvēlēties mūs' %></span>
+      <h2><%= isRu ? 'Наши преимущества' : 'Mūsu priekšrocības' %></h2>
     </div>
     <div class="bn-why-grid">
       <div class="bn-why-card">
         <div class="bn-why-icon">
           <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
-        <h4>Augsta kvalitāte</h4>
-        <p>440 g/m² PVC materiāls ar UV izturīgu druku un metāla gredzenīšiem.</p>
+        <h4><%= isRu ? 'Высокое качество' : 'Augsta kvalitāte' %></h4>
+        <p><%= isRu ? 'PVC-материал 440 г/м² с устойчивой к UV печатью и металлическими люверсами.' : '440 g/m² PVC materiāls ar UV izturīgu druku un metāla gredzenīšiem.' %></p>
       </div>
       <div class="bn-why-card">
         <div class="bn-why-icon">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
-        <h4>Ātra izpilde</h4>
-        <p>Standarta pasūtījumi gatavi 2–3 darba dienās pēc maketa apstiprināšanas.</p>
+        <h4><%= isRu ? 'Быстрое выполнение' : 'Ātra izpilde' %></h4>
+        <p><%= isRu ? 'Стандартные заказы готовы за 2–3 рабочих дня после утверждения макета.' : 'Standarta pasūtījumi gatavi 2–3 darba dienās pēc maketa apstiprināšanas.' %></p>
       </div>
       <div class="bn-why-card">
         <div class="bn-why-icon">
           <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </div>
-        <h4>Dizaina palīdzība</h4>
-        <p>Palīdzam sagatavot maketu no nulles vai pārbaudām jūsu failu drukai.</p>
+        <h4><%= isRu ? 'Помощь с дизайном' : 'Dizaina palīdzība' %></h4>
+        <p><%= isRu ? 'Помогаем подготовить макет с нуля или проверяем ваш файл перед печатью.' : 'Palīdzam sagatavot maketu no nulles vai pārbaudām jūsu failu drukai.' %></p>
       </div>
     </div>
   </div>
@@ -198,25 +201,25 @@
   <div class="container">
     <div class="bn-contact-inner">
       <div class="bn-contact-copy">
-        <span class="bn-eyebrow-dark">Sazināties</span>
-        <h2>Saņem piedāvājumu</h2>
-        <p>Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.</p>
+        <span class="bn-eyebrow-dark"><%= isRu ? 'Связаться с нами' : 'Sazināties' %></span>
+        <h2><%= servicePage.contactTitle %></h2>
+        <p><%= isRu ? 'Заполните форму, и мы свяжемся с вами, чтобы обсудить формат баннера, тираж и подготовить предложение.' : 'Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.' %></p>
         <div class="bn-contact-tips">
           <div class="bn-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Norādiet bannera izmēru un tirāžu
+            <%= isRu ? 'Укажите размер баннера и тираж' : 'Norādiet bannera izmēru un tirāžu' %>
           </div>
           <div class="bn-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Vai nepieciešams PVC vai Roll-Up banneris
+            <%= isRu ? 'Уточните, нужен PVC-баннер или Roll-Up стенд' : 'Vai nepieciešams PVC vai Roll-Up banneris' %>
           </div>
           <div class="bn-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Vai ir gatavs dizains vai nepieciešama izstrāde
+            <%= isRu ? 'Есть ли готовый дизайн или нужна разработка' : 'Vai ir gatavs dizains vai nepieciešama izstrāde' %>
           </div>
           <div class="bn-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Pievienojiet dizaina failu, ja ir
+            <%= isRu ? 'Прикрепите файл дизайна, если он уже есть' : 'Pievienojiet dizaina failu, ja ir' %>
           </div>
         </div>
         <div class="bn-contact-phones">
@@ -235,8 +238,7 @@
         <div class="vr-success">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#255f31" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <div>
-            <strong>Ziņa veiksmīgi nosūtīta!</strong>
-            <span>Sazināsimies ar jums pēc iespējas ātrāk.</span>
+            <strong><%= servicePage.contactSuccess %></strong>
           </div>
         </div>
       <% } else { %>
@@ -246,41 +248,41 @@
             <%= it.error %>
           </div>
         <% } %>
-        <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="bn-form">
+        <form action="<%= it.localizedPath('/pakalpojumi-kontakts') %>" method="POST" enctype="multipart/form-data" class="bn-form">
           <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-          <input type="hidden" name="returnTo" value="/baneri/">
+          <input type="hidden" name="returnTo" value="<%= it.localizedPath(it.service.path) %>">
           <div class="bn-form-row">
             <div class="form-group">
-              <label class="bn-label">Vārds <span class="required">*</span></label>
-              <input type="text" name="name" class="bn-input" required placeholder="Jānis Bērziņš">
+              <label class="bn-label"><%= contact.name %> <span class="required">*</span></label>
+              <input type="text" name="name" class="bn-input" required placeholder="<%= isRu ? 'Иван Петров' : 'Jānis Bērziņš' %>">
             </div>
             <div class="form-group">
-              <label class="bn-label">E-pasts <span class="required">*</span></label>
-              <input type="email" name="email" class="bn-input" required placeholder="janis@example.lv">
+              <label class="bn-label"><%= contact.email %> <span class="required">*</span></label>
+              <input type="email" name="email" class="bn-input" required placeholder="<%= isRu ? 'ivan@example.lv' : 'janis@example.lv' %>">
             </div>
           </div>
           <div class="form-group">
-            <label class="bn-label">Tālrunis</label>
+            <label class="bn-label"><%= contact.phone %></label>
             <input type="tel" name="phone" class="bn-input" placeholder="+371 2X XXX XXX">
           </div>
           <div class="form-group">
-            <label class="bn-label">Jūsu ziņa <span class="required">*</span></label>
-            <textarea name="message" class="bn-input bn-textarea" required maxlength="180" data-message-input placeholder="Bannera izmērs, tirāža, vai ir dizains..."></textarea>
+            <label class="bn-label"><%= contact.message %> <span class="required">*</span></label>
+            <textarea name="message" class="bn-input bn-textarea" required maxlength="180" data-message-input placeholder="<%= isRu ? 'Размер баннера, тираж, нужен ли дизайн...' : 'Bannera izmērs, tirāža, vai ir dizains...' %>"></textarea>
             <div style="text-align:right;font-size:12px;color:#a099cc;margin-top:4px;"><span data-message-count>0</span> / 180</div>
           </div>
           <div class="form-group">
-            <label class="bn-label">Dizaina fails</label>
+            <label class="bn-label"><%= contact.attachment %></label>
             <label class="upload-dropzone">
               <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
               <span class="upload-dropzone-copy">
-                <strong>Pievienot dizaina failu</strong>
-                <small data-file-label>PDF, AI, EPS, JPG, PNG, SVG</small>
+                <strong><%= contact.uploadTitle %></strong>
+                <small data-file-label><%= contact.uploadHint %></small>
               </span>
             </label>
           </div>
           <button type="submit" class="bn-btn-primary bn-btn-full">
             <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Nosūtīt pieprasījumu
+            <%= servicePage.contactSubmit %>
           </button>
         </form>
       <% } %>

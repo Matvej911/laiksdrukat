@@ -12,7 +12,7 @@
         <p><%= it.service.intro %></p>
         <div class="hero-actions">
           <a href="<%= it.localizedPath('/kontakti/') %>" class="btn btn-primary"><%= page.requestOffer %></a>
-          <a href="/veikals/" class="btn btn-outline"><%= page.viewShop %></a>
+          <a href="<%= it.localizedPath('/veikals/') %>" class="btn btn-outline"><%= page.viewShop %></a>
         </div>
       </div>
 

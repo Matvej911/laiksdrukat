@@ -1,4 +1,6 @@
 <% layout('../../partials/layout', { bodyClass: 'page-zimogi' }) %>
+<% const isRu = it.locale === 'ru' %>
+<% const servicePage = it.t.servicePage %>
 
 <!-- HERO -->
 <section class="zimogi-hero">
@@ -6,27 +8,27 @@
     <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="zimogi-hero-inner">
       <div class="zimogi-hero-copy">
-        <span class="zimogi-eyebrow">Pakalpojums</span>
-        <h1>Zīmogu izgatavošana Jelgavā</h1>
-        <p>Izgatavojam individuālus zīmogus uzņēmumiem, iestādēm un privātpersonām. Katrs zīmogs izstrādāts pēc klienta rekvizītiem vai dizaina, nodrošinot kvalitatīvu nospiedumu.</p>
+        <span class="zimogi-eyebrow"><%= isRu ? 'Услуга' : 'Pakalpojums' %></span>
+        <h1><%= it.service.title %></h1>
+        <p><%= it.service.intro %></p>
         <div class="zimogi-hero-actions">
-          <a href="/kontakti/" class="zimogi-btn-primary">Pieprasīt piedāvājumu</a>
-          <a href="/kategorija/zimogi/" class="zimogi-btn-outline">Skatīt veikalu</a>
+          <a href="<%= it.localizedPath('/kontakti/') %>" class="zimogi-btn-primary"><%= servicePage.requestOffer %></a>
+          <a href="<%= it.localizedPath('/kategorija/zimogi/') %>" class="zimogi-btn-outline"><%= isRu ? 'Смотреть магазин' : 'Skatīt veikalu' %></a>
         </div>
         <div class="zimogi-hero-stats">
           <div class="zimogi-stat">
             <span class="zimogi-stat-num">2–4</span>
-            <span class="zimogi-stat-label">darba dienas</span>
+              <span class="zimogi-stat-label"><%= isRu ? 'рабочих дня' : 'darba dienas' %></span>
           </div>
           <div class="zimogi-stat-divider"></div>
           <div class="zimogi-stat">
             <span class="zimogi-stat-num">100%</span>
-            <span class="zimogi-stat-label">pielāgots</span>
+              <span class="zimogi-stat-label"><%= isRu ? 'под заказ' : 'pielāgots' %></span>
           </div>
           <div class="zimogi-stat-divider"></div>
           <div class="zimogi-stat">
             <span class="zimogi-stat-num">COLOP</span>
-            <span class="zimogi-stat-label">mehānismi</span>
+              <span class="zimogi-stat-label"><%= isRu ? 'механизмы' : 'mehānismi' %></span>
           </div>
         </div>
       </div>
@@ -56,32 +58,32 @@
         <div class="zimogi-feature-icon">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
-        <h3>Izgatavošanas laiks</h3>
-        <p>Zīmogus izgatavojam 2–4 darba dienu laikā pēc maketa apstiprināšanas. Steidzamos gadījumos iespējama paātrināta izpilde.</p>
+        <h3><%= isRu ? 'Срок изготовления' : 'Izgatavošanas laiks' %></h3>
+        <p><%= isRu ? 'Изготавливаем штампы за 2–4 рабочих дня после утверждения макета. В срочных случаях возможен ускоренный вариант.' : 'Zīmogus izgatavojam 2–4 darba dienu laikā pēc maketa apstiprināšanas. Steidzamos gadījumos iespējama paātrināta izpilde.' %></p>
       </div>
 
       <div class="zimogi-feature">
         <div class="zimogi-feature-icon">
           <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </div>
-        <h3>Individuāls dizains</h3>
-        <p>Katrs zīmogs tiek izstrādāts pēc Jūsu vajadzībām: logo, uzņēmuma rekvizīti, grafiskie elementi, paraksti vai jebkuri teksti.</p>
+        <h3><%= isRu ? 'Индивидуальный дизайн' : 'Individuāls dizains' %></h3>
+        <p><%= isRu ? 'Каждый штамп разрабатывается под ваши задачи: логотип, реквизиты компании, графические элементы, подписи или любой нужный текст.' : 'Katrs zīmogs tiek izstrādāts pēc Jūsu vajadzībām: logo, uzņēmuma rekvizīti, grafiskie elementi, paraksti vai jebkuri teksti.' %></p>
       </div>
 
       <div class="zimogi-feature">
         <div class="zimogi-feature-icon">
           <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
-        <h3>Kvalitāte un mehānismi</h3>
-        <p>Izgatavojam zīmogus tikai no kvalitatīviem COLOP mehānismiem. Pieejamas tintes krāsas: melna, zila, sarkana, zaļa un violeta.</p>
+        <h3><%= isRu ? 'Качество и механизмы' : 'Kvalitāte un mehānismi' %></h3>
+        <p><%= isRu ? 'Используем только качественные механизмы COLOP. Доступны чёрная, синяя, красная, зелёная и фиолетовая краски.' : 'Izgatavojam zīmogus tikai no kvalitatīviem COLOP mehānismiem. Pieejamas tintes krāsas: melna, zila, sarkana, zaļa un violeta.' %></p>
       </div>
 
       <div class="zimogi-feature">
         <div class="zimogi-feature-icon">
           <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
-        <h3>Saņemšana Jelgavā</h3>
-        <p>Saņemiet zīmogu mūsu birojā Asteru iela 16A, Jelgavā vai pasūtiet piegādi uz pakomātu visā Latvijā.</p>
+        <h3><%= isRu ? 'Получение в Елгаве' : 'Saņemšana Jelgavā' %></h3>
+        <p><%= isRu ? 'Заберите штамп в нашем офисе на Asteru iela 16A в Елгаве или закажите доставку в пакомат по всей Латвии.' : 'Saņemiet zīmogu mūsu birojā Asteru iela 16A, Jelgavā vai pasūtiet piegādi uz pakomātu visā Latvijā.' %></p>
       </div>
 
     </div>
@@ -92,32 +94,32 @@
 <section class="zimogi-process">
   <div class="container">
     <div class="zimogi-section-header">
-      <span class="zimogi-eyebrow-dark">Kā tas notiek</span>
-      <h2>Pasūtīšanas process</h2>
+      <span class="zimogi-eyebrow-dark"><%= isRu ? 'Как это работает' : 'Kā tas notiek' %></span>
+      <h2><%= isRu ? 'Процесс заказа' : 'Pasūtīšanas process' %></h2>
     </div>
     <div class="zimogi-steps">
       <div class="zimogi-step">
         <div class="zimogi-step-num">1</div>
-        <h4>Izvēlieties zīmogu</h4>
-        <p>Izvēlieties vajadzīgo modeli no mūsu e-veikala vai sazinieties, lai apspriestu individuālu risinājumu.</p>
+        <h4><%= isRu ? 'Выберите штамп' : 'Izvēlieties zīmogu' %></h4>
+        <p><%= isRu ? 'Выберите подходящую модель в нашем интернет-магазине или напишите нам, если нужен индивидуальный вариант.' : 'Izvēlieties vajadzīgo modeli no mūsu e-veikala vai sazinieties, lai apspriestu individuālu risinājumu.' %></p>
       </div>
       <div class="zimogi-step-arrow">→</div>
       <div class="zimogi-step">
         <div class="zimogi-step-num">2</div>
-        <h4>Nosūtiet tekstu</h4>
-        <p>Nosūtiet zīmoga tekstu, logo vai dizaina failu. Sagatavosim maketu un nosūtīsim apstiprināšanai.</p>
+        <h4><%= isRu ? 'Отправьте текст' : 'Nosūtiet tekstu' %></h4>
+        <p><%= isRu ? 'Пришлите текст для штампа, логотип или дизайн-файл. Мы подготовим макет и отправим его вам на согласование.' : 'Nosūtiet zīmoga tekstu, logo vai dizaina failu. Sagatavosim maketu un nosūtīsim apstiprināšanai.' %></p>
       </div>
       <div class="zimogi-step-arrow">→</div>
       <div class="zimogi-step">
         <div class="zimogi-step-num">3</div>
-        <h4>Apstipriniet maketu</h4>
-        <p>Pēc maketa apstiprināšanas uzsākam ražošanu. Zīmogs gatavs 2–4 darba dienās.</p>
+        <h4><%= isRu ? 'Подтвердите макет' : 'Apstipriniet maketu' %></h4>
+        <p><%= isRu ? 'После утверждения макета запускаем производство. Обычно штамп готов за 2–4 рабочих дня.' : 'Pēc maketa apstiprināšanas uzsākam ražošanu. Zīmogs gatavs 2–4 darba dienās.' %></p>
       </div>
       <div class="zimogi-step-arrow">→</div>
       <div class="zimogi-step">
         <div class="zimogi-step-num">4</div>
-        <h4>Saņemiet zīmogu</h4>
-        <p>Saņemiet gatavo zīmogu birojā vai izmantojiet piegādes pakalpojumu uz jebkuru pakomātu.</p>
+        <h4><%= isRu ? 'Получите штамп' : 'Saņemiet zīmogu' %></h4>
+        <p><%= isRu ? 'Заберите готовый штамп в офисе или оформите доставку в удобный пакомат.' : 'Saņemiet gatavo zīmogu birojā vai izmantojiet piegādes pakalpojumu uz jebkuru pakomātu.' %></p>
       </div>
     </div>
   </div>
@@ -127,9 +129,9 @@
 <section class="zimogi-products">
   <div class="container">
     <div class="zimogi-section-header">
-      <span class="zimogi-eyebrow-dark">E-veikals</span>
-      <h2>Populārākās preces</h2>
-      <p>Izvēlieties no mūsu plašā COLOP zīmogu klāsta</p>
+      <span class="zimogi-eyebrow-dark"><%= isRu ? 'Интернет-магазин' : 'E-veikals' %></span>
+      <h2><%= isRu ? 'Популярные товары' : 'Populārākās preces' %></h2>
+      <p><%= isRu ? 'Выберите подходящую модель из нашего ассортимента штампов COLOP' : 'Izvēlieties no mūsu plašā COLOP zīmogu klāsta' %></p>
     </div>
 
     <div class="products-slider-wrapper">
@@ -140,7 +142,7 @@
         <div class="products-slider">
           <% for (const p of it.products) { %>
           <article class="product-card">
-            <a href="/veikals/<%= p.slug %>/">
+            <a href="<%= it.localizedPath('/veikals/' + p.slug + '/') %>">
               <div class="product-img">
                 <% if (p.image) { %>
                     <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy" width="800" height="800">
@@ -153,7 +155,7 @@
                 <div class="product-name"><%= p.name %></div>
                 <div class="product-price">
                   <%= Number(p.price).toFixed(2) %> €
-                  <span class="product-price-vat">+ PVN</span>
+          <span class="product-price-vat"><%= isRu ? '+ НДС' : '+ PVN' %></span>
                 </div>
               </div>
             </a>
@@ -167,7 +169,7 @@
     </div>
 
     <div class="zimogi-products-cta">
-      <a href="/kategorija/zimogi/" class="zimogi-btn-primary">Skatīt visus zīmogus</a>
+        <a href="<%= it.localizedPath('/kategorija/zimogi/') %>" class="zimogi-btn-primary"><%= isRu ? 'Смотреть все штампы' : 'Skatīt visus zīmogus' %></a>
     </div>
   </div>
 </section>
@@ -177,70 +179,70 @@
   <div class="container">
     <div class="zimogi-faq-inner">
       <div class="zimogi-faq-sidebar">
-        <span class="zimogi-eyebrow-dark">FAQ</span>
-        <h2>Biežāk uzdotie jautājumi</h2>
-        <p>Neatradāt atbildi? Sazinieties ar mums.</p>
-        <a href="/kontakti/" class="zimogi-btn-primary" style="margin-top:20px;display:inline-flex;">Jautāt</a>
+      <span class="zimogi-eyebrow-dark">FAQ</span>
+      <h2><%= isRu ? 'Часто задаваемые вопросы' : 'Biežāk uzdotie jautājumi' %></h2>
+      <p><%= isRu ? 'Не нашли ответ? Напишите нам.' : 'Neatradāt atbildi? Sazinieties ar mums.' %></p>
+        <a href="<%= it.localizedPath('/kontakti/') %>" class="zimogi-btn-primary" style="margin-top:20px;display:inline-flex;"><%= servicePage.requestOffer %></a>
       </div>
       <div class="zimogi-faq-list">
 
         <div class="zimogi-faq-item">
           <button class="zimogi-faq-q" onclick="toggleFaq(this)">
-            Cik ātri var izgatavot zīmogu?
+            <%= isRu ? 'Как быстро можно изготовить штамп?' : 'Cik ātri var izgatavot zīmogu?' %>
             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="zimogi-faq-a">
-            <p>Parasti 2–4 darba dienu laikā pēc maketa apstiprināšanas. Steidzamos gadījumos iespējama ātrāka izpilde — sazinieties ar mums.</p>
+            <p><%= isRu ? 'Обычно за 2–4 рабочих дня после утверждения макета. Если нужно срочно, напишите нам — подскажем возможный срок.' : 'Parasti 2–4 darba dienu laikā pēc maketa apstiprināšanas. Steidzamos gadījumos iespējama ātrāka izpilde — sazinieties ar mums.' %></p>
           </div>
         </div>
 
         <div class="zimogi-faq-item">
           <button class="zimogi-faq-q" onclick="toggleFaq(this)">
-            Vai var pasūtīt tikai gumijas daļu?
+            <%= isRu ? 'Можно ли заказать только резиновую часть?' : 'Vai var pasūtīt tikai gumijas daļu?' %>
             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="zimogi-faq-a">
-            <p>Jā, iespējama arī tikai gumijas daļas atjaunošana esošam mehānismam. Sazinieties ar mums, norādot zīmoga modeli.</p>
+            <p><%= isRu ? 'Да, можно заменить только резиновую часть существующего механизма. Напишите нам и укажите модель штампа.' : 'Jā, iespējama arī tikai gumijas daļas atjaunošana esošam mehānismam. Sazinieties ar mums, norādot zīmoga modeli.' %></p>
           </div>
         </div>
 
         <div class="zimogi-faq-item">
           <button class="zimogi-faq-q" onclick="toggleFaq(this)">
-            Vai nepieciešams uzņēmuma reģistrācijas numurs?
+            <%= isRu ? 'Нужен ли регистрационный номер компании?' : 'Vai nepieciešams uzņēmuma reģistrācijas numurs?' %>
             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="zimogi-faq-a">
-            <p>Jā, oficiāliem uzņēmumu zīmogiem jānorāda rekvizīti. Privātpersonām reģistrācijas numurs nav nepieciešams.</p>
+            <p><%= isRu ? 'Да, для официальных штампов компании нужны реквизиты. Для частных лиц регистрационный номер не требуется.' : 'Jā, oficiāliem uzņēmumu zīmogiem jānorāda rekvizīti. Privātpersonām reģistrācijas numurs nav nepieciešams.' %></p>
           </div>
         </div>
 
         <div class="zimogi-faq-item">
           <button class="zimogi-faq-q" onclick="toggleFaq(this)">
-            Kādas tintes krāsas ir pieejamas?
+            <%= isRu ? 'Какие цвета чернил доступны?' : 'Kādas tintes krāsas ir pieejamas?' %>
             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="zimogi-faq-a">
-            <p>Piedāvājam piecas krāsas: melna, zila, sarkana, zaļa un violeta. Visas COLOP tintes ir augstas kvalitātes un ilgmūžīgas.</p>
+            <p><%= isRu ? 'Доступны пять цветов: чёрный, синий, красный, зелёный и фиолетовый. Все краски COLOP качественные и долговечные.' : 'Piedāvājam piecas krāsas: melna, zila, sarkana, zaļa un violeta. Visas COLOP tintes ir augstas kvalitātes un ilgmūžīgas.' %></p>
           </div>
         </div>
 
         <div class="zimogi-faq-item">
           <button class="zimogi-faq-q" onclick="toggleFaq(this)">
-            Vai var pasūtīt zīmogu ar logo?
+            <%= isRu ? 'Можно ли заказать штамп с логотипом?' : 'Vai var pasūtīt zīmogu ar logo?' %>
             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="zimogi-faq-a">
-            <p>Jā, logo, grafiskos elementus un ilustrācijas var iekļaut zīmoga dizainā. Nosūtiet failu PNG, SVG vai AI formātā.</p>
+            <p><%= isRu ? 'Да, в макет можно включить логотип, графические элементы и иллюстрации. Отправьте файл в формате PNG, SVG или AI.' : 'Jā, logo, grafiskos elementus un ilustrācijas var iekļaut zīmoga dizainā. Nosūtiet failu PNG, SVG vai AI formātā.' %></p>
           </div>
         </div>
 
         <div class="zimogi-faq-item">
           <button class="zimogi-faq-q" onclick="toggleFaq(this)">
-            Kā notiek piegāde?
+            <%= isRu ? 'Как проходит доставка?' : 'Kā notiek piegāde?' %>
             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="zimogi-faq-a">
-            <p>Zīmogu var saņemt mūsu birojā Asteru iela 16A, Jelgavā, vai piegādāt uz Omniva pakomātu par papildu maksu.</p>
+            <p><%= isRu ? 'Штамп можно забрать в нашем офисе на Asteru iela 16A в Елгаве или оформить доставку в пакомат Omniva за дополнительную плату.' : 'Zīmogu var saņemt mūsu birojā Asteru iela 16A, Jelgavā, vai piegādāt uz Omniva pakomātu par papildu maksu.' %></p>
           </div>
         </div>
 
@@ -254,16 +256,16 @@
   <div class="container">
     <div class="zimogi-cta-inner">
       <div>
-        <h2>Gatavi pasūtīt zīmogu?</h2>
-        <p>Sazinieties ar mums vai izvēlieties modeli no veikala un aizpildiet pasūtījumu tiešsaistē.</p>
+        <h2><%= isRu ? 'Готовы заказать штамп?' : 'Gatavi pasūtīt zīmogu?' %></h2>
+        <p><%= isRu ? 'Свяжитесь с нами или выберите модель в магазине и оформите заказ онлайн.' : 'Sazinieties ar mums vai izvēlieties modeli no veikala un aizpildiet pasūtījumu tiešsaistē.' %></p>
       </div>
       <div class="zimogi-cta-actions">
         <a href="tel:<%= it.site.contact.phones[0].href %>" class="zimogi-cta-pill">
           <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           <%= it.site.contact.phones[0].label %>
         </a>
-        <a href="/kontakti/" class="zimogi-btn-primary">Nosūtīt pieprasījumu</a>
-        <a href="/kategorija/zimogi/" class="zimogi-btn-outline">E-veikals</a>
+        <a href="<%= it.localizedPath('/kontakti/') %>" class="zimogi-btn-primary"><%= servicePage.contactSubmit %></a>
+        <a href="<%= it.localizedPath('/kategorija/zimogi/') %>" class="zimogi-btn-outline"><%= isRu ? 'Интернет-магазин' : 'E-veikals' %></a>
       </div>
     </div>
   </div>

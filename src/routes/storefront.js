@@ -30,7 +30,7 @@ const CONTACT_RATE_LIMIT_MAX = 5
 const HOME_CACHE_TTL_MS = 60 * 1000
 const contactAttempts = new Map()
 const currentYear = new Date().getFullYear()
-const lvServiceTemplates = {
+const serviceTemplates = {
   '/zimogs/': {
     page: 'pages/services/zimogi',
     title: 'Zīmogu izgatavošana Jelgavā⚡Ātra izgatavošana | Laiks Drukāt',
@@ -480,16 +480,28 @@ async function storefrontRoutes(fastify, opts = {}) {
         return reply.redirect(localizedPath(service.path), 301)
       }
 
-      if (locale === 'ru') {
-        const success = request.session.contactFormSent === true
-        const error = request.session.contactFormError || null
-        delete request.session.contactFormSent
-        delete request.session.contactFormError
+      const success = request.session.contactFormSent === true
+      const error = request.session.contactFormError || null
+      delete request.session.contactFormSent
+      delete request.session.contactFormError
+      const viewConfig = serviceTemplates[service.path]
 
-        return reply.publicView('pages/services/generic', {
-          title: `${service.title} | Laiks Drukāt`,
+      if (service.path === '/zimogs/') {
+        const products = await fastify.db.product.findMany({
+          where: {
+            active: true,
+            featured: true,
+            category: { slug: 'zimogi' },
+          },
+          select: productCardSelect,
+          orderBy: { sortOrder: 'asc' },
+        })
+
+        return reply.publicView('pages/services/zimogi', {
+          title: locale === 'ru' ? `${service.title} | Laiks Drukāt` : `Zīmogu izgatavošana Jelgavā⚡Ātra izgatavošana | Laiks Drukāt`,
           description: service.teaser,
           service,
+          products,
           cart: fastify.getCart(request),
           success,
           error,
@@ -497,6 +509,7 @@ async function storefrontRoutes(fastify, opts = {}) {
           breadcrumbs,
           locale,
           seoImage: service.heroImage || site.meta.defaultShareImage,
+          seoType: 'website',
           structuredData: appendStructuredData({
             '@context': 'https://schema.org',
             '@type': 'Service',
@@ -516,53 +529,9 @@ async function storefrontRoutes(fastify, opts = {}) {
         })
       }
 
-      if (service.path === '/zimogs/') {
-        const products = await fastify.db.product.findMany({
-          where: {
-            active: true,
-            featured: true,
-            category: { slug: 'zimogi' },
-          },
-          select: productCardSelect,
-          orderBy: { sortOrder: 'asc' },
-        })
-
-        return reply.publicView('pages/services/zimogi', {
-          title: `Zīmogu izgatavošana Jelgavā⚡Ātra izgatavošana | Laiks Drukāt`,
-          description: service.teaser,
-          service,
-          products,
-          cart: fastify.getCart(request),
-          site,
-          breadcrumbs,
-          seoImage: service.heroImage || site.meta.defaultShareImage,
-          seoType: 'website',
-          structuredData: appendStructuredData({
-            '@context': 'https://schema.org',
-            '@type': 'Service',
-            name: service.title,
-            description: service.teaser,
-            serviceType: service.title,
-            areaServed: 'Latvia',
-            provider: {
-              '@type': 'Organization',
-              name: site.company.name,
-              url: `${baseUrl}/`,
-            },
-            image: toAbsoluteUrl(baseUrl, service.heroImage || site.meta.defaultShareImage),
-            url: `${baseUrl}${service.path}`,
-          }, breadcrumbSchema),
-        })
-      }
-      const success = request.session.contactFormSent === true
-      const error = request.session.contactFormError || null
-      delete request.session.contactFormSent
-      delete request.session.contactFormError
-      const viewConfig = lvServiceTemplates[service.path]
-
       if (viewConfig) {
         return reply.publicView(viewConfig.page, {
-          title: viewConfig.title,
+          title: locale === 'ru' ? `${service.title} | Laiks Drukāt` : viewConfig.title,
           description: service.teaser,
           service,
           cart: fastify.getCart(request),
@@ -570,6 +539,7 @@ async function storefrontRoutes(fastify, opts = {}) {
           error,
           site,
           breadcrumbs,
+          locale,
           seoImage: service.heroImage || site.meta.defaultShareImage,
           structuredData: appendStructuredData({
             '@context': 'https://schema.org',
@@ -578,9 +548,9 @@ async function storefrontRoutes(fastify, opts = {}) {
             description: service.teaser,
             serviceType: service.title,
             areaServed: 'Latvia',
-            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
+            provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}${localizedPath('/')}` },
             image: toAbsoluteUrl(baseUrl, service.heroImage || site.meta.defaultShareImage),
-            url: `${baseUrl}${service.path}`,
+            url: `${baseUrl}${localizedPath(service.path)}`,
           }, breadcrumbSchema),
           csrf: await reply.generateCsrf(),
         })
@@ -595,6 +565,7 @@ async function storefrontRoutes(fastify, opts = {}) {
         error,
         site,
         breadcrumbs,
+        locale,
         seoImage: service.heroImage || site.meta.defaultShareImage,
         structuredData: appendStructuredData({
           '@context': 'https://schema.org',
@@ -603,9 +574,9 @@ async function storefrontRoutes(fastify, opts = {}) {
           description: service.teaser,
           serviceType: service.title,
           areaServed: 'Latvia',
-          provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}/` },
+          provider: { '@type': 'Organization', name: site.company.name, url: `${baseUrl}${localizedPath('/')}` },
           image: toAbsoluteUrl(baseUrl, service.heroImage || site.meta.defaultShareImage),
-          url: `${baseUrl}${service.path}`,
+          url: `${baseUrl}${localizedPath(service.path)}`,
         }, breadcrumbSchema),
         csrf: await reply.generateCsrf(),
       })

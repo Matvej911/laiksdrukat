@@ -10,7 +10,7 @@
       <p><%= it.site.home.intro %></p>
       <div class="hero-actions">
         <a href="<%= it.localizedPath('/kontakti/') %>" class="btn btn-yellow"><%= home.contactCta %></a>
-        <a href="/veikals/" class="hero-btn-outline"><%= home.shopCta %></a>
+        <a href="<%= it.localizedPath('/veikals/') %>" class="hero-btn-outline"><%= home.shopCta %></a>
       </div>
       <div class="hero-trust">
         <div class="hero-trust-item">
@@ -92,7 +92,7 @@
         <h2><%= home.shopTitle %></h2>
         <p><%= home.shopText %></p>
       </div>
-      <a href="/veikals/" class="home-shop-btn"><%= home.shopButton %></a>
+      <a href="<%= it.localizedPath('/veikals/') %>" class="home-shop-btn"><%= home.shopButton %></a>
     </div>
 
     <div class="products-slider-wrapper">
@@ -103,7 +103,7 @@
         <div class="products-slider">
           <% for (const p of it.products) { %>
           <article class="product-card">
-            <a href="/veikals/<%= p.slug %>/">
+            <a href="<%= it.localizedPath('/veikals/' + p.slug + '/') %>">
               <div class="product-img">
                 <% if (p.image) { %>
                   <img src="<%= p.image %>" alt="<%= p.name %>" loading="lazy" width="800" height="800">

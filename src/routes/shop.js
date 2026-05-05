@@ -6,6 +6,14 @@ import {
   toAbsoluteUrl,
 } from '../lib/seo.js'
 import { getOrSetCache } from '../lib/runtime-cache.js'
+import { getSiteContent } from '../content/site.js'
+import { getUiCopy, localizePath, localizeSiteContent } from '../lib/marketing-locale.js'
+import {
+  getLocalizedCategoryBySlug,
+  localizeCategoryCollection,
+  localizeProductCollection,
+  localizeProductForLocale,
+} from '../lib/shop-locale.js'
 
 const SHOP_PAGE_SIZE = 24
 const SHOP_LIST_CACHE_TTL_MS = 30 * 1000
@@ -59,7 +67,12 @@ async function shopRoutes(fastify, opts = {}) {
     includeListing = true,
     includeCategory = true,
     includeProduct = true,
+    locale: routeLocale = 'lv',
   } = opts
+  const locale = routeLocale === 'ru' ? 'ru' : 'lv'
+  const ui = getUiCopy(locale)
+  const site = localizeSiteContent(getSiteContent(), locale)
+  const localizedPath = (path) => localizePath(locale, path)
 
   const getPageNumber = (query = {}) => {
     const rawPage = Number.parseInt(String(query.page || '1'), 10)
@@ -184,8 +197,8 @@ async function shopRoutes(fastify, opts = {}) {
       const filters = buildShopFilters(request.query)
       const requestedPage = getPageNumber(request.query)
       const breadcrumbs = [
-        { name: 'Sākums', path: '/' },
-        { name: 'Veikals', path: '/veikals/' },
+        { name: ui.breadcrumbs.home, path: localizedPath('/') },
+        { name: ui.shopPage.breadcrumbsShop, path: localizedPath('/veikals/') },
       ]
 
       const [listingResult, categoryData] = await Promise.all([
@@ -202,11 +215,14 @@ async function shopRoutes(fastify, opts = {}) {
           pageSize,
         },
       } = listingResult
-      const { categories, allProductsCount } = categoryData
-      const paginationPath = '/veikals/'
+      const { allProductsCount } = categoryData
+      const categories = localizeCategoryCollection(categoryData.categories, locale, site)
+      const localizedProducts = localizeProductCollection(products, locale, site)
+      const paginationPath = localizedPath('/veikals/')
 
       fastify.log.info({
         route: '/veikals/',
+        locale,
         cacheHit,
         q: filters.q || null,
         sort: filters.sort,
@@ -217,10 +233,13 @@ async function shopRoutes(fastify, opts = {}) {
       }, 'Route timing')
 
       return reply.publicView('pages/shop/index', {
-        title: 'Zīmogi un zīmogu tintes | Laiks Drukāt veikals ✅',
-        description:
-          'Zīmogi un zīmogu tintes COLOP ⚡ Izvēlies tieši savu zīmogu vai tinti | Dažādi veidi, augsta kvalitāte un ātra izgatavošana ✓ Pasūti tagad!',
-        products,
+        title: locale === 'ru'
+          ? 'Штампы и краски для штампов | Laiks Drukāt'
+          : 'Zīmogi un zīmogu tintes | Laiks Drukāt veikals ✅',
+        description: locale === 'ru'
+          ? 'Штампы COLOP и краски для штампов: разные модели, надёжное качество и удобный заказ онлайн.'
+          : 'Zīmogi un zīmogu tintes COLOP ⚡ Izvēlies tieši savu zīmogu vai tinti | Dažādi veidi, augsta kvalitāte un ātra izgatavošana ✓ Pasūti tagad!',
+        products: localizedProducts,
         categories,
         allProductsCount,
         activeCategory: filters.kategorija,
@@ -244,19 +263,24 @@ async function shopRoutes(fastify, opts = {}) {
           ? 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'
           : undefined,
         cart: fastify.getCart(request),
-        seoImage: products[0]?.image || '/images/web-design/col9p.png',
+        seoImage: localizedProducts[0]?.image || '/images/web-design/col9p.png',
+        locale,
+        site,
+        localizedPath,
         structuredData: appendStructuredData({
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
-          name: 'Laiks Drukāt veikals',
-          description: 'Zīmogi un zīmogu tintes Laiks Drukāt e-veikalā.',
-          url: `${baseUrl}/veikals/`,
+          name: locale === 'ru' ? 'Интернет-магазин Laiks Drukāt' : 'Laiks Drukāt veikals',
+          description: locale === 'ru'
+            ? 'Штампы и краски для штампов в интернет-магазине Laiks Drukāt.'
+            : 'Zīmogi un zīmogu tintes Laiks Drukāt e-veikalā.',
+          url: `${baseUrl}${localizedPath('/veikals/')}`,
           mainEntity: {
             '@type': 'ItemList',
-            itemListElement: products.slice(0, 12).map((product, index) => ({
+            itemListElement: localizedProducts.slice(0, 12).map((product, index) => ({
               '@type': 'ListItem',
               position: index + 1,
-              url: `${baseUrl}/veikals/${product.slug}/`,
+              url: `${baseUrl}${localizedPath(`/veikals/${product.slug}/`)}`,
               name: product.name,
             })),
           },
@@ -276,11 +300,14 @@ async function shopRoutes(fastify, opts = {}) {
 
       const category = await fastify.db.category.findUnique({ where: { slug } })
       if (!category) {
-        return reply.code(404).view('pages/404', {
+        return reply.code(404).publicView('pages/404', {
           title: '404 | Laiks Drukāt',
-          description: 'Lapa netika atrasta.',
+          description: locale === 'ru' ? 'Страница не найдена.' : 'Lapa netika atrasta.',
           robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
           cart: fastify.getCart(request),
+          locale,
+          site,
+          localizedPath,
         })
       }
 
@@ -298,17 +325,21 @@ async function shopRoutes(fastify, opts = {}) {
           pageSize,
         },
       } = listingResult
-      const { categories, allProductsCount } = categoryData
+      const localizedCategory = getLocalizedCategoryBySlug(site, slug, category)
+      const categories = localizeCategoryCollection(categoryData.categories, locale, site)
+      const localizedProducts = localizeProductCollection(products, locale, site)
+      const { allProductsCount } = categoryData
       const breadcrumbs = [
-        { name: 'Sākums', path: '/' },
-        { name: 'Veikals', path: '/veikals/' },
-        { name: category.name, path: `/kategorija/${category.slug}/` },
+        { name: ui.breadcrumbs.home, path: localizedPath('/') },
+        { name: ui.shopPage.breadcrumbsShop, path: localizedPath('/veikals/') },
+        { name: localizedCategory.title || localizedCategory.name, path: localizedPath(`/kategorija/${category.slug}/`) },
       ]
-      const paginationPath = `/kategorija/${category.slug}/`
+      const paginationPath = localizedPath(`/kategorija/${category.slug}/`)
 
       fastify.log.info({
         route: '/veikals/kategorija/',
         category: category.slug,
+        locale,
         cacheHit,
         q: filters.q || null,
         sort: filters.sort,
@@ -319,9 +350,12 @@ async function shopRoutes(fastify, opts = {}) {
       }, 'Route timing')
 
       return reply.publicView('pages/shop/index', {
-        title: `${category.name} | Laiks Drukāt ✅`,
-        description: `${category.name} kategorija Laiks Drukāt e-veikalā.`,
-        products,
+        title: `${localizedCategory.title || localizedCategory.name} | Laiks Drukāt`,
+        description: localizedCategory.description
+          || (locale === 'ru'
+            ? `Категория ${localizedCategory.title || localizedCategory.name} в интернет-магазине Laiks Drukāt.`
+            : `${category.name} kategorija Laiks Drukāt e-veikalā.`),
+        products: localizedProducts,
         categories,
         allProductsCount,
         activeCategory: slug,
@@ -345,19 +379,25 @@ async function shopRoutes(fastify, opts = {}) {
           ? 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'
           : undefined,
         cart: fastify.getCart(request),
-        seoImage: products[0]?.image || '/images/web-design/col9p.png',
+        seoImage: localizedProducts[0]?.image || '/images/web-design/col9p.png',
+        locale,
+        site,
+        localizedPath,
         structuredData: appendStructuredData({
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
-          name: category.name,
-          description: `${category.name} kategorija Laiks Drukāt e-veikalā.`,
-          url: `${baseUrl}/kategorija/${category.slug}/`,
+          name: localizedCategory.title || localizedCategory.name,
+          description: localizedCategory.description
+            || (locale === 'ru'
+              ? `Категория ${localizedCategory.title || localizedCategory.name} в интернет-магазине Laiks Drukāt.`
+              : `${category.name} kategorija Laiks Drukāt e-veikalā.`),
+          url: `${baseUrl}${localizedPath(`/kategorija/${category.slug}/`)}`,
           mainEntity: {
             '@type': 'ItemList',
-            itemListElement: products.slice(0, 12).map((product, index) => ({
+            itemListElement: localizedProducts.slice(0, 12).map((product, index) => ({
               '@type': 'ListItem',
               position: index + 1,
-              url: `${baseUrl}/veikals/${product.slug}/`,
+              url: `${baseUrl}${localizedPath(`/veikals/${product.slug}/`)}`,
               name: product.name,
             })),
           },
@@ -379,9 +419,10 @@ async function shopRoutes(fastify, opts = {}) {
           route: '/veikals/:slug/',
           slug: requestedSlug,
           redirectedTo: redirectSlug,
+          locale,
           durationMs: Date.now() - startedAt,
         }, 'Route timing')
-        return reply.redirect(`/veikals/${redirectSlug}/`, 301)
+        return reply.redirect(localizedPath(`/veikals/${redirectSlug}/`), 301)
       }
 
       const slug = requestedSlug
@@ -392,14 +433,18 @@ async function shopRoutes(fastify, opts = {}) {
       })
 
       if (!product || !product.active) {
-        return reply.code(404).view('pages/404', {
+        return reply.code(404).publicView('pages/404', {
           title: '404 | Laiks Drukāt',
-          description: 'Lapa netika atrasta.',
+          description: locale === 'ru' ? 'Страница не найдена.' : 'Lapa netika atrasta.',
           robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
           cart: fastify.getCart(request),
+          locale,
+          site,
+          localizedPath,
         })
       }
-      const isStampProduct = product.category.slug === 'zimogi'
+      let localizedProduct = localizeProductForLocale(product, locale, site)
+      const isStampProduct = localizedProduct.category.slug === 'zimogi'
 
       // Recently viewed products (session-scoped)
       const MAX_VIEWED = 8
@@ -409,7 +454,7 @@ async function shopRoutes(fastify, opts = {}) {
         ? request.session.viewedProductIds
         : []
 
-      const currentId = Number(product.id)
+      const currentId = Number(localizedProduct.id)
       const deduped = sessionViewed
         .map((id) => Number(id))
         .filter((id) => Number.isFinite(id) && id !== currentId)
@@ -435,11 +480,12 @@ async function shopRoutes(fastify, opts = {}) {
         // Prisma may not preserve the `in: [ids...]` order; reorder manually.
         const orderIndex = new Map(recentlyViewedIds.map((id, i) => [id, i]))
         recentlyViewed.sort((a, b) => (orderIndex.get(a.id) ?? 0) - (orderIndex.get(b.id) ?? 0))
+        recentlyViewed = localizeProductCollection(recentlyViewed, locale, site)
       }
 
-      if (product.description) {
-        product.description = sanitizeHtml(
-          product.description
+      if (localizedProduct.description) {
+        localizedProduct.description = sanitizeHtml(
+          localizedProduct.description
             .replace(/\s*data-draftjs-conductor-fragment=(?:"[^"]*"|&quot;.*?&quot;)/g, '')
             .replace(/<div>\s*<\/div>/g, '')
             .trim(),
@@ -455,45 +501,53 @@ async function shopRoutes(fastify, opts = {}) {
         )
       }
       const breadcrumbs = [
-        { name: 'Sākums', path: '/' },
-        { name: 'Veikals', path: '/veikals/' },
-        { name: product.category.name, path: `/kategorija/${product.category.slug}/` },
-        { name: product.name, path: `/veikals/${product.slug}/` },
+        { name: ui.breadcrumbs.home, path: localizedPath('/') },
+        { name: ui.productPage.breadcrumbsShop, path: localizedPath('/veikals/') },
+        { name: localizedProduct.category.name, path: localizedPath(`/kategorija/${localizedProduct.category.slug}/`) },
+        { name: localizedProduct.name, path: localizedPath(`/veikals/${localizedProduct.slug}/`) },
       ]
 
       fastify.log.info({
         route: '/veikals/:slug/',
-        slug: product.slug,
-        productId: product.id,
-        category: product.category.slug,
+        slug: localizedProduct.slug,
+        productId: localizedProduct.id,
+        category: localizedProduct.category.slug,
+        locale,
         recentlyViewed: recentlyViewed.length,
         durationMs: Date.now() - startedAt,
       }, 'Route timing')
 
       return reply.publicView('pages/shop/product', {
-        title: `${product.name} | Laiks Drukāt`,
+        title: `${localizedProduct.name} | Laiks Drukāt`,
         description:
-          product.description ||
-          `${product.name} kategorijā ${product.category.name} Laiks Drukāt e-veikalā.`,
-        product,
+          localizedProduct.description ||
+          (locale === 'ru'
+            ? `${localizedProduct.name} в категории ${localizedProduct.category.name} интернет-магазина Laiks Drukāt.`
+            : `${localizedProduct.name} kategorijā ${localizedProduct.category.name} Laiks Drukāt e-veikalā.`),
+        product: localizedProduct,
         recentlyViewed,
         isStampProduct,
         breadcrumbs,
         cart: fastify.getCart(request),
-        seoImage: product.image || product.imprintImage || '/images/web-design/col9p.png',
+        seoImage: localizedProduct.image || localizedProduct.imprintImage || '/images/web-design/col9p.png',
         seoType: 'product',
+        locale,
+        site,
+        localizedPath,
         structuredData: appendStructuredData({
           '@context': 'https://schema.org',
           '@type': 'Product',
-          name: product.name,
-          description: product.description
-            ? product.description.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
-            : `${product.name} kategorijā ${product.category.name} Laiks Drukāt e-veikalā.`,
-          image: [product.image, product.imprintImage]
+          name: localizedProduct.name,
+          description: localizedProduct.description
+            ? localizedProduct.description.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+            : (locale === 'ru'
+              ? `${localizedProduct.name} в категории ${localizedProduct.category.name} интернет-магазина Laiks Drukāt.`
+              : `${localizedProduct.name} kategorijā ${localizedProduct.category.name} Laiks Drukāt e-veikalā.`),
+          image: [localizedProduct.image, localizedProduct.imprintImage]
             .filter(Boolean)
             .map((image) => toAbsoluteUrl(baseUrl, image)),
-          sku: String(product.id),
-          category: product.category.name,
+          sku: String(localizedProduct.id),
+          category: localizedProduct.category.name,
           brand: {
             '@type': 'Brand',
             name: 'Laiks Drukāt',
@@ -501,11 +555,11 @@ async function shopRoutes(fastify, opts = {}) {
           offers: {
             '@type': 'Offer',
             priceCurrency: 'EUR',
-            price: Number(product.price).toFixed(2),
-            availability: product.stock > 0
+            price: Number(localizedProduct.price).toFixed(2),
+            availability: localizedProduct.stock > 0
               ? 'https://schema.org/InStock'
               : 'https://schema.org/OutOfStock',
-            url: `${baseUrl}/veikals/${product.slug}/`,
+            url: `${baseUrl}${localizedPath(`/veikals/${localizedProduct.slug}/`)}`,
             itemCondition: 'https://schema.org/NewCondition',
           },
         }, buildBreadcrumbSchema(baseUrl, breadcrumbs)),

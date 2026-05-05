@@ -1,4 +1,7 @@
 <% layout('../../partials/layout', { bodyClass: 'page-uzlimes' }) %>
+<% const isRu = it.locale === 'ru' %>
+<% const servicePage = it.t.servicePage %>
+<% const contact = it.t.contact %>
 
 <!-- HERO -->
 <section class="uz-hero">
@@ -6,18 +9,18 @@
     <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="uz-hero-inner">
       <div class="uz-hero-copy">
-        <span class="uz-eyebrow">Pakalpojums</span>
-        <h1>Uzlīmes jebkuram mērķim</h1>
-        <p>Izgatavojam ruļļu uzlīmes, krāsainas uzlīmes un lielformāta uzlīmes. Piemērotas produktu marķēšanai, reklāmai, iepakojumam un daudz kam citam.</p>
+        <span class="uz-eyebrow"><%= isRu ? 'Услуга' : 'Pakalpojums' %></span>
+        <h1><%= it.service.title %></h1>
+        <p><%= it.service.intro %></p>
         <div class="uz-hero-actions">
-          <a href="#uz-contact" class="uz-btn-primary">Saņemt piedāvājumu</a>
-          <a href="#uz-types" class="uz-btn-outline">Skatīt veidus</a>
+          <a href="#uz-contact" class="uz-btn-primary"><%= servicePage.requestOffer %></a>
+          <a href="#uz-types" class="uz-btn-outline"><%= isRu ? 'Смотреть варианты' : 'Skatīt veidus' %></a>
         </div>
         <div class="uz-hero-tags">
-          <span>Ruļļu uzlīmes</span>
-          <span>Krāsainas uzlīmes</span>
-          <span>Lielformāts</span>
-          <span>UV druka</span>
+          <span><%= isRu ? 'Рулонные наклейки' : 'Ruļļu uzlīmes' %></span>
+          <span><%= isRu ? 'Цветные наклейки' : 'Krāsainas uzlīmes' %></span>
+          <span><%= isRu ? 'Широкий формат' : 'Lielformāts' %></span>
+          <span><%= isRu ? 'UV-печать' : 'UV druka' %></span>
         </div>
       </div>
       <div class="uz-hero-visual">
@@ -43,8 +46,8 @@
           </div>
           <div class="uz-sticker uz-sticker-4">
             <div class="uz-sticker-inner uz-sticker-dark">
-              <span>PASŪTI</span>
-              <span class="uz-sticker-sub">ŠODIEN</span>
+              <span><%= isRu ? 'ЗАКАЖИ' : 'PASŪTI' %></span>
+              <span class="uz-sticker-sub"><%= isRu ? 'СЕГОДНЯ' : 'ŠODIEN' %></span>
             </div>
           </div>
         </div>
@@ -57,47 +60,47 @@
 <section class="uz-types" id="uz-types">
   <div class="container">
     <div class="uz-section-header center">
-      <span class="uz-eyebrow-dark">Ko piedāvājam</span>
-      <h2>Uzlīmju veidi</h2>
+      <span class="uz-eyebrow-dark"><%= isRu ? 'Что мы предлагаем' : 'Ko piedāvājam' %></span>
+      <h2><%= isRu ? 'Виды наклеек' : 'Uzlīmju veidi' %></h2>
     </div>
 
     <!-- RULLU -->
     <div class="uz-type-block">
       <div class="uz-type-copy">
         <div class="uz-type-num">01</div>
-        <h3>Ruļļu uzlīmes (Direct Thermal)</h3>
-        <p>Drukājam ruļļu uzlīmes ar jūsu sniegto informāciju — piemērotas pārtikai, medikamentiem, kosmētikai un citiem produktiem.</p>
+        <h3><%= isRu ? 'Рулонные наклейки (Direct Thermal)' : 'Ruļļu uzlīmes (Direct Thermal)' %></h3>
+        <p><%= isRu ? 'Печатаем рулонные наклейки с вашей информацией. Они подходят для продуктов питания, медикаментов, косметики и другой продукции.' : 'Drukājam ruļļu uzlīmes ar jūsu sniegto informāciju — piemērotas pārtikai, medikamentiem, kosmētikai un citiem produktiem.' %></p>
         <div class="uz-specs-grid">
           <div class="uz-spec">
-            <span class="uz-spec-label">Drukas veids</span>
-            <span class="uz-spec-value">Termopārneses (Direct Thermal)</span>
+            <span class="uz-spec-label"><%= isRu ? 'Тип печати' : 'Drukas veids' %></span>
+            <span class="uz-spec-value"><%= isRu ? 'термопечать (Direct Thermal)' : 'Termopārneses (Direct Thermal)' %></span>
           </div>
           <div class="uz-spec">
-            <span class="uz-spec-label">Lente</span>
+            <span class="uz-spec-label"><%= isRu ? 'Лента' : 'Lente' %></span>
             <span class="uz-spec-value">Wax-Resin (ribbon)</span>
           </div>
           <div class="uz-spec">
-            <span class="uz-spec-label">Virsma</span>
-            <span class="uz-spec-value">Pusglancēta</span>
+            <span class="uz-spec-label"><%= isRu ? 'Поверхность' : 'Virsma' %></span>
+            <span class="uz-spec-value"><%= isRu ? 'полуглянцевая' : 'Pusglancēta' %></span>
           </div>
           <div class="uz-spec">
-            <span class="uz-spec-label">Temperatūra</span>
+            <span class="uz-spec-label"><%= isRu ? 'Температура' : 'Temperatūra' %></span>
             <span class="uz-spec-value">−20 °C līdz +50 °C</span>
           </div>
           <div class="uz-spec">
-            <span class="uz-spec-label">Uzglabāšana</span>
-            <span class="uz-spec-value">Līdz 10 gadiem</span>
+            <span class="uz-spec-label"><%= isRu ? 'Хранение' : 'Uzglabāšana' %></span>
+            <span class="uz-spec-value"><%= isRu ? 'до 10 лет' : 'Līdz 10 gadiem' %></span>
           </div>
           <div class="uz-spec">
-            <span class="uz-spec-label">Mitruma noturība</span>
-            <span class="uz-spec-value">Augsta</span>
+            <span class="uz-spec-label"><%= isRu ? 'Устойчивость к влаге' : 'Mitruma noturība' %></span>
+            <span class="uz-spec-value"><%= isRu ? 'высокая' : 'Augsta' %></span>
           </div>
         </div>
         <div class="uz-price-note">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Cena atkarīga no apjoma — jo lielāks daudzums, jo zemāka cena par vienu uzlīmi. Maketa izstrāde: 5–15 €.
+          <%= isRu ? 'Цена зависит от тиража: чем больше объём, тем ниже стоимость одной наклейки. Разработка макета: 5–15 €.' : 'Cena atkarīga no apjoma — jo lielāks daudzums, jo zemāka cena par vienu uzlīmi. Maketa izstrāde: 5–15 €.' %>
         </div>
-        <a href="#uz-contact" class="uz-btn-primary">Apspriest projektu</a>
+        <a href="#uz-contact" class="uz-btn-primary"><%= isRu ? 'Обсудить проект' : 'Apspriest projektu' %></a>
       </div>
       <div class="uz-type-img uz-type-img-nobg">
         <img src="/images/web-design/direct-termal-uzlimes.webp" alt="Ruļļu uzlīmes" loading="lazy">
@@ -108,35 +111,35 @@
     <div class="uz-type-block uz-type-reverse">
       <div class="uz-type-copy">
         <div class="uz-type-num">02</div>
-        <h3>Krāsainas uzlīmes</h3>
-        <p>Izgatavojam krāsainas uzlīmes produktu marķēšanai, reklāmai, iepakojumam un individuāliem projektiem. Pieejami dažādi izmēri, formas un tirāžas.</p>
+        <h3><%= isRu ? 'Цветные наклейки' : 'Krāsainas uzlīmes' %></h3>
+        <p><%= isRu ? 'Изготавливаем цветные наклейки для маркировки продукции, рекламы, упаковки и индивидуальных задач. Доступны разные размеры, формы и тиражи.' : 'Izgatavojam krāsainas uzlīmes produktu marķēšanai, reklāmai, iepakojumam un individuāliem projektiem. Pieejami dažādi izmēri, formas un tirāžas.' %></p>
         <div class="uz-price-grid">
           <div class="uz-price-card">
-            <span class="uz-price-label">Parastās uzlīmes</span>
+            <span class="uz-price-label"><%= isRu ? 'Обычные наклейки' : 'Parastās uzlīmes' %></span>
             <span class="uz-price-val">19–20 €/m²</span>
-            <span class="uz-price-sub">bez PVN</span>
+            <span class="uz-price-sub"><%= isRu ? 'без НДС' : 'bez PVN' %></span>
           </div>
           <div class="uz-price-card">
-            <span class="uz-price-label">UV druka</span>
+            <span class="uz-price-label"><%= isRu ? 'UV-печать' : 'UV druka' %></span>
             <span class="uz-price-val">28 €/m²</span>
-            <span class="uz-price-sub">bez PVN</span>
+            <span class="uz-price-sub"><%= isRu ? 'без НДС' : 'bez PVN' %></span>
           </div>
           <div class="uz-price-card">
-            <span class="uz-price-label">Dizaina izstrāde</span>
+            <span class="uz-price-label"><%= isRu ? 'Разработка дизайна' : 'Dizaina izstrāde' %></span>
             <span class="uz-price-val">25 €/h</span>
-            <span class="uz-price-sub">no</span>
+            <span class="uz-price-sub"><%= isRu ? 'от' : 'no' %></span>
           </div>
           <div class="uz-price-card">
-            <span class="uz-price-label">Maketēšana</span>
+            <span class="uz-price-label"><%= isRu ? 'Верстка' : 'Maketēšana' %></span>
             <span class="uz-price-val">20 €/h</span>
-            <span class="uz-price-sub">no</span>
+            <span class="uz-price-sub"><%= isRu ? 'от' : 'no' %></span>
           </div>
         </div>
-        <a href="#uz-contact" class="uz-btn-primary">Apspriest projektu</a>
+        <a href="#uz-contact" class="uz-btn-primary"><%= isRu ? 'Обсудить проект' : 'Apspriest projektu' %></a>
       </div>
       <div class="uz-type-img uz-type-img-dark">
         <img src="/images/web-design/uzlime-laiksdr_new.webp" alt="Krāsainas uzlīmes" loading="lazy">
-        <div class="uz-img-badge">PASŪTI JAU ŠODIEN</div>
+        <div class="uz-img-badge"><%= isRu ? 'ЗАКАЖИ УЖЕ СЕГОДНЯ' : 'PASŪTI JAU ŠODIEN' %></div>
       </div>
     </div>
 
@@ -144,27 +147,27 @@
     <div class="uz-type-block">
       <div class="uz-type-copy">
         <div class="uz-type-num">03</div>
-        <h3>Lielformāta uzlīmes</h3>
-        <p>Izgatavojam lielformāta uzlīmes dažādiem vizuālajiem risinājumiem — skatlogiem, sienām, transportam, stendiem un citām virsmām.</p>
+        <h3><%= isRu ? 'Широкоформатные наклейки' : 'Lielformāta uzlīmes' %></h3>
+        <p><%= isRu ? 'Изготавливаем широкоформатные наклейки для витрин, стен, транспорта, стендов и других поверхностей.' : 'Izgatavojam lielformāta uzlīmes dažādiem vizuālajiem risinājumiem — skatlogiem, sienām, transportam, stendiem un citām virsmām.' %></p>
         <div class="uz-features">
           <div class="uz-feature">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Pieejami dažādi materiāli un izmēri
+            <%= isRu ? 'Доступны разные материалы и размеры' : 'Pieejami dažādi materiāli un izmēri' %>
           </div>
           <div class="uz-feature">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Griezuma varianti atbilstoši projektam
+            <%= isRu ? 'Варианты резки под конкретный проект' : 'Griezuma varianti atbilstoši projektam' %>
           </div>
           <div class="uz-feature">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Piemērotas ārtelpu un iekštelpu lietošanai
+            <%= isRu ? 'Подходят для улицы и помещений' : 'Piemērotas ārtelpu un iekštelpu lietošanai' %>
           </div>
           <div class="uz-feature">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Cena aprēķināta individuāli pēc izmēra un materiāla
+            <%= isRu ? 'Цена рассчитывается индивидуально по размеру и материалу' : 'Cena aprēķināta individuāli pēc izmēra un materiāla' %>
           </div>
         </div>
-        <a href="#uz-contact" class="uz-btn-primary">Apspriest projektu</a>
+        <a href="#uz-contact" class="uz-btn-primary"><%= isRu ? 'Обсудить проект' : 'Apspriest projektu' %></a>
       </div>
       <div class="uz-type-img">
         <img src="/images/web-design/leilformata-druka_new.webp" alt="Lielformāta uzlīmes" loading="lazy">
@@ -178,37 +181,37 @@
 <section class="uz-spec-section">
   <div class="container">
     <div class="uz-section-header">
-      <span class="uz-eyebrow-dark">Tehniskā informācija</span>
-      <h2>Ruļļu uzlīmju specifikācija</h2>
+      <span class="uz-eyebrow-dark"><%= isRu ? 'Техническая информация' : 'Tehniskā informācija' %></span>
+      <h2><%= isRu ? 'Спецификация рулонных наклеек' : 'Ruļļu uzlīmju specifikācija' %></h2>
     </div>
     <div class="uz-spec-grid">
       <div class="uz-spec-card">
         <div class="uz-spec-icon">
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         </div>
-        <h4>Rakstīšanas virsma</h4>
-        <p>Virsma piemērota rakstīšanai ar pildspalvu vai marķieri.</p>
+        <h4><%= isRu ? 'Поверхность для надписей' : 'Rakstīšanas virsma' %></h4>
+        <p><%= isRu ? 'На поверхности можно писать ручкой или маркером.' : 'Virsma piemērota rakstīšanai ar pildspalvu vai marķieri.' %></p>
       </div>
       <div class="uz-spec-card">
         <div class="uz-spec-icon">
           <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
-        <h4>Izturība pret vidi</h4>
-        <p>Augsta izturība — piemērota ikdienas lietošanai (vērtējums 3 no 4).</p>
+        <h4><%= isRu ? 'Устойчивость к среде' : 'Izturība pret vidi' %></h4>
+        <p><%= isRu ? 'Высокая стойкость для повседневного использования.' : 'Augsta izturība — piemērota ikdienas lietošanai (vērtējums 3 no 4).' %></p>
       </div>
       <div class="uz-spec-card">
         <div class="uz-spec-icon">
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         </div>
-        <h4>Ilgs kalpošanas laiks</h4>
-        <p>Uzglabāšana līdz 10 gadiem, ja nodrošināti piemēroti apstākļi.</p>
+        <h4><%= isRu ? 'Долгий срок службы' : 'Ilgs kalpošanas laiks' %></h4>
+        <p><%= isRu ? 'При правильном хранении срок службы достигает 10 лет.' : 'Uzglabāšana līdz 10 gadiem, ja nodrošināti piemēroti apstākļi.' %></p>
       </div>
       <div class="uz-spec-card">
         <div class="uz-spec-icon">
           <svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
         </div>
-        <h4>Mitruma noturība</h4>
-        <p>Noturīgs pret augstu mitruma līmeni ikdienas apstākļos.</p>
+        <h4><%= isRu ? 'Устойчивость к влаге' : 'Mitruma noturība' %></h4>
+        <p><%= isRu ? 'Устойчивы к повышенной влажности в обычных условиях эксплуатации.' : 'Noturīgs pret augstu mitruma līmeni ikdienas apstākļos.' %></p>
       </div>
     </div>
   </div>
@@ -219,25 +222,25 @@
   <div class="container">
     <div class="uz-contact-inner">
       <div class="uz-contact-copy">
-        <span class="uz-eyebrow-dark">Sazināties</span>
-        <h2>Saņem piedāvājumu</h2>
-        <p>Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.</p>
+        <span class="uz-eyebrow-dark"><%= isRu ? 'Связаться с нами' : 'Sazināties' %></span>
+        <h2><%= servicePage.contactTitle %></h2>
+        <p><%= isRu ? 'Заполните форму, и мы свяжемся с вами, чтобы обсудить тип наклеек, тираж, материал и подготовить предложение.' : 'Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.' %></p>
         <div class="uz-contact-tips">
           <div class="uz-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Uzlīmju veids (ruļļu, krāsainas, lielformāta)
+            <%= isRu ? 'Тип наклеек: рулонные, цветные или широкоформатные' : 'Uzlīmju veids (ruļļu, krāsainas, lielformāta)' %>
           </div>
           <div class="uz-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Izmērs, forma un aptuvenā tirāža
+            <%= isRu ? 'Размер, форма и примерный тираж' : 'Izmērs, forma un aptuvenā tirāža' %>
           </div>
           <div class="uz-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Vai ir gatavs dizains vai nepieciešama izstrāde
+            <%= isRu ? 'Есть ли готовый дизайн или нужна разработка' : 'Vai ir gatavs dizains vai nepieciešama izstrāde' %>
           </div>
           <div class="uz-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Pievienojiet logo vai dizaina failu, ja ir
+            <%= isRu ? 'Прикрепите логотип или файл дизайна, если он уже есть' : 'Pievienojiet logo vai dizaina failu, ja ir' %>
           </div>
         </div>
         <div class="uz-contact-phones">
@@ -256,8 +259,7 @@
         <div class="vk-success">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#255f31" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <div>
-            <strong>Ziņa veiksmīgi nosūtīta!</strong>
-            <span>Sazināsimies ar jums pēc iespējas ātrāk.</span>
+            <strong><%= servicePage.contactSuccess %></strong>
           </div>
         </div>
       <% } else { %>
@@ -267,41 +269,41 @@
             <%= it.error %>
           </div>
         <% } %>
-        <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="uz-form">
+        <form action="<%= it.localizedPath('/pakalpojumi-kontakts') %>" method="POST" enctype="multipart/form-data" class="uz-form">
           <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-          <input type="hidden" name="returnTo" value="/uzlimes/">
+          <input type="hidden" name="returnTo" value="<%= it.localizedPath(it.service.path) %>">
           <div class="uz-form-row">
             <div class="form-group">
-              <label class="uz-label">Vārds <span class="required">*</span></label>
-              <input type="text" name="name" class="uz-input" required placeholder="Jānis Bērziņš">
+              <label class="uz-label"><%= contact.name %> <span class="required">*</span></label>
+              <input type="text" name="name" class="uz-input" required placeholder="<%= isRu ? 'Иван Петров' : 'Jānis Bērziņš' %>">
             </div>
             <div class="form-group">
-              <label class="uz-label">E-pasts <span class="required">*</span></label>
-              <input type="email" name="email" class="uz-input" required placeholder="janis@example.lv">
+              <label class="uz-label"><%= contact.email %> <span class="required">*</span></label>
+              <input type="email" name="email" class="uz-input" required placeholder="<%= isRu ? 'ivan@example.lv' : 'janis@example.lv' %>">
             </div>
           </div>
           <div class="form-group">
-            <label class="uz-label">Tālrunis</label>
+            <label class="uz-label"><%= contact.phone %></label>
             <input type="tel" name="phone" class="uz-input" placeholder="+371 2X XXX XXX">
           </div>
           <div class="form-group">
-            <label class="uz-label">Jūsu ziņa <span class="required">*</span></label>
-            <textarea name="message" class="uz-input uz-textarea" required maxlength="180" data-message-input placeholder="Uzlīmju veids, izmērs, tirāža..."></textarea>
+            <label class="uz-label"><%= contact.message %> <span class="required">*</span></label>
+            <textarea name="message" class="uz-input uz-textarea" required maxlength="180" data-message-input placeholder="<%= isRu ? 'Тип наклеек, размер, тираж...' : 'Uzlīmju veids, izmērs, tirāža...' %>"></textarea>
             <div style="text-align:right;font-size:12px;color:#a099cc;margin-top:4px;"><span data-message-count>0</span> / 180</div>
           </div>
           <div class="form-group">
-            <label class="uz-label">Dizaina fails vai logo</label>
+            <label class="uz-label"><%= contact.attachment %></label>
             <label class="upload-dropzone">
               <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
               <span class="upload-dropzone-copy">
-                <strong>Pievienot failu</strong>
-                <small data-file-label>PDF, AI, EPS, JPG, PNG, SVG</small>
+                <strong><%= contact.uploadTitle %></strong>
+                <small data-file-label><%= contact.uploadHint %></small>
               </span>
             </label>
           </div>
           <button type="submit" class="uz-btn-primary uz-btn-full">
             <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Nosūtīt pieprasījumu
+            <%= servicePage.contactSubmit %>
           </button>
         </form>
       <% } %>

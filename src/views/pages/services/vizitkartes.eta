@@ -1,4 +1,7 @@
 <% layout('../../partials/layout', { bodyClass: 'page-vizitkartes' }) %>
+<% const isRu = it.locale === 'ru' %>
+<% const servicePage = it.t.servicePage %>
+<% const contact = it.t.contact %>
 
 <!-- HERO -->
 <section class="vk-hero">
@@ -6,22 +9,22 @@
     <%~ include('../../partials/breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
     <div class="vk-hero-inner">
       <div class="vk-hero-copy">
-        <span class="vk-eyebrow">Pakalpojums</span>
-        <h1>Vizītkartes jūsu biznesam</h1>
-        <p>Profesionālas vizītkartes — pirmais iespaids, kas paliek atmiņā. Izgatavojam augstas kvalitātes vizītkartes uz dažādiem papīriem ar plašu apdaru izvēli.</p>
+        <span class="vk-eyebrow"><%= isRu ? 'Услуга' : 'Pakalpojums' %></span>
+        <h1><%= it.service.title %></h1>
+        <p><%= it.service.intro %></p>
         <div class="vk-hero-actions">
-          <a href="#vk-contact" class="vk-btn-primary">Cenu pieprasījums</a>
+          <a href="#vk-contact" class="vk-btn-primary"><%= servicePage.requestOffer %></a>
           <a href="tel:+37129109703" class="vk-btn-outline">
             <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             +371 29 109 703
           </a>
         </div>
         <div class="vk-hero-tags">
-          <span>Matēts laminējums</span>
-          <span>Glancēts</span>
+          <span><%= isRu ? 'Матовая ламинация' : 'Matēts laminējums' %></span>
+          <span><%= isRu ? 'Глянцевая ламинация' : 'Glancēts' %></span>
           <span>Soft-touch</span>
           <span>Anti Scratch</span>
-          <span>Sietspiede</span>
+          <span><%= isRu ? 'Шелкография' : 'Sietspiede' %></span>
         </div>
       </div>
       <div class="vk-hero-visual">
@@ -37,20 +40,20 @@
 <section class="vk-types">
   <div class="container">
     <div class="vk-section-header">
-      <span class="vk-eyebrow-dark">Ko piedāvājam</span>
-      <h2>Vizītkaršu veidi</h2>
+      <span class="vk-eyebrow-dark"><%= isRu ? 'Что мы предлагаем' : 'Ko piedāvājam' %></span>
+      <h2><%= isRu ? 'Виды визиток' : 'Vizītkaršu veidi' %></h2>
     </div>
 
     <div class="vk-type-block">
       <div class="vk-type-copy">
         <div class="vk-type-num">01</div>
-        <h3>Standarta vizītkartes</h3>
-        <p>Vizītkartes tiek drukātas uz bieza papīra vai kartona. Pieejama iespēja noapaļot stūrus un izvēlēties dažādus izmērus.</p>
-        <p>Piedāvājam matētu, glancētu, soft-touch vai anti-scratch laminējumu abām pusēm.</p>
+        <h3><%= isRu ? 'Стандартные визитки' : 'Standarta vizītkartes' %></h3>
+        <p><%= isRu ? 'Печатаем визитки на плотной бумаге или картоне. Можно выбрать скруглённые углы и разные форматы.' : 'Vizītkartes tiek drukātas uz bieza papīra vai kartona. Pieejama iespēja noapaļot stūrus un izvēlēties dažādus izmērus.' %></p>
+        <p><%= isRu ? 'Доступна матовая, глянцевая, soft-touch или anti-scratch ламинация с одной или двух сторон.' : 'Piedāvājam matētu, glancētu, soft-touch vai anti-scratch laminējumu abām pusēm.' %></p>
         <div class="vk-type-specs">
-          <div class="vk-spec"><strong>Izmērs</strong><span>90×50 mm (standarta), custom</span></div>
-          <div class="vk-spec"><strong>Papīrs</strong><span>300–400 g/m²</span></div>
-          <div class="vk-spec"><strong>Druka</strong><span>Digitālā CMYK</span></div>
+          <div class="vk-spec"><strong><%= isRu ? 'Размер' : 'Izmērs' %></strong><span>90×50 mm (<%= isRu ? 'стандарт' : 'standarta' %>), custom</span></div>
+          <div class="vk-spec"><strong><%= isRu ? 'Бумага' : 'Papīrs' %></strong><span>300–400 g/m²</span></div>
+          <div class="vk-spec"><strong><%= isRu ? 'Печать' : 'Druka' %></strong><span><%= isRu ? 'Цифровая CMYK' : 'Digitālā CMYK' %></span></div>
         </div>
       </div>
       <div class="vk-type-img">
@@ -61,13 +64,13 @@
     <div class="vk-type-block vk-type-reverse">
       <div class="vk-type-copy">
         <div class="vk-type-num">02</div>
-        <h3>Vizītkartes uz teksturēta papīra</h3>
-        <p>Drukājam vizītkartes uz papīra ar izteiktu faktūru — pieejamas virsmas, kas atgādina linu, velvetu vai roku darinātu papīru.</p>
-        <p>Var izvēlēties dažādas papīra krāsas un pievienot noapaļotus stūrus.</p>
+        <h3><%= isRu ? 'Визитки на текстурной бумаге' : 'Vizītkartes uz teksturēta papīra' %></h3>
+        <p><%= isRu ? 'Печатаем визитки на бумаге с выраженной фактурой: доступны поверхности, напоминающие лён, велюр или дизайнерскую бумагу ручной работы.' : 'Drukājam vizītkartes uz papīra ar izteiktu faktūru — pieejamas virsmas, kas atgādina linu, velvetu vai roku darinātu papīru.' %></p>
+        <p><%= isRu ? 'Можно выбрать разные цвета бумаги и добавить скруглённые углы.' : 'Var izvēlēties dažādas papīra krāsas un pievienot noapaļotus stūrus.' %></p>
         <div class="vk-type-specs">
-          <div class="vk-spec"><strong>Efekts</strong><span>Velvets, lins, akvareļu papīrs, kraft</span></div>
-          <div class="vk-spec"><strong>Druka</strong><span>Digitālā un ofsets</span></div>
-          <div class="vk-spec"><strong>Krāsas</strong><span>Dažādas papīra krāsas</span></div>
+          <div class="vk-spec"><strong><%= isRu ? 'Фактура' : 'Efekts' %></strong><span><%= isRu ? 'велюр, лён, акварельная бумага, крафт' : 'Velvets, lins, akvareļu papīrs, kraft' %></span></div>
+          <div class="vk-spec"><strong><%= isRu ? 'Печать' : 'Druka' %></strong><span><%= isRu ? 'цифровая и офсетная' : 'Digitālā un ofsets' %></span></div>
+          <div class="vk-spec"><strong><%= isRu ? 'Цвета' : 'Krāsas' %></strong><span><%= isRu ? 'разные оттенки бумаги' : 'Dažādas papīra krāsas' %></span></div>
         </div>
       </div>
       <div class="vk-type-img">
@@ -78,13 +81,13 @@
     <div class="vk-type-block">
       <div class="vk-type-copy">
         <div class="vk-type-num">03</div>
-        <h3>Sietspiedes vizītkartes</h3>
-        <p>Sietspiedes vizītkartes rada rokdarba iespaidu — tās izskatās un jūtas kā ekskluzīvs, rūpīgi veidots produkts.</p>
-        <p>Ir pieejama gan vienpusēja, gan abpusēja vizītkaršu druka. Ir pieejamas dažādas papīra krāsas.</p>
+        <h3><%= isRu ? 'Визитки шелкографией' : 'Sietspiedes vizītkartes' %></h3>
+        <p><%= isRu ? 'Шелкография создаёт ощущение ручной работы: такие визитки выглядят и ощущаются как эксклюзивный, тщательно продуманный продукт.' : 'Sietspiedes vizītkartes rada rokdarba iespaidu — tās izskatās un jūtas kā ekskluzīvs, rūpīgi veidots produkts.' %></p>
+        <p><%= isRu ? 'Доступна односторонняя и двусторонняя печать, а также разные цвета бумаги.' : 'Ir pieejama gan vienpusēja, gan abpusēja vizītkaršu druka. Ir pieejamas dažādas papīra krāsas.' %></p>
         <div class="vk-type-specs">
-          <div class="vk-spec"><strong>Tehnika</strong><span>Sietspiede</span></div>
-          <div class="vk-spec"><strong>Druka</strong><span>Vienpusēja / abpusēja</span></div>
-          <div class="vk-spec"><strong>Sajūta</strong><span>Premium, ekskluzīva</span></div>
+          <div class="vk-spec"><strong><%= isRu ? 'Техника' : 'Tehnika' %></strong><span><%= isRu ? 'шелкография' : 'Sietspiede' %></span></div>
+          <div class="vk-spec"><strong><%= isRu ? 'Печать' : 'Druka' %></strong><span><%= isRu ? 'односторонняя / двусторонняя' : 'Vienpusēja / abpusēja' %></span></div>
+          <div class="vk-spec"><strong><%= isRu ? 'Впечатление' : 'Sajūta' %></strong><span><%= isRu ? 'премиум, эксклюзив' : 'Premium, ekskluzīva' %></span></div>
         </div>
       </div>
       <div class="vk-type-img">
@@ -99,30 +102,30 @@
 <section class="vk-why">
   <div class="container">
     <div class="vk-section-header center">
-      <span class="vk-eyebrow-dark">Kāpēc izvēlēties mūs</span>
-      <h2>Mūsu priekšrocības</h2>
+      <span class="vk-eyebrow-dark"><%= isRu ? 'Почему выбирают нас' : 'Kāpēc izvēlēties mūs' %></span>
+      <h2><%= isRu ? 'Наши преимущества' : 'Mūsu priekšrocības' %></h2>
     </div>
     <div class="vk-why-grid">
       <div class="vk-why-card">
         <div class="vk-why-icon">
           <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </div>
-        <h4>Individuāls dizains</h4>
-        <p>Palīdzam izveidot unikālu dizainu, kas atspoguļo jūsu uzņēmuma stilu.</p>
+        <h4><%= isRu ? 'Индивидуальный дизайн' : 'Individuāls dizains' %></h4>
+        <p><%= isRu ? 'Помогаем создать уникальный дизайн, который отражает стиль и характер вашего бренда.' : 'Palīdzam izveidot unikālu dizainu, kas atspoguļo jūsu uzņēmuma stilu.' %></p>
       </div>
       <div class="vk-why-card">
         <div class="vk-why-icon">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
-        <h4>Ātra izpilde</h4>
-        <p>Standarta pasūtījumi gatavi 3–5 darba dienās pēc maketa apstiprināšanas.</p>
+        <h4><%= isRu ? 'Быстрое изготовление' : 'Ātra izpilde' %></h4>
+        <p><%= isRu ? 'Стандартные заказы готовы за 3–5 рабочих дней после утверждения макета.' : 'Standarta pasūtījumi gatavi 3–5 darba dienās pēc maketa apstiprināšanas.' %></p>
       </div>
       <div class="vk-why-card">
         <div class="vk-why-icon">
           <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
         </div>
-        <h4>Konkurētspējīgas cenas</h4>
-        <p>Piedāvājam labas cenas gan maziem, gan lieliem pasūtījumiem.</p>
+        <h4><%= isRu ? 'Выгодные цены' : 'Konkurētspējīgas cenas' %></h4>
+        <p><%= isRu ? 'Предлагаем разумные цены как для небольших, так и для крупных тиражей.' : 'Piedāvājam labas cenas gan maziem, gan lieliem pasūtījumiem.' %></p>
       </div>
     </div>
   </div>
@@ -132,8 +135,8 @@
 <section class="vk-gallery">
   <div class="container">
     <div class="vk-section-header">
-      <span class="vk-eyebrow-dark">Darbu piemēri</span>
-      <h2>Galerija</h2>
+      <span class="vk-eyebrow-dark"><%= isRu ? 'Примеры работ' : 'Darbu piemēri' %></span>
+      <h2><%= isRu ? 'Галерея' : 'Galerija' %></h2>
     </div>
     <div class="vk-gallery-slider" data-portfolio-slider>
       <button class="vk-gallery-btn left" type="button" onclick="portfolioSlide(this, -1)">
@@ -160,25 +163,25 @@
   <div class="container">
     <div class="vk-contact-inner">
       <div class="vk-contact-copy">
-        <span class="vk-eyebrow-dark">Sazināties</span>
-        <h2>Cenu pieprasījums</h2>
-        <p>Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.</p>
+        <span class="vk-eyebrow-dark"><%= isRu ? 'Связаться с нами' : 'Sazināties' %></span>
+        <h2><%= servicePage.contactTitle %></h2>
+        <p><%= isRu ? 'Заполните форму, и мы свяжемся с вами, чтобы обсудить тираж, бумагу, отделку и подготовить предложение.' : 'Aizpildiet formu un mēs sazināsimies ar jums, lai apspriestu detaļas un sagatavotu piedāvājumu.' %></p>
         <div class="vk-contact-tips">
           <div class="vk-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Norādiet aptuvenais tirāžu
+            <%= isRu ? 'Укажите примерный тираж' : 'Norādiet aptuvenais tirāžu' %>
           </div>
           <div class="vk-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Vizītkaršu veids (standarta, teksturēts, sietspiede)
+            <%= isRu ? 'Тип визиток: стандартные, текстурные или шелкография' : 'Vizītkaršu veids (standarta, teksturēts, sietspiede)' %>
           </div>
           <div class="vk-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Vai ir gatavs dizains vai nepieciešama izstrāde
+            <%= isRu ? 'Есть ли готовый дизайн или нужна разработка' : 'Vai ir gatavs dizains vai nepieciešama izstrāde' %>
           </div>
           <div class="vk-tip">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Pievienojiet dizaina failu, ja ir
+            <%= isRu ? 'Прикрепите файл дизайна, если он уже есть' : 'Pievienojiet dizaina failu, ja ir' %>
           </div>
         </div>
         <div class="vk-contact-phones">
@@ -199,8 +202,7 @@
         <div class="vr-success">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#255f31" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <div>
-            <strong>Ziņa veiksmīgi nosūtīta!</strong>
-            <span>Sazināsimies ar jums pēc iespējas ātrāk.</span>
+            <strong><%= servicePage.contactSuccess %></strong>
           </div>
         </div>
       <% } else { %>
@@ -210,41 +212,41 @@
             <%= it.error %>
           </div>
         <% } %>
-        <form action="/pakalpojumi-kontakts" method="POST" enctype="multipart/form-data" class="vk-form">
+        <form action="<%= it.localizedPath('/pakalpojumi-kontakts') %>" method="POST" enctype="multipart/form-data" class="vk-form">
           <input type="hidden" name="_csrf" value="<%= it.csrf %>">
-          <input type="hidden" name="returnTo" value="/vizitkartes/">
+          <input type="hidden" name="returnTo" value="<%= it.localizedPath(it.service.path) %>">
           <div class="vk-form-row">
             <div class="form-group">
-              <label class="vk-label">Vārds <span class="required">*</span></label>
-              <input type="text" name="name" class="vk-input" required placeholder="Jānis Bērziņš">
+              <label class="vk-label"><%= contact.name %> <span class="required">*</span></label>
+              <input type="text" name="name" class="vk-input" required placeholder="<%= isRu ? 'Иван Петров' : 'Jānis Bērziņš' %>">
             </div>
             <div class="form-group">
-              <label class="vk-label">E-pasts <span class="required">*</span></label>
-              <input type="email" name="email" class="vk-input" required placeholder="janis@example.lv">
+              <label class="vk-label"><%= contact.email %> <span class="required">*</span></label>
+              <input type="email" name="email" class="vk-input" required placeholder="<%= isRu ? 'ivan@example.lv' : 'janis@example.lv' %>">
             </div>
           </div>
           <div class="form-group">
-            <label class="vk-label">Tālrunis</label>
+            <label class="vk-label"><%= contact.phone %></label>
             <input type="tel" name="phone" class="vk-input" placeholder="+371 2X XXX XXX">
           </div>
           <div class="form-group">
-            <label class="vk-label">Jūsu ziņa <span class="required">*</span></label>
-            <textarea name="message" class="vk-input vk-textarea" required maxlength="180" data-message-input placeholder="Tirāža, vizītkaršu veids, vai ir dizains..."></textarea>
+            <label class="vk-label"><%= contact.message %> <span class="required">*</span></label>
+            <textarea name="message" class="vk-input vk-textarea" required maxlength="180" data-message-input placeholder="<%= isRu ? 'Тираж, тип визиток, нужен ли дизайн...' : 'Tirāža, vizītkaršu veids, vai ir dizains...' %>"></textarea>
             <div style="text-align:right;font-size:12px;color:#a099cc;margin-top:4px;"><span data-message-count>0</span> / 180</div>
           </div>
           <div class="form-group">
-            <label class="vk-label">Dizaina fails</label>
+            <label class="vk-label"><%= contact.attachment %></label>
             <label class="upload-dropzone">
               <input type="file" name="attachment" class="upload-dropzone-input" data-file-input accept=".pdf,.jpg,.jpeg,.png,.svg,.ai,.eps,.doc,.docx">
               <span class="upload-dropzone-copy">
-                <strong>Pievienot dizaina failu</strong>
-                <small data-file-label>PDF, AI, EPS, JPG, PNG, SVG</small>
+                <strong><%= contact.uploadTitle %></strong>
+                <small data-file-label><%= contact.uploadHint %></small>
               </span>
             </label>
           </div>
           <button type="submit" class="vk-btn-primary vk-btn-full">
             <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Nosūtīt pieprasījumu
+            <%= servicePage.contactSubmit %>
           </button>
         </form>
       <% } %>

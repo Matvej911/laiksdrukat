@@ -21,6 +21,7 @@ import {
   sendStoredFile,
   validateImageUpload,
 } from '../../lib/uploads.js'
+import { getStoredOrderTotals } from '../../lib/shipping.js'
 import {
   removeProductFromCatalogCsv,
   upsertProductInCatalogCsv,
@@ -57,6 +58,13 @@ function sanitizeFilename(filename) {
 function normalizeOptionalText(value) {
   const normalized = String(value || '').trim()
   return normalized || null
+}
+
+function withOrderPricing(order) {
+  return {
+    ...order,
+    pricing: getStoredOrderTotals(order),
+  }
 }
 
 async function collectProductForm(request) {
@@ -275,7 +283,7 @@ async function adminRoutes(fastify) {
 
   // Dashboard
   fastify.get('/', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const [productCount, orderCount, pendingOrders, recentOrders, contactMessages] = await Promise.all([
+    const [productCount, orderCount, pendingOrders, recentOrdersRaw, contactMessages] = await Promise.all([
       fastify.db.product.count(),
       fastify.db.order.count(),
       fastify.db.order.count({ where: { status: 'PENDING' } }),
@@ -286,6 +294,7 @@ async function adminRoutes(fastify) {
       }),
       listContactMessages(fastify.db),
     ])
+    const recentOrders = recentOrdersRaw.map(withOrderPricing)
 
     return reply.view('admin/dashboard', {
       title: 'Admin | Dashboard',
@@ -495,10 +504,11 @@ async function adminRoutes(fastify) {
   // --- ORDERS ---
 
   fastify.get('/orders', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const orders = await fastify.db.order.findMany({
+    const ordersRaw = await fastify.db.order.findMany({
       orderBy: { createdAt: 'desc' },
       include: { items: true },
     })
+    const orders = ordersRaw.map(withOrderPricing)
     return reply.view('admin/orders', {
       title: 'Admin | Pasūtījumi',
       orders,
@@ -509,10 +519,11 @@ async function adminRoutes(fastify) {
   })
 
   fastify.get('/orders/:id', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const order = await fastify.db.order.findUnique({
+    const orderRaw = await fastify.db.order.findUnique({
       where: { id: Number(request.params.id) },
       include: { items: { include: { product: true } } },
     })
+    const order = withOrderPricing(orderRaw)
     return reply.view('admin/order-detail', { title: `Pasūtījums #${order.id}`, order, csrf: await reply.generateCsrf(), })
   })
 

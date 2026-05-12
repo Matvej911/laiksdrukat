@@ -4,6 +4,7 @@ import { readFile } from 'fs/promises'
 
 const viewsPath = path.join(process.cwd(), 'src/views')
 import { getNotificationRecipients } from './notification-recipients.js'
+import { getStoredOrderTotals } from './shipping.js'
 import path from 'path'
 const eta = new Eta({ views: viewsPath })
 let cachedTransporter = null
@@ -286,13 +287,7 @@ export async function sendContactNotification(submission) {
 }
 
 function getOrderSummaries({ order, cart }) {
-  const isOmniva = order.note?.includes('Omniva')
-  const shipping = isOmniva ? 3.5 : 0
-
-  const subtotal = Number(order.total) - shipping
-
-  const totalVat = subtotal * 0.21
-  const totalWithVat = subtotal + totalVat + shipping
+  const { subtotal, shipping, totalVat, totalWithVat } = getStoredOrderTotals(order)
   const lines = cart.map((item) => {
     const options = formatOrderOptions(item.options)
 

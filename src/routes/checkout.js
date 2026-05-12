@@ -4,6 +4,7 @@ import {
   sendOwnerOrderNotification,
 } from '../lib/mailer.js'
 import { buildBreadcrumbSchema, resolvePublicBaseUrl } from '../lib/seo.js'
+import { getCheckoutTotals, getOmnivaDeliveryFee, getStoredOrderTotals } from '../lib/shipping.js'
 import { resolveUploadPath } from '../lib/uploads.js'
 import { getOmnivaLockerGroups } from '../lib/omniva-lockers.js'
 
@@ -58,6 +59,13 @@ function notifyOrderEmails(fastify, { order, cart, attachments }) {
   })
 }
 
+function buildCheckoutViewModel(subtotalExVat, deliveryType = 'pickup') {
+  return {
+    total: subtotalExVat,
+    ...getCheckoutTotals(subtotalExVat, deliveryType),
+  }
+}
+
 async function checkoutRoutes(fastify) {
   const omnivaLockerGroups = getOmnivaLockerGroups()
 
@@ -81,6 +89,7 @@ async function checkoutRoutes(fastify) {
       { name: 'Pasūtījums', path: '/pasutijums/' },
     ]
     const total = await fastify.validatedCartTotal(request)
+    const checkoutTotals = buildCheckoutViewModel(total)
 
     fastify.log.info({
       route: '/pasutijums/',
@@ -94,7 +103,7 @@ async function checkoutRoutes(fastify) {
       robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
       breadcrumbs,
       cart,
-      total,
+      ...checkoutTotals,
       omnivaLockerGroups,
       csrf: await reply.generateCsrf(),
       structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),
@@ -126,13 +135,16 @@ async function checkoutRoutes(fastify) {
     } = request.body
     
     const needsAddress = deliveryType === 'omniva'
+    const cartTotal = await fastify.validatedCartTotal(request)
+    const checkoutTotals = buildCheckoutViewModel(cartTotal, deliveryType || 'pickup')
+
     if (!firstName || !lastName || !email || (needsAddress && !address)) {
       return reply.publicView('pages/checkout', {
         title: 'Checkout | Laiks Drukāt',
         robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
         breadcrumbs,
         cart,
-        total: await fastify.validatedCartTotal(request),
+        ...checkoutTotals,
         error: 'Lūdzu aizpildiet visus obligātos laukus.',
         formData: request.body,
         omnivaLockerGroups,
@@ -148,7 +160,7 @@ async function checkoutRoutes(fastify) {
         robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
         breadcrumbs,
         cart,
-        total: await fastify.validatedCartTotal(request),
+        ...checkoutTotals,
         error: 'Pārāk daudz pasūtījumu no šīs IP adreses. Lūdzu mēģiniet vēlreiz pēc stundas.',
         formData: request.body,
         omnivaLockerGroups,
@@ -157,9 +169,9 @@ async function checkoutRoutes(fastify) {
       })
     }
 
-    const cartTotal = await fastify.validatedCartTotal(request)
-    const deliveryFee = deliveryType === 'omniva' ? 3.50 : 0
-    const total = cartTotal + deliveryFee
+    const deliveryFee = getOmnivaDeliveryFee(cartTotal)
+    const appliedDeliveryFee = deliveryType === 'omniva' ? deliveryFee : 0
+    const total = cartTotal + appliedDeliveryFee
     const name = `${String(firstName).trim()} ${String(lastName).trim()}`.trim()
     const noteParts = [note]
 
@@ -168,7 +180,8 @@ async function checkoutRoutes(fastify) {
     }
     if (deliveryType === 'omniva') {
       const lockerParts = [address, city, zip].filter(Boolean)
-      noteParts.unshift(`Piegāde: Omniva pakomāts (+3.50 €) — ${lockerParts.join(', ')}`)
+      const deliveryLabel = appliedDeliveryFee === 0 ? '(bezmaksas)' : '(+3,50 €)'
+      noteParts.unshift(`Piegāde: Omniva pakomāts ${deliveryLabel} — ${lockerParts.join(', ')}`)
     } else {
       noteParts.unshift(`Piegāde: Saņem birojā (Asteru iela 16A, Jelgava)`)
     }
@@ -303,6 +316,7 @@ async function checkoutRoutes(fastify) {
       breadcrumbs,
       order,
       cart: fastify.getCart(request),
+      pricing: getStoredOrderTotals(order),
       structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),
     })
   })

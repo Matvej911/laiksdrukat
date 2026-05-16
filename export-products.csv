@@ -1,210 +1,209 @@
-﻿ID,Tips,SKU,"GTIN, UPC, EAN, or ISBN",Vārds,Publicēts,Izcelts?,Redzamība katalogā,Īss apraksts,Apraksts,Akcijas cenas sākuma datums,Akcijas cenas beigu datums,Nodokļa status,Nodokļu likme.,Ir noliktavā?,Noliktavā,Zems krājumu apjoms,Atļaut atpkaļpasūtījumus?,Pārdot atsevišķi?,Svars (kg),Garums (cm),Platums (cm),Augstums (cm),Atļaut klientu atsauksmes?,Pirkuma piezīme,Akcijas cena,Parastā cena:,Kategorija,Birkas,Piegādes klase,Attēli,Lejupielādes limits,Lejupielādes derīguma termiņš,Vecāks,Grupētie produkti,Pārdoti dārgāk,Piepārdošanas,Ārēja Saite,Pogas teksts,Pozīcija,Swatches Attributes,Zīmoli,Atribūta 1 nosaukums,Atribūta 1 vērtība (-s),Atribūta 1 redzamība,Atribūta 1 ir globāls,Slug,Nospieduma paraugs
-2541,simple,DRAFT,,Printer C20 Standard,0,0,visible,,"<p class=""font_8"">COLOP Printer C 20 Standart ir paštintējošs taisnstūra zīmogs (14 x 38 mm) ar vietu 4 rindām, ideāli piemērots adresēm un viegli pielāgojams individuālām vēlmēm.</p>\n<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>\n\n<a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c-20stand-stamp.webp""><img class=""alignnone size-medium wp-image-2593"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c-20stand-stamp-300x111.webp"" alt="""" width=""300"" height=""111"" /></a>",,,taxable,,1,,,0,0,,,,,1,,,"12,61",Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c20-stand.jpg,,,,,,,,,32,,,,,,,,
-2543,simple,,,Printer C10 Standard,0,0,visible,,"<p class=""font_8"">COLOP Printer C 10 Standart ir plastmasas paštintējošais zīmogs - taisnstūra formāts - 10 x 27 mm ar 3 rindām, pietiekami lielas, lai iekļautu svarīgāko ziņu. Jūsu viegli pielāgojams individuālais teksta zīmogs.</p>\n<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>\n\n<a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c-10-stans-stamp.webp""><img class=""alignnone size-medium wp-image-2589"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c-10-stans-stamp-300x112.webp"" alt="""" width=""300"" height=""112"" /></a>",,,taxable,,1,,,0,0,,,,,1,,,"11,96",Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c10-stand.jpg,,,,,,,,,33,,,,,,,,
+﻿ID,Tips,SKU,"GTIN, UPC, EAN, or ISBN",Vārds,Publicēts,Izcelts?,Redzamība katalogā,Īss apraksts,Apraksts,Akcijas cenas sākuma datums,Akcijas cenas beigu datums,Nodokļa status,Nodokļu likme.,Ir noliktavā?,Noliktavā,Zems krājumu apjoms,Atļaut atpkaļpasūtījumus?,Pārdot atsevišķi?,Svars (kg),Garums (cm),Platums (cm),Augstums (cm),Atļaut klientu atsauksmes?,Pirkuma piezīme,Akcijas cena,Parastā cena:,Kategorija,Birkas,Piegādes klase,Attēli,Lejupielādes limits,Lejupielādes derīguma termiņš,Vecāks,Grupētie produkti,Pārdoti dārgāk,Piepārdošanas,Ārēja Saite,Pogas teksts,Pozīcija,Swatches Attributes,Zīmoli,Atribūta 1 nosaukums,Atribūta 1 vērtība (-s),Atribūta 1 redzamība,Atribūta 1 ir globāls,Slug
+2541,simple,DRAFT,,Printer C20 Standard,0,0,visible,,"<p class=""font_8"">COLOP Printer C 20 Standart ir paštintējošs taisnstūra zīmogs (14 x 38 mm) ar vietu 4 rindām, ideāli piemērots adresēm un viegli pielāgojams individuālām vēlmēm.</p>
+\n
+\n
+\n<a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c-20stand-stamp.webp""><img class=""alignnone size-medium wp-image-2593"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c-20stand-stamp-300x111.webp"" alt="""" width=""300"" height=""111"" /></a>",,,taxable,,1,,,0,0,,,,,1,,,"12,61",Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c20-stand.jpg,,,,,,,,,32,,,,,,,,
+2543,simple,,,Printer C10 Standard,0,0,visible,,"<p class=""font_8"">COLOP Printer C 10 Standart ir plastmasas paštintējošais zīmogs - taisnstūra formāts - 10 x 27 mm ar 3 rindām, pietiekami lielas, lai iekļautu svarīgāko ziņu. Jūsu viegli pielāgojams individuālais teksta zīmogs.</p>
+\n
+\n
+\n<a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c-10-stans-stamp.webp""><img class=""alignnone size-medium wp-image-2589"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c-10-stans-stamp-300x112.webp"" alt="""" width=""300"" height=""112"" /></a>",,,taxable,,1,,,0,0,,,,,1,,,"11,96",Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c10-stand.jpg,,,,,,,,,33,,,,,,,,
 2544,simple,,,Printer Q 17 - square,1,0,visible,"<p class=""font_8"">COLOP Printer Q 17 ir paškrāsojošs kvadrātveida zīmogs ar nospieduma izmēru 17 x 17 mm, ideāli piemērots iniciāļiem, simboliem un mazām logo.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/Q17.webp""><img class=""alignnone wp-image-2587 size-full"" src=""/images/products/zimogi/Q17.webp"" alt=""Colop Printer Q17 automātiskā zīmoga nospieduma paraugs"" width=""201"" height=""202"" /></a>","<p class=""font_8"">COLOP Printer Q 17 ir paškrāsojošs kvadrātveida zīmogs ar nospieduma izmēru 17 x 17 mm, ideāli piemērots iniciāļiem, simboliem un mazām logo.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/Q17.webp""><img class=""alignnone wp-image-2587 size-full"" src=""/images/products/zimogi/Q17.webp"" alt=""Colop Printer Q17 automātiskā zīmoga nospieduma paraugs"" width=""201"" height=""202"" /></a>",,,taxable,,1,16,,0,0,,,,,1,,,10.06,Zīmogi,,,/images/products/zimogi/122121_black___colop-printer-q17-1.webp,,,,,,,,,14,,,,,,,colop-q-17-square,/images/products/zimogi/Q17.webp
 2545,simple,,,Printer 44 - oval,1,0,visible,"<p class=""font_8"">COLOP Printer 44 Oval ir paškrāsojošs zīmogs ar ovālu nospiedumu izmēru 44 x 28 mm, ideāli piemērots pielāgotiem dizainiem un logotipiem.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/44OC-Photoroom.png""><img class=""alignnone wp-image-2566 size-medium"" src=""/images/products/zimogi/44OC-Photoroom.png"" alt=""Colop Printer 44 ovāla zīmoga nospieduma paraugs"" width=""300"" height=""191"" /></a>","<p class=""font_8"">COLOP Printer 44 Oval ir paškrāsojošs zīmogs ar ovālu nospiedumu izmēru 44 x 28 mm, ideāli piemērots pielāgotiem dizainiem un logotipiem.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/44OC-Photoroom.png""><img class=""alignnone wp-image-2566 size-medium"" src=""/images/products/zimogi/44OC-Photoroom.png"" alt=""Colop Printer 44 ovāla zīmoga nospieduma paraugs"" width=""300"" height=""191"" /></a>",,,taxable,,1,19,,0,0,,,,,1,,,18.85,Zīmogi,,,/images/products/zimogi/122211_black___colop-printer-oval-44-1.webp,,,,,,,,,2,,,,,,,colop-44-oval,/images/products/zimogi/44OC-Photoroom.png
 2546,simple,,,Printer Q 30 - square,1,0,visible,"<p class=""font_8""><strong>COLOP Printer Q 30</strong> ir pievilcīgs kvadrātveida paškrāsojošs zīmogs ar nospieduma izmēru 30 x 30 mm, kas piedāvā vietu līdz 7 rindiņām pielāgotam tekstam.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/Q30-stam-1.webp""><img class=""alignnone wp-image-2571 size-medium"" src=""/images/products/zimogi/Q30-stam-1.webp"" alt=""Colop Printer Q30 zīmoga nospieduma paraugs"" width=""300"" height=""300"" /></a>","<p class=""font_8""><strong>COLOP Printer Q 30</strong> ir pievilcīgs kvadrātveida paškrāsojošs zīmogs ar nospieduma izmēru 30 x 30 mm, kas piedāvā vietu līdz 7 rindiņām pielāgotam tekstam.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/Q30-stam-1.webp""><img class=""alignnone wp-image-2571 size-medium"" src=""/images/products/zimogi/Q30-stam-1.webp"" alt=""Colop Printer Q30 zīmoga nospieduma paraugs"" width=""300"" height=""300"" /></a>",,,taxable,,1,30,,0,0,,,,,1,,,16.12,Zīmogi,,,/images/products/zimogi/Q30-squ-1.webp,,,,,,,,,16,,,,,,,colop-q-30-square,/images/products/zimogi/Q30-stam-1.webp
 2547,simple,,,Printer R 45 - round,1,0,visible,"<p class=""font_8"">COLOP Printer R 45-round ir ideāls uzņēmuma zīmogs ar lielu apaļu teksta plāksni, nodrošinot pietiekami daudz vietas logotipam un līdz pat 9 pielāgojamām teksta rindām. Šis paštintējošais zīmogs veido 45 mm diametra nospiedumu, padarot to perfekti piemērotu uzņēmuma nosaukumiem, adresēm vai logotipiem.</p>
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/round45-stamp.png""><img class=""alignnone wp-image-2573 size-medium"" src=""/images/products/zimogi/round45-stamp.png"" alt=""Colop Printer R45 apaļā zīmoga nospieduma paraugs"" width=""300"" height=""300"" /></a>","<p class=""font_8"">COLOP Printer R 45-round ir ideāls uzņēmuma zīmogs ar lielu apaļu teksta plāksni, nodrošinot pietiekami daudz vietas logotipam un līdz pat 9 pielāgojamām teksta rindām. Šis paštintējošais zīmogs veido 45 mm diametra nospiedumu, padarot to perfekti piemērotu uzņēmuma nosaukumiem, adresēm vai logotipiem.</p>
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/round45-stamp.png""><img class=""alignnone wp-image-2573 size-medium"" src=""/images/products/zimogi/round45-stamp.png"" alt=""Colop Printer R45 apaļā zīmoga nospieduma paraugs"" width=""300"" height=""300"" /></a>",,,taxable,,1,19,,0,0,,,,,1,,,18.83,Zīmogi,,,/images/products/zimogi/122213_black___colop-printer-r45-1-1.webp,,,,,,,,,19,,,,,,,colop-r-45-round,/images/products/zimogi/round45-stamp.png
-2548,simple,,,Printer C40 Standard,0,0,visible,,"<p class=""font_8"">COLOP Printer C 40 Standart ir pielāgojams adrešu zīmogs ar taisnstūra nospieduma laukumu 23 x 59 mm un vietu līdz 6 teksta rindām, ideāli piemērots pasta adresēm, e-pastam un tīmekļa vietnēm.</p>\n<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>\n\n<a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c40stan-stamp.webp""><img class=""alignnone size-medium wp-image-2575"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c40stan-stamp-300x117.webp"" alt="""" width=""300"" height=""117"" /></a>",,,taxable,,1,,,0,0,,,,,1,,,"17,99",Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c40standart.jpg,,,,,,,,,31,,,,,,,,
-2549,simple,,,Printer C60 Standard,0,0,visible,,"<p class=""font_8"">COLOP Printer 60 Standart ir lielākais teksta zīmogs savā kategorijā, piedāvājot līdz pat 8 rindām vietas gandrīz jebkuram tekstam vai garām adresēm taisnstūra formāta teksta plāksnē 37 x 76 mm. Pieejams līdz 8 dažādām versijām. Lielais attēla logs var tikt viegli pielāgots.</p>\n<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>\n\n<a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c60standart-stamp.webp""><img class=""alignnone size-medium wp-image-2579"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c60standart-stamp-300x146.webp"" alt="""" width=""300"" height=""146"" /></a>\n\n&nbsp;",,,taxable,,1,,,0,0,,,,,1,,,"24,2",Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c60-standart.webp,,,,,,,,,55,,,,,,,,
+2548,simple,,,Printer C40 Standard,0,0,visible,,"<p class=""font_8"">COLOP Printer C 40 Standart ir pielāgojams adrešu zīmogs ar taisnstūra nospieduma laukumu 23 x 59 mm un vietu līdz 6 teksta rindām, ideāli piemērots pasta adresēm, e-pastam un tīmekļa vietnēm.</p>
+\n
+\n
+\n<a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c40stan-stamp.webp""><img class=""alignnone size-medium wp-image-2575"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c40stan-stamp-300x117.webp"" alt="""" width=""300"" height=""117"" /></a>",,,taxable,,1,,,0,0,,,,,1,,,"17,99",Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c40standart.jpg,,,,,,,,,31,,,,,,,,
+2549,simple,,,Printer C60 Standard,0,0,visible,,"<p class=""font_8"">COLOP Printer 60 Standart ir lielākais teksta zīmogs savā kategorijā, piedāvājot līdz pat 8 rindām vietas gandrīz jebkuram tekstam vai garām adresēm taisnstūra formāta teksta plāksnē 37 x 76 mm. Pieejams līdz 8 dažādām versijām. Lielais attēla logs var tikt viegli pielāgots.</p>
+\n
+\n
+\n<a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c60standart-stamp.webp""><img class=""alignnone size-medium wp-image-2579"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c60standart-stamp-300x146.webp"" alt="""" width=""300"" height=""146"" /></a>
+\n
+\n&nbsp;",,,taxable,,1,,,0,0,,,,,1,,,"24,2",Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c60-standart.webp,,,,,,,,,55,,,,,,,,
 2551,simple,,,Printer R 24 - round,1,0,visible,"<p class=""font_8"">COLOP Printer R 24-round ir būtisks apaļais zīmogs ar 24 mm diametru, ideāli piemērots oficiāliem zīmogiem, notāru zīmogiem, biedrībām un vispārējai biznesa lietošanai.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/R24-stamp.png""><img class=""alignnone wp-image-2583 "" src=""/images/products/zimogi/R24-stamp.png"" alt=""Colop Printer R24 apaļā zīmoga nospieduma paraugs"" width=""167"" height=""167"" /></a>","<p class=""font_8"">COLOP Printer R 24-round ir būtisks apaļais zīmogs ar 24 mm diametru, ideāli piemērots oficiāliem zīmogiem, notāru zīmogiem, biedrībām un vispārējai biznesa lietošanai.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/R24-stamp.png""><img class=""alignnone wp-image-2583 "" src=""/images/products/zimogi/R24-stamp.png"" alt=""Colop Printer R24 apaļā zīmoga nospieduma paraugs"" width=""167"" height=""167"" /></a>",,,taxable,,1,16,,0,0,,,,,1,,,13.22,Zīmogi,,,/images/products/zimogi/R24-1.webp,,,,,,,,,23,,,,,,,colop-r-24-round,/images/products/zimogi/R24-stamp.png
 2555,simple,,,Printer R 40 - round,1,1,visible,"<p class=""font_8"">COLOP Printer R 40-round 40 mm diametrs nodrošina pietiekami daudz vietas informatīviem un pievilcīgiem nospiedumiem, kas ir ideāli piemēroti logotipu, simbolu un teksta apvienošanai.</p>
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/R40-Photoroom.png""><img class=""alignnone wp-image-2563 size-medium"" src=""/images/products/zimogi/R40-Photoroom.png"" alt=""Colop Printer R40 zīmoga nospieduma piemērs "" width=""300"" height=""300"" /></a>","<p class=""font_8"">COLOP Printer R 40-round 40 mm diametrs nodrošina pietiekami daudz vietas informatīviem un pievilcīgiem nospiedumiem, kas ir ideāli piemēroti logotipu, simbolu un teksta apvienošanai.</p>
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/R40-Photoroom.png""><img class=""alignnone wp-image-2563 size-medium"" src=""/images/products/zimogi/R40-Photoroom.png"" alt=""Colop Printer R40 zīmoga nospieduma piemērs "" width=""300"" height=""300"" /></a>",,,taxable,,1,19,,0,0,,,,,1,,,18.75,Zīmogi,,,/images/products/zimogi/R40-1.webp,,,,,,,,,21,,,,,,,colop-r-40-round,/images/products/zimogi/R40-Photoroom.png
-2556,simple,,,Printer C30 Standard,0,0,visible,,"<p class=""font_8"">COLOP Printer 30 Standart ir taisnstūra paštintējošais zīmogs formātā 18 x 47 mm ar 5 rindām, piedāvājot pietiekami daudz vietas svarīgākajiem kontaktinformācijas datiem. Šis paštintējošais zīmogs ir pilnībā izgatavots no augstas kvalitātes plastmasas.</p>\n<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>\n\n<a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/standart30c3-stamp.webp""><img class=""alignnone size-medium wp-image-2565"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/standart30c3-stamp-300x115.webp"" alt="""" width=""300"" height=""115"" /></a>",,,taxable,,1,,,0,0,,,,,1,,,"14,56",Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c30standart.jpg,,,,,,,,,30,,,,,,,,
-2603,simple,,,Printer C50 Standard,0,0,visible,,"<div data-draftjs-conductor-fragment=""{&quot;blocks&quot;:[{&quot;key&quot;:&quot;dqm65&quot;,&quot;text&quot;:&quot;COLOP Printer 50 Standart ir pielāgojams zīmogs ar 30 x 69 mm nospieduma laukumu, ideāli piemērots visu svarīgo informācijas, piemēram, kontaktinformācijas, attēlošanai ar līdz pat 7 tekstu rindām.&quot;,&quot;type&quot;:&quot;unstyled&quot;,&quot;depth&quot;:0,&quot;inlineStyleRanges&quot;:[],&quot;entityRanges&quot;:[],&quot;data&quot;:{&quot;attributes&quot;:{&quot;className&quot;:&quot;&quot;}}}],&quot;entityMap&quot;:{}}"">COLOP Printer 50 Standart ir pielāgojams zīmogs ar 30 x 69 mm nospieduma laukumu, ideāli piemērots visu svarīgo informācijas, piemēram, kontaktinformācijas, attēlošanai ar līdz pat 7 tekstu rindām.</div>\n<div data-draftjs-conductor-fragment=""{&quot;blocks&quot;:[{&quot;key&quot;:&quot;dqm65&quot;,&quot;text&quot;:&quot;COLOP Printer 50 Standart ir pielāgojams zīmogs ar 30 x 69 mm nospieduma laukumu, ideāli piemērots visu svarīgo informācijas, piemēram, kontaktinformācijas, attēlošanai ar līdz pat 7 tekstu rindām.&quot;,&quot;type&quot;:&quot;unstyled&quot;,&quot;depth&quot;:0,&quot;inlineStyleRanges&quot;:[],&quot;entityRanges&quot;:[],&quot;data&quot;:{&quot;attributes&quot;:{&quot;className&quot;:&quot;&quot;}}}],&quot;entityMap&quot;:{}}""></div>\n<div data-draftjs-conductor-fragment=""{&quot;blocks&quot;:[{&quot;key&quot;:&quot;dqm65&quot;,&quot;text&quot;:&quot;COLOP Printer 50 Standart ir pielāgojams zīmogs ar 30 x 69 mm nospieduma laukumu, ideāli piemērots visu svarīgo informācijas, piemēram, kontaktinformācijas, attēlošanai ar līdz pat 7 tekstu rindām.&quot;,&quot;type&quot;:&quot;unstyled&quot;,&quot;depth&quot;:0,&quot;inlineStyleRanges&quot;:[],&quot;entityRanges&quot;:[],&quot;data&quot;:{&quot;attributes&quot;:{&quot;className&quot;:&quot;&quot;}}}],&quot;entityMap&quot;:{}}""><strong>Nospieduma paraugs</strong></div>\n<div data-draftjs-conductor-fragment=""{&quot;blocks&quot;:[{&quot;key&quot;:&quot;dqm65&quot;,&quot;text&quot;:&quot;COLOP Printer 50 Standart ir pielāgojams zīmogs ar 30 x 69 mm nospieduma laukumu, ideāli piemērots visu svarīgo informācijas, piemēram, kontaktinformācijas, attēlošanai ar līdz pat 7 tekstu rindām.&quot;,&quot;type&quot;:&quot;unstyled&quot;,&quot;depth&quot;:0,&quot;inlineStyleRanges&quot;:[],&quot;entityRanges&quot;:[],&quot;data&quot;:{&quot;attributes&quot;:{&quot;className&quot;:&quot;&quot;}}}],&quot;entityMap&quot;:{}}""><a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/145103_en_imprint50.webp""><img class=""alignnone size-medium wp-image-2604"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/145103_en_imprint50-300x131.webp"" alt="""" width=""300"" height=""131"" /></a></div>",,,taxable,,1,,,0,0,,,,,0,,,20,Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/p50-6-1.jpg,,,,,,,,,54,,,,,,,,
+2556,simple,,,Printer C30 Standard,0,0,visible,,"<p class=""font_8"">COLOP Printer 30 Standart ir taisnstūra paštintējošais zīmogs formātā 18 x 47 mm ar 5 rindām, piedāvājot pietiekami daudz vietas svarīgākajiem kontaktinformācijas datiem. Šis paštintējošais zīmogs ir pilnībā izgatavots no augstas kvalitātes plastmasas.</p>
+\n
+\n
+\n<a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/standart30c3-stamp.webp""><img class=""alignnone size-medium wp-image-2565"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/standart30c3-stamp-300x115.webp"" alt="""" width=""300"" height=""115"" /></a>",,,taxable,,1,,,0,0,,,,,1,,,"14,56",Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/c30standart.jpg,,,,,,,,,30,,,,,,,,
+2603,simple,,,Printer C50 Standard,0,0,visible,,"<div data-draftjs-conductor-fragment=""{&quot;blocks&quot;:[{&quot;key&quot;:&quot;dqm65&quot;,&quot;text&quot;:&quot;COLOP Printer 50 Standart ir pielāgojams zīmogs ar 30 x 69 mm nospieduma laukumu, ideāli piemērots visu svarīgo informācijas, piemēram, kontaktinformācijas, attēlošanai ar līdz pat 7 tekstu rindām.&quot;,&quot;type&quot;:&quot;unstyled&quot;,&quot;depth&quot;:0,&quot;inlineStyleRanges&quot;:[],&quot;entityRanges&quot;:[],&quot;data&quot;:{&quot;attributes&quot;:{&quot;className&quot;:&quot;&quot;}}}],&quot;entityMap&quot;:{}}"">COLOP Printer 50 Standart ir pielāgojams zīmogs ar 30 x 69 mm nospieduma laukumu, ideāli piemērots visu svarīgo informācijas, piemēram, kontaktinformācijas, attēlošanai ar līdz pat 7 tekstu rindām.</div>
+\n<div data-draftjs-conductor-fragment=""{&quot;blocks&quot;:[{&quot;key&quot;:&quot;dqm65&quot;,&quot;text&quot;:&quot;COLOP Printer 50 Standart ir pielāgojams zīmogs ar 30 x 69 mm nospieduma laukumu, ideāli piemērots visu svarīgo informācijas, piemēram, kontaktinformācijas, attēlošanai ar līdz pat 7 tekstu rindām.&quot;,&quot;type&quot;:&quot;unstyled&quot;,&quot;depth&quot;:0,&quot;inlineStyleRanges&quot;:[],&quot;entityRanges&quot;:[],&quot;data&quot;:{&quot;attributes&quot;:{&quot;className&quot;:&quot;&quot;}}}],&quot;entityMap&quot;:{}}""></div>
+\n<div data-draftjs-conductor-fragment=""{&quot;blocks&quot;:[{&quot;key&quot;:&quot;dqm65&quot;,&quot;text&quot;:&quot;COLOP Printer 50 Standart ir pielāgojams zīmogs ar 30 x 69 mm nospieduma laukumu, ideāli piemērots visu svarīgo informācijas, piemēram, kontaktinformācijas, attēlošanai ar līdz pat 7 tekstu rindām.&quot;,&quot;type&quot;:&quot;unstyled&quot;,&quot;depth&quot;:0,&quot;inlineStyleRanges&quot;:[],&quot;entityRanges&quot;:[],&quot;data&quot;:{&quot;attributes&quot;:{&quot;className&quot;:&quot;&quot;}}}],&quot;entityMap&quot;:{}}""></div>
+\n<div data-draftjs-conductor-fragment=""{&quot;blocks&quot;:[{&quot;key&quot;:&quot;dqm65&quot;,&quot;text&quot;:&quot;COLOP Printer 50 Standart ir pielāgojams zīmogs ar 30 x 69 mm nospieduma laukumu, ideāli piemērots visu svarīgo informācijas, piemēram, kontaktinformācijas, attēlošanai ar līdz pat 7 tekstu rindām.&quot;,&quot;type&quot;:&quot;unstyled&quot;,&quot;depth&quot;:0,&quot;inlineStyleRanges&quot;:[],&quot;entityRanges&quot;:[],&quot;data&quot;:{&quot;attributes&quot;:{&quot;className&quot;:&quot;&quot;}}}],&quot;entityMap&quot;:{}}""><a href=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/145103_en_imprint50.webp""><img class=""alignnone size-medium wp-image-2604"" src=""https://www.laiksdrukat.lv/wp-content/uploads/2026/02/145103_en_imprint50-300x131.webp"" alt="""" width=""300"" height=""131"" /></a></div>",,,taxable,,1,,,0,0,,,,,0,,,20,Zīmogi,,,https://www.laiksdrukat.lv/wp-content/uploads/2026/02/p50-6-1.jpg,,,,,,,,,54,,,,,,,,
 2606,simple,,,Printer R 12 - round,1,0,visible,"COLOP Printer R 12-round ir mazākais apaļais pielāgojamais zīmogs savā kategorijā ar 12 mm diametru, ideāli piemērots maziem logotipiem vai piktogrammām.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 
 <a href=""/images/products/zimogi/122175_imprint-1R12-Photoroom.png""><img class=""alignnone wp-image-2607 size-full"" src=""/images/products/zimogi/122175_imprint-1R12-Photoroom.png"" alt=""Colop Printer R12 apaļā zīmoga nospiedums"" width=""142"" height=""142"" /></a><br>","COLOP Printer R 12-round ir mazākais apaļais pielāgojamais zīmogs savā kategorijā ar 12 mm diametru, ideāli piemērots maziem logotipiem vai piktogrammām.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 
 <a href=""/images/products/zimogi/122175_imprint-1R12-Photoroom.png""><img class=""alignnone wp-image-2607 size-full"" src=""/images/products/zimogi/122175_imprint-1R12-Photoroom.png"" alt=""Colop Printer R12 apaļā zīmoga nospiedums"" width=""142"" height=""142"" /></a><br>",,,taxable,,1,18,,0,0,,,,,0,,,8.18,Zīmogi,,,/images/products/zimogi/122175_black___colop-printer-r12-1.webp,,,,,,,,,25,,,,,,,colop-r-12-round,/images/products/zimogi/122175_imprint-1R12-Photoroom.png
-2609,simple,,,Printer R 17 - round,1,0,visible,"COLOP Printer R 17-round  mazais un apaļais formāts ir ideāli piemērots kvalitātes vai inspekcijas zīmogam, kā arī citiem īsiem ziņojumiem. Diameters 17mm<br><strong>Nospieduma paraugs</strong><br>
-<a href=""/images/products/zimogi/122178_en_imprintR17-Photoroom.png""><img class=""alignnone wp-image-2610 size-thumbnail"" src=""/images/products/zimogi/122178_en_imprintR17-Photoroom.png"" alt=""Colop Printer R17 apaļā zīmoga nospiedums"" width=""150"" height=""150"" /></a><br>","COLOP Printer R 17-round  mazais un apaļais formāts ir ideāli piemērots kvalitātes vai inspekcijas zīmogam, kā arī citiem īsiem ziņojumiem. Diameters 17mm<br><strong>Nospieduma paraugs</strong><br>
+2609,simple,,,Printer R 17 - round,1,0,visible,"COLOP Printer R 17-round  mazais un apaļais formāts ir ideāli piemērots kvalitātes vai inspekcijas zīmogam, kā arī citiem īsiem ziņojumiem. Diameters 17mm<br><br>
+<a href=""/images/products/zimogi/122178_en_imprintR17-Photoroom.png""><img class=""alignnone wp-image-2610 size-thumbnail"" src=""/images/products/zimogi/122178_en_imprintR17-Photoroom.png"" alt=""Colop Printer R17 apaļā zīmoga nospiedums"" width=""150"" height=""150"" /></a><br>","COLOP Printer R 17-round  mazais un apaļais formāts ir ideāli piemērots kvalitātes vai inspekcijas zīmogam, kā arī citiem īsiem ziņojumiem. Diameters 17mm<br><br>
 <a href=""/images/products/zimogi/122178_en_imprintR17-Photoroom.png""><img class=""alignnone wp-image-2610 size-thumbnail"" src=""/images/products/zimogi/122178_en_imprintR17-Photoroom.png"" alt=""Colop Printer R17 apaļā zīmoga nospiedums"" width=""150"" height=""150"" /></a><br>",,,taxable,,1,17,,0,0,,,,,0,,,10.58,Zīmogi,,,/images/products/zimogi/122178_black___colop-printer-r17-1.webp,,,,,,,,,24,,,,,,,colop-r-17-round,/images/products/zimogi/122178_en_imprintR17-Photoroom.png
 2612,simple,,,Printer R 30 - round,1,0,visible,"COLOP Printer R 30-round ir apaļas formas zīmogs ar 30 mm diametru, ko bieži izmanto kā oficiālu zīmogu, piedāvājot plašas radošas iespējas.<br>
 
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/R30-Photoroom.png""><img class=""alignnone wp-image-2613 size-medium"" src=""/images/products/zimogi/R30-Photoroom.png"" alt=""Colop Printer R30 apaļā zīmoga nospiedums"" width=""300"" height=""300"" /></a><br>","COLOP Printer R 30-round ir apaļas formas zīmogs ar 30 mm diametru, ko bieži izmanto kā oficiālu zīmogu, piedāvājot plašas radošas iespējas.<br>
 
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/R30-Photoroom.png""><img class=""alignnone wp-image-2613 size-medium"" src=""/images/products/zimogi/R30-Photoroom.png"" alt=""Colop Printer R30 apaļā zīmoga nospiedums"" width=""300"" height=""300"" /></a><br>",,,taxable,,1,18,,0,0,,,,,0,,,16.10,Zīmogi,,,/images/products/zimogi/R30-1.webp,,,,,,,,,22,,,,,,,colop-r-30-round,/images/products/zimogi/R30-Photoroom.png
 2615,simple,,,Printer R 50 - round,1,0,visible,"COLOP Printer R 50 - round ar 50 mm diametra nospiedumu šis zīmogs nodrošina daudz vietas informatīviem un pievilcīgiem nospiedumiem, kas ir ideāli piemēroti logotipu, simbolu un teksta apvienošanai.<br>
 
 
-<strong>Nospieduma paraugs</strong><br>
+
 <a href=""/images/products/zimogi/R50-Photoroom.png""><img class=""alignnone wp-image-2616 size-medium"" src=""/images/products/zimogi/R50-Photoroom.png"" alt=""Colop Printer R50 zīmoga nospieduma piemērs "" width=""300"" height=""300"" /></a><br>","COLOP Printer R 50 - round ar 50 mm diametra nospiedumu šis zīmogs nodrošina daudz vietas informatīviem un pievilcīgiem nospiedumiem, kas ir ideāli piemēroti logotipu, simbolu un teksta apvienošanai.<br>
 
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/R50-Photoroom.png""><img class=""alignnone wp-image-2616 size-medium"" src=""/images/products/zimogi/R50-Photoroom.png"" alt=""Colop Printer R50 zīmoga nospieduma piemērs "" width=""300"" height=""300"" /></a><br>",,,taxable,,1,17,,0,0,,,,,0,,,24.09,Zīmogi,,,/images/products/zimogi/R50-1.webp,,,,,,,,,18,,,,,,,colop-r-50-round,/images/products/zimogi/R50-Photoroom.png
 2619,simple,,,Mini Print S 110,1,0,visible,"COLOP Mini Print S 110 ir kompakts plastmasas paškrāsojošs zīmogs līdz 2 tekstu rindām ar garenisku taisnstūra nospiedumu 8 x 52 mm, ideāli piemērots gariem ziņojumiem vai īsiem teikumiem.<br>
 
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/122240_en_imprintS110.webp""><img class=""alignnone wp-image-2621 size-medium"" src=""/images/products/zimogi/122240_en_imprintS110.webp"" alt=""Nospieduma piemērs Colop Mini Print S110"" width=""300"" height=""47"" /></a><br>","COLOP Mini Print S 110 ir kompakts plastmasas paškrāsojošs zīmogs līdz 2 tekstu rindām ar garenisku taisnstūra nospiedumu 8 x 52 mm, ideāli piemērots gariem ziņojumiem vai īsiem teikumiem.<br>
 
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/122240_en_imprintS110.webp""><img class=""alignnone wp-image-2621 size-medium"" src=""/images/products/zimogi/122240_en_imprintS110.webp"" alt=""Nospieduma piemērs Colop Mini Print S110"" width=""300"" height=""47"" /></a><br>",,,taxable,,1,19,,0,0,,,,,0,,,11.50,Zīmogi,,,/images/products/zimogi/MINI-S110.webp,,,,,,,,,3,,,,,,,colop-mini-print-s-110,/images/products/zimogi/122240_en_imprintS110.webp
 2622,simple,,,Printer 55 - oval,1,0,visible,"COLOP Printer 55 Oval ir paškrāsojošs zīmogs ar ovālu nospiedumu izmēru 55 x 35 mm, ideāli piemērots detalizētiem dizainiem un logotipiem.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/OV55-Photoroom.png""><img class=""alignnone wp-image-2623 size-medium"" src=""/images/products/zimogi/OV55-Photoroom.png"" alt=""Colop Printer 55 ovāla zīmoga nospiedums"" width=""300"" height=""191"" /></a><br>","COLOP Printer 55 Oval ir paškrāsojošs zīmogs ar ovālu nospiedumu izmēru 55 x 35 mm, ideāli piemērots detalizētiem dizainiem un logotipiem.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/OV55-Photoroom.png""><img class=""alignnone wp-image-2623 size-medium"" src=""/images/products/zimogi/OV55-Photoroom.png"" alt=""Colop Printer 55 ovāla zīmoga nospiedums"" width=""300"" height=""191"" /></a><br>",,,taxable,,1,17,,0,0,,,,,0,,,21.45,Zīmogi,,,/images/products/zimogi/122209_black___colop-printer-oval-55_2-1.webp,,,,,,,,,1,,,,,,,colop-55-oval,/images/products/zimogi/OV55-Photoroom.png
 2625,simple,,,Printer T 45 - triangular,1,0,visible,"COLOP Printer T 45 piedāvā unikālu trīsstūra formas tekstu plāksni ar izmēriem 45 x 45 x 45 mm, ideāli piemērota radošiem nospiedumiem gan privātai, gan biroja lietošanai.<br>
 
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/TRIAN-Photoroom.png""><img class=""alignnone wp-image-2626 size-medium"" src=""/images/products/zimogi/TRIAN-Photoroom.png"" alt=""Colop Printer T45 trīsstūrveida zīmoga nospiedums"" width=""300"" height=""260"" /></a><br>","COLOP Printer T 45 piedāvā unikālu trīsstūra formas tekstu plāksni ar izmēriem 45 x 45 x 45 mm, ideāli piemērota radošiem nospiedumiem gan privātai, gan biroja lietošanai.<br>
 
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/TRIAN-Photoroom.png""><img class=""alignnone wp-image-2626 size-medium"" src=""/images/products/zimogi/TRIAN-Photoroom.png"" alt=""Colop Printer T45 trīsstūrveida zīmoga nospiedums"" width=""300"" height=""260"" /></a><br>",,,taxable,,1,18,,0,0,,,,,0,,,20.04,Zīmogi,,,/images/products/zimogi/133509_black___colop-printer-t45-1.webp,,,,,,,,,20,,,,,,,colop-t-45-triangular,/images/products/zimogi/TRIAN-Photoroom.png
 2647,simple,,,Printer Q 12-square,1,0,visible,"COLOP Printer Q 12 ir kompakts paškrāsojošs kvadrātveida zīmogs ar nospieduma izmēru 12 x 12 mm, līdz 3 rindām, ideāli piemērots iniciāļiem, simboliem un mazām logo.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/Q12.webp""><img class=""alignnone wp-image-2648 size-full"" src=""/images/products/zimogi/Q12.webp"" alt=""Printer Q12 kvadrātveida zīmoga nospiedums"" width=""142"" height=""143"" /></a><br>","COLOP Printer Q 12 ir kompakts paškrāsojošs kvadrātveida zīmogs ar nospieduma izmēru 12 x 12 mm, līdz 3 rindām, ideāli piemērots iniciāļiem, simboliem un mazām logo.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/Q12.webp""><img class=""alignnone wp-image-2648 size-full"" src=""/images/products/zimogi/Q12.webp"" alt=""Printer Q12 kvadrātveida zīmoga nospiedums"" width=""142"" height=""143"" /></a><br>",,,taxable,,1,16,,0,0,,,,,0,,,7.95,Zīmogi,,,/images/products/zimogi/122119_black___colop-printer-q12-1.webp,,,,,,,,,13,,,,,,,colop-q-12-square,/images/products/zimogi/Q12.webp
 2650,simple,,,Printer Q 24 - square,1,0,visible,"COLOP Printer Q 24 ir paškrāsojošs kvadrātveida zīmogs ar nospieduma izmēru 24 x 24 mm, ideāli piemērots līdz 6 rindiņām teksta.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/Q24-2.webp""><img class=""alignnone wp-image-2651 size-full"" src=""/images/products/zimogi/Q24-2.webp"" alt=""Zīmoga Printer Q24 kvadrātveida nospieduma piemērs"" width=""284"" height=""284"" /></a><br>","COLOP Printer Q 24 ir paškrāsojošs kvadrātveida zīmogs ar nospieduma izmēru 24 x 24 mm, ideāli piemērots līdz 6 rindiņām teksta.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/Q24-2.webp""><img class=""alignnone wp-image-2651 size-full"" src=""/images/products/zimogi/Q24-2.webp"" alt=""Zīmoga Printer Q24 kvadrātveida nospieduma piemērs"" width=""284"" height=""284"" /></a><br>",,,taxable,,1,18,,0,0,,,,,0,,,12.74,Zīmogi,,,/images/products/zimogi/Q24-1.webp,,,,,,,,,15,,,,,,,colop-q-24-square,/images/products/zimogi/Q24-2.webp
 2653,simple,,,Printer Q 43 - square,1,0,visible,"COLOP Printer Q 43 ir lielākais kvadrātveida tekstu zīmogs COLOP Printer sērijā, piedāvājot nospieduma laukumu 43 x 43 mm, ideāli piemērots līdz 10 rindiņām tekstam.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/Q43-1.webp""><img class=""alignnone wp-image-2655 size-medium"" src=""/images/products/zimogi/Q43-1.webp"" alt=""Printer Q43 kvadrātveida zīmoga nospiedums"" width=""300"" height=""300"" /></a><br>","COLOP Printer Q 43 ir lielākais kvadrātveida tekstu zīmogs COLOP Printer sērijā, piedāvājot nospieduma laukumu 43 x 43 mm, ideāli piemērots līdz 10 rindiņām tekstam.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/Q43-1.webp""><img class=""alignnone wp-image-2655 size-medium"" src=""/images/products/zimogi/Q43-1.webp"" alt=""Printer Q43 kvadrātveida zīmoga nospiedums"" width=""300"" height=""300"" /></a><br>",,,taxable,,1,19,,0,0,,,,,0,,,18.67,Zīmogi,,,/images/products/zimogi/Q43-2.webp,,,,,,,,,17,,,,,,,colop-q-43-square,/images/products/zimogi/Q43-1.webp
 2656,simple,,,Mini Dater S 120,1,0,visible,"COLOP S 120 Mini-Dater ir mazākais paštintējošais datuma zīmogs COLOP klāstā, ideāli piemērots gan privātai, gan biroja lietošanai. Tas iespiež datumu diena/mēnesis/gads formātā ar 4 mm augstumu, nodrošinot skaidrus un precīzus nospiedumus. Gadu lente ir derīga 12 gadus, padarot to par ilgtermiņa izvēli.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/122251_en_imprint-1.webp""><img class=""alignnone wp-image-2657 size-full"" src=""/images/products/zimogi/122251_en_imprint-1.webp"" alt=""Mini Dater S120 datuma zīmoga nospieduma paraugs"" width=""221"" height=""47"" /></a><br>","COLOP S 120 Mini-Dater ir mazākais paštintējošais datuma zīmogs COLOP klāstā, ideāli piemērots gan privātai, gan biroja lietošanai. Tas iespiež datumu diena/mēnesis/gads formātā ar 4 mm augstumu, nodrošinot skaidrus un precīzus nospiedumus. Gadu lente ir derīga 12 gadus, padarot to par ilgtermiņa izvēli.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/122251_en_imprint-1.webp""><img class=""alignnone wp-image-2657 size-full"" src=""/images/products/zimogi/122251_en_imprint-1.webp"" alt=""Mini Dater S120 datuma zīmoga nospieduma paraugs"" width=""221"" height=""47"" /></a><br>",,,taxable,,1,18,,0,0,,,,,0,,,6.00,Zīmogi,,,/images/products/zimogi/minidaters120_d03-1.webp,,,,,,,,,0,,,,,,,colop-mini-dater-s-120,/images/products/zimogi/122251_en_imprint-1.webp
 ,simple,,,"Zīmogu tinte Colop 801 ""Sarkana""",1,1,visible,Ūdens bāzes zīmogu spilventiņu tinte ir pieejama 25 ml pudelītēs un ir ideāli piemērota izžuvušu zīmogu spilventiņu atkārtotai uzpildīšanai. Šī augstas kvalitātes tinte ir dokumentu noturīga atbilstoši DIN ISO 14145-2 standartam.,Ūdens bāzes zīmogu spilventiņu tinte ir pieejama 25 ml pudelītēs un ir ideāli piemērota izžuvušu zīmogu spilventiņu atkārtotai uzpildīšanai. Šī augstas kvalitātes tinte ir dokumentu noturīga atbilstoši DIN ISO 14145-2 standartam.,,,,,1,15,,,,,,,,,,,2.50,Zīmogu tintes,,,/images/products/tintes/red-ink-801.webp,,,,,,,,,,,,,,,,zimogu-tinte-sarkana,
 ,simple,,,Printer C10 Compact,1,0,visible,"COLOP Printer C 10 Compact ir kompakts un efektīvs paštintējošs zīmogs, 10 x 27 mm, ar līdz 3 rindām teksta, ideāli piemērots īsas informācijas atzīmēšanai un ērtai pārvadāšanai.
 
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/155688_en_imprint10-1.webp""><img class=""alignnone wp-image-2597 size-medium"" src=""/images/products/zimogi/155688_en_imprint10-1.webp"" alt=""Colop Printer C10 Compact zīmoga nospiedums uz papīra"" width=""300"" height=""112"" /></a>","COLOP Printer C 10 Compact ir kompakts un efektīvs paštintējošs zīmogs, 10 x 27 mm, ar līdz 3 rindām teksta, ideāli piemērots īsas informācijas atzīmēšanai un ērtai pārvadāšanai.
 
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/155688_en_imprint10-1.webp""><img class=""alignnone wp-image-2597 size-medium"" src=""/images/products/zimogi/155688_en_imprint10-1.webp"" alt=""Colop Printer C10 Compact zīmoga nospiedums uz papīra"" width=""300"" height=""112"" /></a>",,,,,1,16,,,,,,,,,,,8.00,Zīmogi,,,/images/products/zimogi/10-1.webp,,,,,,,,,,,,,,,,colop-c10-compact,/images/products/zimogi/155688_en_imprint10-1.webp
 ,simple,,,Printer C20 Compact,1,0,visible,"<p class=""font_8"">COLOP Printer C 20 Compact ir paštintējošs zīmogs ar 14 x 38 mm nospieduma izmēru, līdz 4 rindām teksta, ideāli piemērots adrešu zīmogu vai maziem logo veidošanai.</p>
  
-<p class=""font_8""><strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong></p>
+<p class=""font_8""></p>
 <a href=""/images/products/zimogi/155554_en_imprint20-1.webp""><img class=""alignnone wp-image-2599 size-medium"" src=""/images/products/zimogi/155554_en_imprint20-1.webp"" alt=""Colop Printer C20 Compact automātiskā zīmoga nospieduma paraugs"" width=""300"" height=""111"" /></a>","<p class=""font_8"">COLOP Printer C 20 Compact ir paštintējošs zīmogs ar 14 x 38 mm nospieduma izmēru, līdz 4 rindām teksta, ideāli piemērots adrešu zīmogu vai maziem logo veidošanai.</p>
  
-<p class=""font_8""><strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong></p>
+<p class=""font_8""></p>
 <a href=""/images/products/zimogi/155554_en_imprint20-1.webp""><img class=""alignnone wp-image-2599 size-medium"" src=""/images/products/zimogi/155554_en_imprint20-1.webp"" alt=""Colop Printer C20 Compact automātiskā zīmoga nospieduma paraugs"" width=""300"" height=""111"" /></a>",,,,,1,16,,,,,,,,,,,10.60,Zīmogi,,,/images/products/zimogi/155554_blue___colop-printer-c-20_1-2.webp,,,,,,,,,,,,,,,,printer-c20-compact,/images/products/zimogi/155554_en_imprint20-1.webp
 ,simple,,,Printer C50 Compact,1,0,visible,"COLOP Printer C 50 Compact ir ļoti liela izmēra paštintējošais zīmogs, 30 x 69 mm, līdz 7 tekstu rindām, ideāli piemērots lielākiem adresēm, logo vai detalizētai informācijai.<br>
 
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong><br>
+<br>
 <img class=""alignleft wp-image-2375 size-medium"" src=""/images/products/zimogi/colopstamp50.webp"" alt=""Colop Printer C50 Compact automātiskā zīmoga nospieduma paraugs"" width=""300"" height=""131"" /><br>","COLOP Printer C 50 Compact ir ļoti liela izmēra paštintējošais zīmogs, 30 x 69 mm, līdz 7 tekstu rindām, ideāli piemērots lielākiem adresēm, logo vai detalizētai informācijai.<br>
 
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong><br>
+<br>
 <img class=""alignleft wp-image-2375 size-medium"" src=""/images/products/zimogi/colopstamp50.webp"" alt=""Colop Printer C50 Compact automātiskā zīmoga nospieduma paraugs"" width=""300"" height=""131"" /><br>",,,,,1,18,,,,,,,,,,,17.92,Zīmogi,,,/images/products/zimogi/164547___colop-printer-c-50-1.webp,,,,,,,,,,,,,,,,printer-c50-compact,/images/products/zimogi/colopstamp50.webp
 ,simple,,,Printer C30 Compact,1,1,visible,"<p class=""font_8"">COLOP Printer C 30 Compact ir vidēja izmēra paštintējošais zīmogs, 18 x 47 mm, līdz 5 tekstu rindām, ideāli piemērots detalizētiem zīmogiem uzņēmējdarbībai vai personīgai lietošanai.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/c30-comp-stamp.webp""><img class=""alignnone wp-image-2585 size-medium"" src=""/images/products/zimogi/c30-comp-stamp.webp"" alt=""Colop Printer C30 Compact automātiskā zīmoga nospieduma paraugs"" width=""300"" height=""115"" /></a>","<p class=""font_8"">COLOP Printer C 30 Compact ir vidēja izmēra paštintējošais zīmogs, 18 x 47 mm, līdz 5 tekstu rindām, ideāli piemērots detalizētiem zīmogiem uzņēmējdarbībai vai personīgai lietošanai.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/c30-comp-stamp.webp""><img class=""alignnone wp-image-2585 size-medium"" src=""/images/products/zimogi/c30-comp-stamp.webp"" alt=""Colop Printer C30 Compact automātiskā zīmoga nospieduma paraugs"" width=""300"" height=""115"" /></a>",,,,,1,15,,,,,,,,,,,12.60,Zīmogi,,,/images/products/zimogi/c30-comp.webp,,,,,,,,,,,,,,,,printer-c30-compact,/images/products/zimogi/c30-comp-stamp.webp
 ,simple,,,Printer C40 Compact,1,0,visible,"<p class=""font_8"">COLOP Printer C 40 Compact ir liels paštintējošs zīmogs, 23 x 59 mm, līdz 6 rindām teksta, piemērots adrešu zīmogiem, uzņēmuma logo vai detalizētiem ziņojumiem.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/c40-com-stamp.webp""><img class=""alignnone wp-image-2581 size-medium"" src=""/images/products/zimogi/c40-com-stamp.webp"" alt=""Colop Printer C40 Compact zīmoga nospieduma paraugs"" width=""300"" height=""117"" /></a>","<p class=""font_8"">COLOP Printer C 40 Compact ir liels paštintējošs zīmogs, 23 x 59 mm, līdz 6 rindām teksta, piemērots adrešu zīmogiem, uzņēmuma logo vai detalizētiem ziņojumiem.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/c40-com-stamp.webp""><img class=""alignnone wp-image-2581 size-medium"" src=""/images/products/zimogi/c40-com-stamp.webp"" alt=""Colop Printer C40 Compact zīmoga nospieduma paraugs"" width=""300"" height=""117"" /></a>",,,,,1,17,,,,,,,,,,,15.70,Zīmogi,,,/images/products/zimogi/c40-comp.webp,,,,,,,,,,,,,,,,printer-c40-compact,/images/products/zimogi/c40-com-stamp.webp
 ,simple,,,Printer 15,1,0,visible,"COLOP Printer 15 paškrāsojošs zīmogs no plastmasas - taisnstūra un izstiepts, 10 x 69 mm formātā, paredzēts 3 garām individuālām teksta rindām.<br>
 
-<strong>Nospieduma paraugs</strong>
 
 <a href=""/images/products/zimogi/15.webp""><img class=""alignnone wp-image-2629 size-medium"" src=""/images/products/zimogi/15.webp"" alt=""Colop Printer 15 nospiedums ar tekstu"" width=""300"" height=""44"" /></a>","COLOP Printer 15 paškrāsojošs zīmogs no plastmasas - taisnstūra un izstiepts, 10 x 69 mm formātā, paredzēts 3 garām individuālām teksta rindām.<br>
 
-<strong>Nospieduma paraugs</strong>
 
 <a href=""/images/products/zimogi/15.webp""><img class=""alignnone wp-image-2629 size-medium"" src=""/images/products/zimogi/15.webp"" alt=""Colop Printer 15 nospiedums ar tekstu"" width=""300"" height=""44"" /></a>",,,,,1,16,,,,,,,,,,,15.46,Zīmogi,,,/images/products/zimogi/121985_black___colop-printer-15-1-1.webp,,,,,,,,,,,,,,,,printer-15,/images/products/zimogi/15.webp
 ,simple,,,Printer 25,1,0,visible,"COLOP Printer 25 nodrošina papildu platumu un ir ideāli piemērots gariem ziņojumiem vai vārdiem. Nospieduma izmērs ir 15 x 75 mm, piedāvājot vietu līdz 4 rindām.<br><strong>Nospieduma paraugs</strong>
@@ -214,58 +213,55 @@
 <a href=""/images/products/zimogi/25.webp""><img class=""alignnone wp-image-2632 size-medium"" src=""/images/products/zimogi/25.webp"" alt=""Nospieduma paraugs Colop Printer 25"" width=""300"" height=""60"" /></a>",,,,,1,16,,,,,,,,,,,15.00,Zīmogi,,,/images/products/zimogi/122103_black___colop-printer-25-1-1.webp,,,,,,,,,,,,,,,,printer-25,/images/products/zimogi/25.webp
 ,simple,,,Printer 35,1,0,visible,"COLOP Printer 35 ir ērts paškrāsojošs zīmogs ar taisnstūra nospieduma laukumu 50 x 30 mm, ideāli piemērots līdz 7 rindām teksta un adresēm ar vai bez logotipiem.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/35.webp""><img class=""alignnone wp-image-2636 size-medium"" src=""/images/products/zimogi/35.webp"" alt=""Colop Printer 35 zīmoga nospieduma paraugs"" width=""300"" height=""180"" /></a><br>","COLOP Printer 35 ir ērts paškrāsojošs zīmogs ar taisnstūra nospieduma laukumu 50 x 30 mm, ideāli piemērots līdz 7 rindām teksta un adresēm ar vai bez logotipiem.<br>
 
-<strong>Nospieduma paraugs</strong><br>
 <a href=""/images/products/zimogi/35.webp""><img class=""alignnone wp-image-2636 size-medium"" src=""/images/products/zimogi/35.webp"" alt=""Colop Printer 35 zīmoga nospieduma paraugs"" width=""300"" height=""180"" /></a><br>",,,,,1,16,,,,,,,,,,,17.05,Zīmogi,,,/images/products/zimogi/122115_black___colop-printer-35-1-1.webp,,,,,,,,,,,,,,,,printer-35,/images/products/zimogi/35.webp
 ,simple,,,Printer 38,1,0,visible,"COLOP Printer 38 ir plastmasas paškrāsojošs zīmogs ar taisnstūra teksta plati, kuru izmērs ir 33 x 56 mm, un tas ļauj ievietot līdz 7 rindām teksta. Ideāli piemērots ikdienas lietošanai birojā.<br>
 
-<strong>Nospieduma paraugs</strong><br>
+
 <a href=""/images/products/zimogi/38.webp""><img class=""alignnone wp-image-2639 size-medium"" src=""/images/products/zimogi/38.webp"" alt=""Colop Printer 38 zīmoga nospieduma paraugs"" width=""300"" height=""177"" /></a><br>","COLOP Printer 38 ir plastmasas paškrāsojošs zīmogs ar taisnstūra teksta plati, kuru izmērs ir 33 x 56 mm, un tas ļauj ievietot līdz 7 rindām teksta. Ideāli piemērots ikdienas lietošanai birojā.<br>
 
-<strong>Nospieduma paraugs</strong><br>
+
 <a href=""/images/products/zimogi/38.webp""><img class=""alignnone wp-image-2639 size-medium"" src=""/images/products/zimogi/38.webp"" alt=""Colop Printer 38 zīmoga nospieduma paraugs"" width=""300"" height=""177"" /></a><br>",,,,,1,15,,,,,,,,,,,17.52,Zīmogi,,,/images/products/zimogi/133708_black___colop-printer-38_1-1-1.webp,,,,,,,,,,,,,,,,printer-38,/images/products/zimogi/38.webp
 ,simple,,,Printer 45,1,0,visible,"COLOP Printer 45 piedāvā plašu nospieduma izmēru 82 x 25 mm, ideāli piemērots gariem ziņojumiem vai vārdiem, nodrošinot vietu līdz 6 rindām teksta.<br>
 
-<strong>Nospieduma paraugs</strong><br>
+
 <a href=""/images/products/zimogi/45.webp""><img class=""alignnone wp-image-2642 size-medium"" src=""/images/products/zimogi/45.webp"" alt=""Colop Printer 45 zīmoga nospieduma paraugs"" width=""300"" height=""92"" /></a><br>","COLOP Printer 45 piedāvā plašu nospieduma izmēru 82 x 25 mm, ideāli piemērots gariem ziņojumiem vai vārdiem, nodrošinot vietu līdz 6 rindām teksta.<br>
 
-<strong>Nospieduma paraugs</strong><br>
+
 <a href=""/images/products/zimogi/45.webp""><img class=""alignnone wp-image-2642 size-medium"" src=""/images/products/zimogi/45.webp"" alt=""Colop Printer 45 zīmoga nospieduma paraugs"" width=""300"" height=""92"" /></a><br>",,,,,1,16,,,,,,,,,,,17.99,Zīmogi,,,/images/products/zimogi/122106_black___colop-printer-45_2-1-1.webp,,,,,,,,,,,,,,,,printer-45,/images/products/zimogi/45.webp
 ,simple,,,Printer 52,1,1,visible,"<p class=""font_8"">COLOP Printer 52 ir kompakts un izturīgs biroja zīmogs ar vietu līdz 5 rindām individuālam tekstam formātā 20 x 30 mm.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/52stamp.webp""><img class=""alignnone wp-image-2590 size-medium"" src=""/images/products/zimogi/52stamp.webp"" alt=""Nospieduma piemērs Colop Printer 52"" width=""300"" height=""200"" /></a>","<p class=""font_8"">COLOP Printer 52 ir kompakts un izturīgs biroja zīmogs ar vietu līdz 5 rindām individuālam tekstam formātā 20 x 30 mm.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/52stamp.webp""><img class=""alignnone wp-image-2590 size-medium"" src=""/images/products/zimogi/52stamp.webp"" alt=""Nospieduma piemērs Colop Printer 52"" width=""300"" height=""200"" /></a>",,,,,1,15,,,,,,,,,,,13.68,Zīmogi,,,/images/products/zimogi/122109_black___colop-printer-52-1.webp,,,,,,,,,,,,,,,,printer-52,/images/products/zimogi/52stamp.webp
 ,simple,,,Printer 53,1,0,visible,"<p class=""font_8"">COLOP Printer 53 ir plastmasas paškrāsojošs zīmogs ar taisnstūra tekstu plati 24 x 45 mm, kas ļauj uzdrukāt līdz 7 rindām teksta.</p>
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/53printer.webp""><img class=""alignnone size-medium wp-image-2559"" src=""/images/products/zimogi/53printer.webp"" alt="""" width=""300"" height=""201"" /></a>","<p class=""font_8"">COLOP Printer 53 ir plastmasas paškrāsojošs zīmogs ar taisnstūra tekstu plati 24 x 45 mm, kas ļauj uzdrukāt līdz 7 rindām teksta.</p>
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
+
 
 <a href=""/images/products/zimogi/53printer.webp""><img class=""alignnone size-medium wp-image-2559"" src=""/images/products/zimogi/53printer.webp"" alt="""" width=""300"" height=""201"" /></a>",,,,,1,16,,,,,,,,,,,16.61,Zīmogi,,,/images/products/zimogi/122111_black___colop-printer-53-1-1.webp,,,,,,,,,,,,,,,,printer-53,/images/products/zimogi/53printer.webp
 ,simple,,,Printer 55,1,0,visible,"COLOP Printer 55 ir praktisks paškrāsojošs zīmogs ar nospieduma izmēru 60 x 40 mm, kas ļauj ievietot līdz 8 rindām teksta un ir kompakts, lai to ērti turētu rokās. Ideāli piemērots nospiedumiem birojā, mājās un ceļojot.<br>
 
-<strong>Nospieduma paraugs</strong><br>
+
 <a href=""/images/products/zimogi/55.webp""><img class=""alignnone wp-image-2645 size-medium"" src=""/images/products/zimogi/55.webp"" alt=""Colop Printer 55 zīmoga nospieduma paraugs"" width=""300"" height=""200"" /></a><br>","COLOP Printer 55 ir praktisks paškrāsojošs zīmogs ar nospieduma izmēru 60 x 40 mm, kas ļauj ievietot līdz 8 rindām teksta un ir kompakts, lai to ērti turētu rokās. Ideāli piemērots nospiedumiem birojā, mājās un ceļojot.<br>
 
-<strong>Nospieduma paraugs</strong><br>
+
 <a href=""/images/products/zimogi/55.webp""><img class=""alignnone wp-image-2645 size-medium"" src=""/images/products/zimogi/55.webp"" alt=""Colop Printer 55 zīmoga nospieduma paraugs"" width=""300"" height=""200"" /></a><br>",,,,,1,17,,,,,,,,,,,19.63,Zīmogi,,,/images/products/zimogi/121989_black___colop-printer-55-1-1.webp,,,,,,,,,,,,,,,,printer-55,/images/products/zimogi/55.webp
 ,simple,,,Printer 54,1,0,visible,"<p class=""font_8"">COLOP Printer 54 piedāvā vietu līdz 8 rindām individuāla teksta ievadei ar nospieduma izmēru 40 x 50 mm. Tā modernais dizains piesaista uzmanību ikvienā birojā.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
 
-\ <a href=""/images/products/zimogi/54.webp""><img class=""alignnone wp-image-2595 size-medium"" src=""/images/products/zimogi/54.webp"" alt=""Nospieduma piemērs Colop Printer 54"" width=""300"" height=""240"" /></a>","<p class=""font_8"">COLOP Printer 54 piedāvā vietu līdz 8 rindām individuāla teksta ievadei ar nospieduma izmēru 40 x 50 mm. Tā modernais dizains piesaista uzmanību ikvienā birojā.</p>
+<a href=""/images/products/zimogi/54.webp""><img class=""alignnone wp-image-2595 size-medium"" src=""/images/products/zimogi/54.webp"" alt=""Nospieduma piemērs Colop Printer 54"" width=""300"" height=""240"" /></a>","<p class=""font_8"">COLOP Printer 54 piedāvā vietu līdz 8 rindām individuāla teksta ievadei ar nospieduma izmēru 40 x 50 mm. Tā modernais dizains piesaista uzmanību ikvienā birojā.</p>
  
 
-<strong data-start=""123"" data-end=""137"">Nospieduma paraugs</strong>
 
-\ <a href=""/images/products/zimogi/54.webp""><img class=""alignnone wp-image-2595 size-medium"" src=""/images/products/zimogi/54.webp"" alt=""Nospieduma piemērs Colop Printer 54"" width=""300"" height=""240"" /></a>",,,,,1,17,,,,,,,,,,,17.89,Zīmogi,,,/images/products/zimogi/122113_black___colop-printer-54-1-1.webp,,,,,,,,,,,,,,,,printer-54,/images/products/zimogi/54.webp
+
+<a href=""/images/products/zimogi/54.webp""><img class=""alignnone wp-image-2595 size-medium"" src=""/images/products/zimogi/54.webp"" alt=""Nospieduma piemērs Colop Printer 54"" width=""300"" height=""240"" /></a>",,,,,1,17,,,,,,,,,,,17.89,Zīmogi,,,/images/products/zimogi/122113_black___colop-printer-54-1-1.webp,,,,,,,,,,,,,,,,printer-54,/images/products/zimogi/54.webp

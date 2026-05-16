@@ -441,6 +441,10 @@ async function shopRoutes(fastify, opts = {}) {
         product.description = sanitizeHtml(
           product.description
             .replace(/\s*data-draftjs-conductor-fragment=(?:"[^"]*"|&quot;.*?&quot;)/g, '')
+            .replace(/(?:<br\s*\/?>\s*)?<strong>\s*Nospieduma paraugs\s*<\/strong>(?:\s*<br\s*\/?>)?/gi, '')
+            .replace(/<(?:p|div)[^>]*>\s*Nospieduma paraugs\s*<\/(?:p|div)>/gi, '')
+            .replace(/(?:<br\s*\/?>\s*|\n|\r\n?)Nospieduma paraugs(?:\s*<br\s*\/?>|\s*(?:\n|\r\n?))/gi, '')
+            .replace(/^Nospieduma paraugs\s*(?:<br\s*\/?>)?/gi, '')
             .replace(/<div>\s*<\/div>/g, '')
             .trim(),
           {

@@ -7,6 +7,7 @@ import { unlink } from 'fs/promises'
 import { basename } from 'path'
 import { fileURLToPath } from 'url'
 import { readdirSync, readFileSync } from 'fs'
+import { isAbsolute } from 'path'
 
 import {
   addNotificationRecipient,
@@ -27,7 +28,7 @@ import {
   upsertProductInCatalogCsv,
 } from '../../lib/catalog-csv.js'
 import { invalidateSiteContentCache } from '../../content/site.js'
-import { listContactMessages } from '../../lib/contact-messages.js'
+import { deleteContactMessage, listContactMessages } from '../../lib/contact-messages.js'
 
 
 const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
@@ -199,6 +200,49 @@ async function deleteOrderWithRelatedData(fastify, orderId) {
   )
 
   return { deleted: true }
+}
+
+function extractAttachmentToken(url) {
+  const match = String(url || '').match(/\/fails\/([^/?#]+)/)
+  return match ? match[1] : null
+}
+
+async function deleteContactMessageAttachment(fastify, message) {
+  const attachment = message?.attachment
+  if (!attachment) return
+
+  let upload = null
+  const token = extractAttachmentToken(attachment.url)
+
+  if (token) {
+    upload = await fastify.db.upload.findUnique({
+      where: { token },
+    })
+  }
+
+  const filepath = attachment.path
+    ? (isAbsolute(attachment.path) ? attachment.path : resolveUploadPath(attachment.path))
+    : (upload?.relativePath ? resolveUploadPath(upload.relativePath) : null)
+
+  if (filepath) {
+    try {
+      await unlink(filepath)
+    } catch (error) {
+      if (error?.code !== 'ENOENT') {
+        fastify.log.warn({ error, filepath, messageId: message.id }, 'Failed to remove contact attachment from disk')
+      }
+    }
+  }
+
+  if (upload) {
+    try {
+      await fastify.db.upload.delete({
+        where: { token },
+      })
+    } catch (error) {
+      fastify.log.warn({ error, token, messageId: message.id }, 'Failed to remove contact upload metadata')
+    }
+  }
 }
 
 async function adminRoutes(fastify) {
@@ -554,6 +598,8 @@ async function adminRoutes(fastify) {
     return reply.view('admin/messages', {
       title: 'Admin | Ziņas',
       messages,
+      success: request.query?.success || null,
+      error: request.query?.error || null,
       csrf: await reply.generateCsrf(),
     })
   })
@@ -571,6 +617,18 @@ async function adminRoutes(fastify) {
       message,
       csrf: await reply.generateCsrf(),
     })
+  })
+
+  fastify.post('/messages/:id/delete', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
+    const deletedMessage = await deleteContactMessage(request.params.id, fastify.db)
+
+    if (!deletedMessage) {
+      return reply.redirect('/admin/messages?error=Zi%C5%86a+nav+atrasta')
+    }
+
+    await deleteContactMessageAttachment(fastify, deletedMessage)
+
+    return reply.redirect('/admin/messages?success=Zi%C5%86a+un+pievienotais+fails+veiksm%C4%ABgi+dz%C4%93sti')
   })
 
   // --- NOTIFICATION EMAILS ---

@@ -1,4 +1,4 @@
-import { appendFile, mkdir, readFile } from 'fs/promises'
+import { appendFile, mkdir, readFile, writeFile } from 'fs/promises'
 import { join } from 'path'
 
 const CONTACT_MESSAGES_TABLE = 'ContactSubmission'
@@ -64,6 +64,17 @@ async function appendFileMessage(entry) {
   const submissionsDir = join(process.cwd(), 'data', 'contact-submissions')
   await mkdir(submissionsDir, { recursive: true })
   await appendFile(getContactMessagesFilepath(), `${JSON.stringify(entry)}\n`, 'utf8')
+}
+
+async function writeFileMessages(entries) {
+  const submissionsDir = join(process.cwd(), 'data', 'contact-submissions')
+  await mkdir(submissionsDir, { recursive: true })
+
+  const serialized = entries
+    .map((entry) => `${JSON.stringify(entry)}\n`)
+    .join('')
+
+  await writeFile(getContactMessagesFilepath(), serialized, 'utf8')
 }
 
 async function ensureContactMessagesTable(db) {
@@ -146,6 +157,51 @@ async function readDatabaseMessages(db) {
     : []
 }
 
+async function readDatabaseMessageById(id, db) {
+  const rows = await db.$queryRawUnsafe(
+    `
+      SELECT
+        id,
+        name,
+        email,
+        phone,
+        message,
+        source,
+        attachmentName,
+        attachmentUrl,
+        attachmentPath,
+        createdAt
+      FROM \`${CONTACT_MESSAGES_TABLE}\`
+      WHERE id = ?
+      LIMIT 1
+    `,
+    id,
+  )
+
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return null
+  }
+
+  const row = rows[0]
+
+  return normalizeEntry({
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    message: row.message,
+    source: row.source,
+    createdAt: row.createdAt,
+    attachment: row.attachmentName || row.attachmentUrl || row.attachmentPath
+      ? {
+          name: row.attachmentName,
+          url: row.attachmentUrl,
+          path: row.attachmentPath,
+        }
+      : null,
+  })
+}
+
 async function writeDatabaseMessage(entry, db) {
   await db.$executeRawUnsafe(
     `
@@ -194,4 +250,29 @@ export async function saveContactMessage(entry, db) {
 
   await appendFileMessage(normalized)
   return { storage: 'file' }
+}
+
+export async function deleteContactMessage(id, db) {
+  const messageId = String(id || '').trim()
+  if (!messageId) return null
+
+  const fileMessages = await readFileMessages()
+  const remainingFileMessages = fileMessages.filter((entry) => entry.id !== messageId)
+  const deletedFileMessage = fileMessages.find((entry) => entry.id === messageId) || null
+
+  if (remainingFileMessages.length !== fileMessages.length) {
+    await writeFileMessages(remainingFileMessages)
+  }
+
+  let deletedDbMessage = null
+
+  if (db && await ensureContactMessagesTable(db)) {
+    deletedDbMessage = await readDatabaseMessageById(messageId, db)
+    await db.$executeRawUnsafe(
+      `DELETE FROM \`${CONTACT_MESSAGES_TABLE}\` WHERE id = ?`,
+      messageId,
+    )
+  }
+
+  return deletedDbMessage || deletedFileMessage || null
 }

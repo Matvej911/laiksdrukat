@@ -12,10 +12,21 @@ const CHECKOUT_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000
 const CHECKOUT_RATE_LIMIT_MAX = 5
 const checkoutAttempts = new Map()
 
-function getCheckoutRateLimitState(ip) {
+function getActiveAttempts(map, key, windowMs) {
   const now = Date.now()
-  const attempts = (checkoutAttempts.get(ip) || []).filter((timestamp) => now - timestamp < CHECKOUT_RATE_LIMIT_WINDOW_MS)
-  checkoutAttempts.set(ip, attempts)
+  const attempts = (map.get(key) || []).filter((timestamp) => now - timestamp < windowMs)
+
+  if (attempts.length === 0) {
+    map.delete(key)
+  } else {
+    map.set(key, attempts)
+  }
+
+  return attempts
+}
+
+function getCheckoutRateLimitState(ip) {
+  const attempts = getActiveAttempts(checkoutAttempts, ip, CHECKOUT_RATE_LIMIT_WINDOW_MS)
 
   return {
     attempts,
@@ -26,7 +37,7 @@ function getCheckoutRateLimitState(ip) {
 
 function recordCheckoutAttempt(ip) {
   const now = Date.now()
-  const attempts = (checkoutAttempts.get(ip) || []).filter((timestamp) => now - timestamp < CHECKOUT_RATE_LIMIT_WINDOW_MS)
+  const attempts = getActiveAttempts(checkoutAttempts, ip, CHECKOUT_RATE_LIMIT_WINDOW_MS)
   attempts.push(now)
   checkoutAttempts.set(ip, attempts)
 }

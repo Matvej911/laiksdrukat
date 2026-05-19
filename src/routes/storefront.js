@@ -25,6 +25,19 @@ const HOME_CACHE_TTL_MS = 60 * 1000
 const contactAttempts = new Map()
 const currentYear = new Date().getFullYear()
 
+function getActiveAttempts(map, key, windowMs) {
+  const now = Date.now()
+  const attempts = (map.get(key) || []).filter((timestamp) => now - timestamp < windowMs)
+
+  if (attempts.length === 0) {
+    map.delete(key)
+  } else {
+    map.set(key, attempts)
+  }
+
+  return attempts
+}
+
 const productCardSelect = {
   id: true,
   name: true,
@@ -47,9 +60,7 @@ const categoryListSelect = {
 }
 
 function getContactRateLimitState(ip) {
-  const now = Date.now()
-  const attempts = (contactAttempts.get(ip) || []).filter(t => now - t < CONTACT_RATE_LIMIT_WINDOW_MS)
-  contactAttempts.set(ip, attempts)
+  const attempts = getActiveAttempts(contactAttempts, ip, CONTACT_RATE_LIMIT_WINDOW_MS)
   return {
     limited: attempts.length >= CONTACT_RATE_LIMIT_MAX,
   }
@@ -57,7 +68,7 @@ function getContactRateLimitState(ip) {
 
 function recordContactAttempt(ip) {
   const now = Date.now()
-  const attempts = (contactAttempts.get(ip) || []).filter(t => now - t < CONTACT_RATE_LIMIT_WINDOW_MS)
+  const attempts = getActiveAttempts(contactAttempts, ip, CONTACT_RATE_LIMIT_WINDOW_MS)
   attempts.push(now)
   contactAttempts.set(ip, attempts)
 }

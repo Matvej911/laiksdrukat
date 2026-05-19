@@ -35,10 +35,21 @@ const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const LOGIN_RATE_LIMIT_MAX = 4
 const loginAttempts = new Map()
 
-function getLoginRateLimitState(ip) {
+function getActiveAttempts(map, key, windowMs) {
   const now = Date.now()
-  const attempts = (loginAttempts.get(ip) || []).filter(t => now - t < LOGIN_RATE_LIMIT_WINDOW_MS)
-  loginAttempts.set(ip, attempts)
+  const attempts = (map.get(key) || []).filter((timestamp) => now - timestamp < windowMs)
+
+  if (attempts.length === 0) {
+    map.delete(key)
+  } else {
+    map.set(key, attempts)
+  }
+
+  return attempts
+}
+
+function getLoginRateLimitState(ip) {
+  const attempts = getActiveAttempts(loginAttempts, ip, LOGIN_RATE_LIMIT_WINDOW_MS)
   return {
     limited: attempts.length >= LOGIN_RATE_LIMIT_MAX,
     remaining: Math.max(0, LOGIN_RATE_LIMIT_MAX - attempts.length),
@@ -47,7 +58,7 @@ function getLoginRateLimitState(ip) {
 
 function recordLoginAttempt(ip) {
   const now = Date.now()
-  const attempts = (loginAttempts.get(ip) || []).filter(t => now - t < LOGIN_RATE_LIMIT_WINDOW_MS)
+  const attempts = getActiveAttempts(loginAttempts, ip, LOGIN_RATE_LIMIT_WINDOW_MS)
   attempts.push(now)
   loginAttempts.set(ip, attempts)
 }

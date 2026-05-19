@@ -17,6 +17,7 @@ import dbPlugin from './plugins/db.js'
 import cartPlugin from './plugins/cart.js'
 import authPlugin from './plugins/auth.js'
 import { siteContent, getSiteContent } from './content/site.js'
+import { PrismaSessionStore, getSessionStoreOptionsFromEnv } from './lib/prisma-session-store.js'
 
 import storefrontRoutes from './routes/storefront.js'
 import sitemapRoutes from './routes/sitemap.js'
@@ -296,6 +297,7 @@ await fastify.register(FastifyMultipart, {
 
 
 // Cookies + session
+await fastify.register(dbPlugin)
 await fastify.register(FastifyCookie)
 await fastify.register(FastifySession, {
   secret: process.env.SESSION_SECRET,
@@ -304,6 +306,7 @@ await fastify.register(FastifySession, {
     httpOnly: true,
     sameSite: 'lax',
   },
+  store: new PrismaSessionStore(fastify.db, getSessionStoreOptionsFromEnv()),
   saveUninitialized: false,
 })
 
@@ -311,10 +314,7 @@ await fastify.register(FastifyCsrf, {
   sessionPlugin: '@fastify/session'
 })
 
-
-
 // Custom plugins
-await fastify.register(dbPlugin)
 await fastify.register(cartPlugin)
 await fastify.register(authPlugin)
 

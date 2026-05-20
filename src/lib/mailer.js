@@ -10,6 +10,19 @@ const eta = new Eta({ views: viewsPath })
 let cachedTransporter = null
 let cachedTransporterKey = null
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function escapeHtmlWithLineBreaks(value) {
+  return escapeHtml(value).replace(/\r?\n/g, '<br>')
+}
+
 function getAppUrl() {
   const configuredUrl = process.env.APP_URL?.trim()
 
@@ -267,12 +280,12 @@ export async function sendContactNotification(submission) {
 
   const html = `
     <h2>Saņemta jauna kontaktformas ziņa</h2>
-    <p><strong>Vārds:</strong> ${submission.name}</p>
-    <p><strong>E-pasts:</strong> ${submission.email}</p>
-    <p><strong>Tālrunis:</strong> ${submission.phone || '-'}</p>
+    <p><strong>Vārds:</strong> ${escapeHtml(submission.name)}</p>
+    <p><strong>E-pasts:</strong> ${escapeHtml(submission.email)}</p>
+    <p><strong>Tālrunis:</strong> ${escapeHtml(submission.phone || '-')}</p>
     <p><strong>Ziņa:</strong></p>
-    <p>${submission.message.replace(/\n/g, '<br>')}</p>
-    <p><strong>Pielikums:</strong> ${submission.attachment ? submission.attachment.name : 'nav'}</p>
+    <p>${escapeHtmlWithLineBreaks(submission.message)}</p>
+    <p><strong>Pielikums:</strong> ${escapeHtml(submission.attachment ? submission.attachment.name : 'nav')}</p>
   `
 
   return sendOwnerNotificationMail({
@@ -313,11 +326,11 @@ function getOrderSummaries({ order, cart }) {
         .map(([key, value]) => {
 
           // ✅ FILE LINK (button)
-          if (key === 'Faila saite') {
-            const fileUrl = toAbsoluteUrl(value)
-            return `
+      if (key === 'Faila saite') {
+        const fileUrl = toAbsoluteUrl(value)
+        return `
               <div style="margin-top:8px;">
-                <a href="${fileUrl}" target="_blank"
+                <a href="${escapeHtml(fileUrl)}" target="_blank"
                   style="display:inline-block;padding:8px 14px;background:#5f4bd8;color:#fff;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;">
                   📎 Atvērt failu
                 </a>
@@ -330,13 +343,13 @@ function getOrderSummaries({ order, cart }) {
           if (key.startsWith('__')) return ''
 
           // ✅ normal options
-          return `<div><strong>${key}:</strong> ${value}</div>`
+          return `<div><strong>${escapeHtml(key)}:</strong> ${escapeHtml(value)}</div>`
         })
         .join('')
 
       return `
         <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e7e2db;">
-          <div style="font-weight:700;font-size:14px;">${item.name} × ${item.quantity}</div>
+          <div style="font-weight:700;font-size:14px;">${escapeHtml(item.name)} × ${escapeHtml(item.quantity)}</div>
           <div style="color:#6b6490;font-size:13px;margin-bottom:6px;">
             Cena: ${(Number(item.price) * item.quantity * 1.21).toFixed(2)} EUR
           </div>
@@ -383,17 +396,17 @@ export async function sendOwnerOrderNotification({ order, cart, attachments = []
 
   const html = `
     <h2>Saņemts jauns pasūtījums #${orderReference}</h2>
-    <p><strong>Klients:</strong> ${order.name}</p>
-    <p><strong>E-pasts:</strong> ${order.email}</p>
-    <p><strong>Tālrunis:</strong> ${order.phone || '-'}</p>
-    <p><strong>Adrese:</strong> ${order.address || '-'}${order.city ? `, ${order.city}` : ''}${order.zip ? `, ${order.zip}` : ''}</p>
+    <p><strong>Klients:</strong> ${escapeHtml(order.name)}</p>
+    <p><strong>E-pasts:</strong> ${escapeHtml(order.email)}</p>
+    <p><strong>Tālrunis:</strong> ${escapeHtml(order.phone || '-')}</p>
+    <p><strong>Adrese:</strong> ${escapeHtml(`${order.address || '-'}${order.city ? `, ${order.city}` : ''}${order.zip ? `, ${order.zip}` : ''}`)}</p>
     <h3>Preces</h3>
     ${htmlItems}
     <p><strong>Bez PVN:</strong> ${subtotal.toFixed(2)} EUR</p>
     <p><strong>Piegāde:</strong> ${shipping.toFixed(2)} EUR</p>
     <p><strong>PVN 21%:</strong> ${totalVat.toFixed(2)} EUR</p>
     <p><strong>Kopā ar PVN:</strong> ${totalWithVat.toFixed(2)} EUR</p>
-    ${order.note ? `<p><strong>Piezīmes:</strong><br>${order.note.replace(/\n/g, '<br>')}</p>` : ''}
+    ${order.note ? `<p><strong>Piezīmes:</strong><br>${escapeHtmlWithLineBreaks(order.note)}</p>` : ''}
   `
 
   return sendOwnerNotificationMail({ subject, text, html, attachments, db })

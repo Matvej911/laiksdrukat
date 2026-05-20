@@ -1,7 +1,10 @@
 import { appendFile, mkdir, readFile, writeFile } from 'fs/promises'
 import { join } from 'path'
+import { Prisma } from '@prisma/client'
 
 const CONTACT_MESSAGES_TABLE = 'ContactSubmission'
+const CONTACT_MESSAGES_TABLE_SQL = Prisma.raw(`\`${CONTACT_MESSAGES_TABLE}\``)
+const CONTACT_MESSAGES_CREATED_AT_INDEX_SQL = Prisma.raw(`\`${CONTACT_MESSAGES_TABLE}_createdAt_idx\``)
 let contactMessagesTableReady = false
 let contactMessagesTableUnavailable = false
 
@@ -82,21 +85,21 @@ async function ensureContactMessagesTable(db) {
   if (contactMessagesTableUnavailable) return false
 
   try {
-    const result = await db.$queryRawUnsafe(`
+    const result = await db.$queryRaw`
       SELECT 1
       FROM information_schema.tables
       WHERE table_schema = DATABASE()
-        AND table_name = '${CONTACT_MESSAGES_TABLE}'
+        AND table_name = ${CONTACT_MESSAGES_TABLE}
       LIMIT 1
-    `)
+    `
 
     if (Array.isArray(result) && result.length > 0) {
       contactMessagesTableReady = true
       return true
     }
 
-    await db.$executeRawUnsafe(`
-      CREATE TABLE IF NOT EXISTS \`${CONTACT_MESSAGES_TABLE}\` (
+    await db.$executeRaw(Prisma.sql`
+      CREATE TABLE IF NOT EXISTS ${CONTACT_MESSAGES_TABLE_SQL} (
         \`id\` VARCHAR(191) NOT NULL,
         \`name\` VARCHAR(191) NOT NULL,
         \`email\` VARCHAR(191) NOT NULL,
@@ -108,7 +111,7 @@ async function ensureContactMessagesTable(db) {
         \`attachmentPath\` VARCHAR(191) NULL,
         \`createdAt\` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
         PRIMARY KEY (\`id\`),
-        INDEX \`${CONTACT_MESSAGES_TABLE}_createdAt_idx\` (\`createdAt\`)
+        INDEX ${CONTACT_MESSAGES_CREATED_AT_INDEX_SQL} (\`createdAt\`)
       ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
     `)
 
@@ -121,7 +124,7 @@ async function ensureContactMessagesTable(db) {
 }
 
 async function readDatabaseMessages(db) {
-  const rows = await db.$queryRawUnsafe(`
+  const rows = await db.$queryRaw(Prisma.sql`
     SELECT
       id,
       name,
@@ -133,7 +136,7 @@ async function readDatabaseMessages(db) {
       attachmentUrl,
       attachmentPath,
       createdAt
-    FROM \`${CONTACT_MESSAGES_TABLE}\`
+    FROM ${CONTACT_MESSAGES_TABLE_SQL}
     ORDER BY createdAt DESC
   `)
 
@@ -158,8 +161,8 @@ async function readDatabaseMessages(db) {
 }
 
 async function readDatabaseMessageById(id, db) {
-  const rows = await db.$queryRawUnsafe(
-    `
+  const rows = await db.$queryRaw(
+    Prisma.sql`
       SELECT
         id,
         name,
@@ -171,11 +174,10 @@ async function readDatabaseMessageById(id, db) {
         attachmentUrl,
         attachmentPath,
         createdAt
-      FROM \`${CONTACT_MESSAGES_TABLE}\`
-      WHERE id = ?
+      FROM ${CONTACT_MESSAGES_TABLE_SQL}
+      WHERE id = ${id}
       LIMIT 1
     `,
-    id,
   )
 
   if (!Array.isArray(rows) || rows.length === 0) {
@@ -203,22 +205,23 @@ async function readDatabaseMessageById(id, db) {
 }
 
 async function writeDatabaseMessage(entry, db) {
-  await db.$executeRawUnsafe(
-    `
-      INSERT INTO \`${CONTACT_MESSAGES_TABLE}\`
+  await db.$executeRaw(
+    Prisma.sql`
+      INSERT INTO ${CONTACT_MESSAGES_TABLE_SQL}
         (id, name, email, phone, message, source, attachmentName, attachmentUrl, attachmentPath, createdAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (
+        ${entry.id},
+        ${entry.name},
+        ${entry.email},
+        ${entry.phone},
+        ${entry.message},
+        ${entry.source},
+        ${entry.attachment?.name || null},
+        ${entry.attachment?.url || null},
+        ${entry.attachment?.path || null},
+        ${toMysqlDateTime(entry.createdAt)}
+      )
     `,
-    entry.id,
-    entry.name,
-    entry.email,
-    entry.phone,
-    entry.message,
-    entry.source,
-    entry.attachment?.name || null,
-    entry.attachment?.url || null,
-    entry.attachment?.path || null,
-    toMysqlDateTime(entry.createdAt),
   )
 }
 
@@ -268,9 +271,8 @@ export async function deleteContactMessage(id, db) {
 
   if (db && await ensureContactMessagesTable(db)) {
     deletedDbMessage = await readDatabaseMessageById(messageId, db)
-    await db.$executeRawUnsafe(
-      `DELETE FROM \`${CONTACT_MESSAGES_TABLE}\` WHERE id = ?`,
-      messageId,
+    await db.$executeRaw(
+      Prisma.sql`DELETE FROM ${CONTACT_MESSAGES_TABLE_SQL} WHERE id = ${messageId}`,
     )
   }
 

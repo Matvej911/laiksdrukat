@@ -22,8 +22,24 @@ import {
 const CONTACT_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const CONTACT_RATE_LIMIT_MAX = 5
 const HOME_CACHE_TTL_MS = 60 * 1000
+const DEFAULT_ORDER_UPLOAD_PUBLIC_TTL_MS = 30 * 24 * 60 * 60 * 1000
 const contactAttempts = new Map()
 const currentYear = new Date().getFullYear()
+
+function parsePositiveInt(value, fallback) {
+  const parsed = Number.parseInt(String(value || ''), 10)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback
+}
+
+const ORDER_UPLOAD_PUBLIC_TTL_MS = parsePositiveInt(
+  process.env.ORDER_UPLOAD_PUBLIC_TTL_MS,
+  DEFAULT_ORDER_UPLOAD_PUBLIC_TTL_MS,
+)
+const ALLOWED_CONTACT_RETURN_PATHS = new Set([
+  '/kontakti/',
+  ...serviceRouteEntries.map((entry) => entry.path),
+  ...serviceRouteEntries.map((entry) => entry.service.path),
+])
 
 function getActiveAttempts(map, key, windowMs) {
   const now = Date.now()
@@ -71,6 +87,65 @@ function recordContactAttempt(ip) {
   const attempts = getActiveAttempts(contactAttempts, ip, CONTACT_RATE_LIMIT_WINDOW_MS)
   attempts.push(now)
   contactAttempts.set(ip, attempts)
+}
+
+function normalizeContactReturnTo(value) {
+  const raw = String(value || '').trim()
+  if (!raw) {
+    return '/kontakti/'
+  }
+
+  if (!raw.startsWith('/') || raw.startsWith('//')) {
+    return '/kontakti/'
+  }
+
+  let pathname = raw
+
+  try {
+    pathname = new URL(raw, 'https://www.laiksdrukat.lv').pathname
+  } catch {
+    return '/kontakti/'
+  }
+
+  if (!pathname.endsWith('/')) {
+    pathname = `${pathname}/`
+  }
+
+  return ALLOWED_CONTACT_RETURN_PATHS.has(pathname)
+    ? pathname
+    : '/kontakti/'
+}
+
+function isAdminSession(request) {
+  return Boolean(request.session?.adminId)
+}
+
+function isPublicUploadAccessAllowed(upload, request) {
+  if (!upload?.isPrivate) {
+    return true
+  }
+
+  if (isAdminSession(request)) {
+    return true
+  }
+
+  if (upload.sourceType === 'CONTACT_FORM') {
+    return false
+  }
+
+  if (upload.sourceType === 'STAMP_ORDER') {
+    const createdAt = upload.createdAt instanceof Date
+      ? upload.createdAt
+      : new Date(upload.createdAt)
+
+    if (Number.isNaN(createdAt.getTime())) {
+      return false
+    }
+
+    return (Date.now() - createdAt.getTime()) <= ORDER_UPLOAD_PUBLIC_TTL_MS
+  }
+
+  return false
 }
 
 async function collectContactForm(request) {
@@ -177,7 +252,7 @@ async function storefrontRoutes(fastify) {
       where: { token },
     })
 
-    if (!upload || !upload.isPrivate) {
+    if (!upload || !upload.isPrivate || !isPublicUploadAccessAllowed(upload, request)) {
       return reply.code(404).send('File not found')
     }
 
@@ -737,7 +812,7 @@ async function storefrontRoutes(fastify) {
 
     const { name, email, phone, message, returnTo } = fields
     const normalizedMessage = String(message || '').trim()
-    const redirectPage = returnTo || '/kontakti/'
+    const redirectPage = normalizeContactReturnTo(returnTo)
 
     // rate limit check
     const rateLimit = getContactRateLimitState(request.ip)

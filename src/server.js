@@ -18,6 +18,10 @@ import cartPlugin from './plugins/cart.js'
 import authPlugin from './plugins/auth.js'
 import { siteContent, getSiteContent } from './content/site.js'
 import { PrismaSessionStore, getSessionStoreOptionsFromEnv } from './lib/prisma-session-store.js'
+import {
+  getOrphanStampUploadCleanupOptionsFromEnv,
+  startOrphanedStampUploadCleanup,
+} from './lib/uploads.js'
 
 import storefrontRoutes from './routes/storefront.js'
 import sitemapRoutes from './routes/sitemap.js'
@@ -134,6 +138,7 @@ const fastify = Fastify({
 let inFlightRequests = 0
 let peakInFlightRequests = 0
 let shuttingDown = false
+let stopOrphanedStampUploadCleanup = null
 
 function finalizeRequestMetrics(request) {
   if (!request.requestMetrics || request.requestMetrics.completed) {
@@ -298,6 +303,24 @@ await fastify.register(FastifyMultipart, {
 
 // Cookies + session
 await fastify.register(dbPlugin)
+
+fastify.addHook('onReady', async () => {
+  if (!stopOrphanedStampUploadCleanup) {
+    stopOrphanedStampUploadCleanup = await startOrphanedStampUploadCleanup({
+      db: fastify.db,
+      logger: fastify.log,
+      options: getOrphanStampUploadCleanupOptionsFromEnv(),
+    })
+  }
+})
+
+fastify.addHook('onClose', async () => {
+  if (stopOrphanedStampUploadCleanup) {
+    stopOrphanedStampUploadCleanup()
+    stopOrphanedStampUploadCleanup = null
+  }
+})
+
 await fastify.register(FastifyCookie)
 await fastify.register(FastifySession, {
   secret: process.env.SESSION_SECRET,

@@ -1,8 +1,11 @@
 import { randomUUID } from 'crypto'
-import { mkdir, readFile, writeFile } from 'fs/promises'
+import { mkdir, readFile, unlink, writeFile } from 'fs/promises'
 import { extname, join } from 'path'
 
 const PUBLIC_IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif'])
+const DEFAULT_ORPHAN_STAMP_UPLOAD_TTL_MS = 2 * 24 * 60 * 60 * 1000
+const DEFAULT_ORPHAN_STAMP_UPLOAD_CLEANUP_INTERVAL_MS = 6 * 60 * 60 * 1000
+const ORPHAN_STAMP_UPLOAD_CLEANUP_BATCH_SIZE = 50
 
 export function sanitizeFilename(filename) {
   return String(filename || '').replace(/[^a-zA-Z0-9._-]/g, '-')
@@ -136,6 +139,115 @@ export function resolveUploadPath(relativePath) {
   const normalized = String(relativePath || '').replace(/\\/g, '/')
   const parts = normalized.split('/').filter(Boolean)
   return join(getUploadsRootDir(), ...parts)
+}
+
+export function getOrphanStampUploadCleanupOptionsFromEnv() {
+  const ttlMs = Number.parseInt(process.env.ORPHAN_STAMP_UPLOAD_TTL_MS || '', 10)
+  const intervalMs = Number.parseInt(process.env.ORPHAN_STAMP_UPLOAD_CLEANUP_INTERVAL_MS || '', 10)
+
+  return {
+    ttlMs: Number.isFinite(ttlMs) && ttlMs > 0 ? ttlMs : DEFAULT_ORPHAN_STAMP_UPLOAD_TTL_MS,
+    intervalMs: Number.isFinite(intervalMs) && intervalMs > 0
+      ? intervalMs
+      : DEFAULT_ORPHAN_STAMP_UPLOAD_CLEANUP_INTERVAL_MS,
+  }
+}
+
+export async function cleanupOrphanedStampUploads(db, logger, options = {}) {
+  const ttlMs = Number.isFinite(options.ttlMs) && options.ttlMs > 0
+    ? options.ttlMs
+    : DEFAULT_ORPHAN_STAMP_UPLOAD_TTL_MS
+  const cutoff = new Date(Date.now() - ttlMs)
+  let deletedCount = 0
+  let failedCount = 0
+
+  while (true) {
+    const uploads = await db.upload.findMany({
+      where: {
+        sourceType: 'STAMP_ORDER',
+        sourceRef: {
+          startsWith: 'session:',
+        },
+        createdAt: {
+          lt: cutoff,
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+      take: ORPHAN_STAMP_UPLOAD_CLEANUP_BATCH_SIZE,
+      select: {
+        id: true,
+        relativePath: true,
+      },
+    })
+
+    if (uploads.length === 0) {
+      break
+    }
+
+    for (const upload of uploads) {
+      try {
+        await unlink(resolveUploadPath(upload.relativePath))
+      } catch (error) {
+        if (error?.code !== 'ENOENT') {
+          failedCount += 1
+          logger?.warn?.({ err: error, uploadId: upload.id }, 'Failed to remove orphaned stamp upload from disk')
+          continue
+        }
+      }
+
+      try {
+        await db.upload.delete({
+          where: { id: upload.id },
+        })
+        deletedCount += 1
+      } catch (error) {
+        failedCount += 1
+        logger?.warn?.({ err: error, uploadId: upload.id }, 'Failed to remove orphaned stamp upload metadata')
+      }
+    }
+  }
+
+  return {
+    deletedCount,
+    failedCount,
+    cutoff,
+  }
+}
+
+export async function startOrphanedStampUploadCleanup({ db, logger, options = {} }) {
+  const resolvedOptions = {
+    ...getOrphanStampUploadCleanupOptionsFromEnv(),
+    ...options,
+  }
+
+  const runCleanup = async () => {
+    try {
+      const result = await cleanupOrphanedStampUploads(db, logger, resolvedOptions)
+      if (result.deletedCount > 0 || result.failedCount > 0) {
+        logger?.info?.({
+          deletedCount: result.deletedCount,
+          failedCount: result.failedCount,
+          cutoff: result.cutoff.toISOString(),
+        }, 'Completed orphaned stamp upload cleanup')
+      }
+    } catch (error) {
+      logger?.error?.({ err: error }, 'Orphaned stamp upload cleanup failed')
+    }
+  }
+
+  await runCleanup()
+
+  const timer = setInterval(() => {
+    runCleanup()
+  }, resolvedOptions.intervalMs)
+
+  timer.unref?.()
+
+  return () => {
+    clearInterval(timer)
+  }
 }
 
 export async function sendStoredFile(reply, filepath, filename, options = {}) {

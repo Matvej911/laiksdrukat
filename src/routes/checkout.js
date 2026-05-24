@@ -191,7 +191,7 @@ async function checkoutRoutes(fastify) {
     }
     if (deliveryType === 'omniva') {
       const lockerParts = [address, city, zip].filter(Boolean)
-      const deliveryLabel = appliedDeliveryFee === 0 ? '(bezmaksas)' : '(+3,50 €)'
+      const deliveryLabel = appliedDeliveryFee === 0 ? '(bezmaksas)' : '(+2,99 €)'
       noteParts.unshift(`Piegāde: Omniva pakomāts ${deliveryLabel} — ${lockerParts.join(', ')}`)
     } else {
       noteParts.unshift(`Piegāde: Saņem birojā (Asteru iela 16A, Jelgava)`)

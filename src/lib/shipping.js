@@ -1,5 +1,5 @@
 export const VAT_RATE = 0.21
-export const OMNIVA_DELIVERY_FEE = 3.5
+export const OMNIVA_DELIVERY_FEE = 2.99
 export const FREE_OMNIVA_GROSS_THRESHOLD = 50
 
 function toNumber(value) {

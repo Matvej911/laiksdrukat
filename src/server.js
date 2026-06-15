@@ -62,8 +62,23 @@ const longCacheAssetExtensions = new Set([
   '.otf',
   '.pdf',
 ])
-const SLOW_REQUEST_THRESHOLD_MS = 500
-const HIGH_CONCURRENCY_THRESHOLD = 20
+function parsePositiveInt(value, fallback) {
+  const parsed = Number.parseInt(String(value || ''), 10)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback
+}
+
+const LOG_LEVEL = process.env.LOG_LEVEL?.trim()
+  || (isProduction ? 'warn' : 'info')
+const disableRequestLogging = process.env.DISABLE_REQUEST_LOGGING
+  ? ['1', 'true', 'yes', 'on'].includes(process.env.DISABLE_REQUEST_LOGGING.toLowerCase())
+  : isProduction
+const SLOW_REQUEST_THRESHOLD_MS = parsePositiveInt(
+  process.env.SLOW_REQUEST_THRESHOLD_MS,
+  isProduction ? 2000 : 500,
+)
+const HIGH_CONCURRENCY_THRESHOLD = parsePositiveInt(process.env.HIGH_CONCURRENCY_THRESHOLD, 20)
+const LOG_THROTTLE_WINDOW_MS = parsePositiveInt(process.env.LOG_THROTTLE_WINDOW_MS, 60 * 1000)
+const LOG_THROTTLE_MAX_PER_KEY = parsePositiveInt(process.env.LOG_THROTTLE_MAX_PER_KEY, 5)
  
 const contentSecurityPolicy = {
   directives: {
@@ -132,13 +147,32 @@ const contentSecurityPolicy = {
 }
 
 const fastify = Fastify({
-  logger: true,
+  logger: {
+    level: LOG_LEVEL,
+  },
+  disableRequestLogging,
   trustProxy,
 })
 let inFlightRequests = 0
 let peakInFlightRequests = 0
 let shuttingDown = false
 let stopOrphanedStampUploadCleanup = null
+const throttledLogState = new Map()
+
+function shouldEmitThrottledLog(key) {
+  const now = Date.now()
+  const timestamps = (throttledLogState.get(key) || [])
+    .filter((timestamp) => now - timestamp < LOG_THROTTLE_WINDOW_MS)
+
+  if (timestamps.length >= LOG_THROTTLE_MAX_PER_KEY) {
+    throttledLogState.set(key, timestamps)
+    return false
+  }
+
+  timestamps.push(now)
+  throttledLogState.set(key, timestamps)
+  return true
+}
 
 function finalizeRequestMetrics(request) {
   if (!request.requestMetrics || request.requestMetrics.completed) {
@@ -160,7 +194,10 @@ fastify.addHook('onRequest', async (request) => {
     completed: false,
   }
 
-  if (inFlightRequests >= HIGH_CONCURRENCY_THRESHOLD) {
+  if (
+    inFlightRequests >= HIGH_CONCURRENCY_THRESHOLD
+    && shouldEmitThrottledLog('high-concurrency')
+  ) {
     fastify.log.warn({
       route: request.raw.url,
       method: request.method,
@@ -177,7 +214,11 @@ fastify.addHook('onResponse', async (request, reply) => {
   }
 
   const durationMs = Date.now() - metrics.startedAt
-  if (durationMs >= SLOW_REQUEST_THRESHOLD_MS) {
+  const routePath = new URL(request.raw.url || '/', 'http://localhost').pathname
+  if (
+    durationMs >= SLOW_REQUEST_THRESHOLD_MS
+    && shouldEmitThrottledLog(`slow-request:${request.method}:${routePath}`)
+  ) {
     fastify.log.warn({
       route: request.raw.url,
       method: request.method,

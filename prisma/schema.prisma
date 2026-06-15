@@ -103,6 +103,16 @@ model NotificationRecipient {
   createdAt DateTime @default(now())
 }
 
+model SessionRecord {
+  id        String   @id
+  data      String   @db.LongText
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([expiresAt])
+}
+
 enum OrderStatus {
   PENDING
   CONFIRMED

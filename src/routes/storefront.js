@@ -28,37 +28,36 @@ import {
 const CONTACT_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const CONTACT_RATE_LIMIT_MAX = 5
 const HOME_CACHE_TTL_MS = 60 * 1000
+const DEFAULT_ORDER_UPLOAD_PUBLIC_TTL_MS = 30 * 24 * 60 * 60 * 1000
 const contactAttempts = new Map()
 const currentYear = new Date().getFullYear()
-const serviceTemplates = {
-  '/zimogs/': {
-    page: 'pages/services/zimogi',
-    title: 'Zīmogu izgatavošana Jelgavā⚡Ātra izgatavošana | Laiks Drukāt',
-  },
-  '/vides-reklama/': {
-    page: 'pages/services/vides-reklama',
-    title: '✨Izkārtnes, gaismas kastes un reklāmas burti | Vides reklāma',
-  },
-  '/vizitkartes/': {
-    page: 'pages/services/vizitkartes',
-    title: 'Vizītkartes – sietspiede, standarta druka | Laiks Drukāt ✅',
-  },
-  '/baneri/': {
-    page: 'pages/services/baneri/',
-    title: 'Baneri Jelgavā – Roll-up & PVC banneri | Laiks Drukāt⭐',
-  },
-  '/auto-aplimesana/': {
-    page: 'pages/services/auto-aplimesana',
-    title: 'Auto aplīmēšana Jelgavā – 3M & Oracal vinils | Laiks Drukāt⭐',
-  },
-  '/uzlimes/': {
-    page: 'pages/services/uzlimes',
-    title: 'Uzlīmju druka – ruļļu, UV un lielformāta | Laiks Drukāt ✅',
-  },
-  '/druka/': {
-    page: 'pages/services/druka',
-    title: 'Reklāmas, poligrāfijas pakalpojumi⚡Bukleti, brošūras, plakāti',
-  },
+
+function parsePositiveInt(value, fallback) {
+  const parsed = Number.parseInt(String(value || ''), 10)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback
+}
+
+const ORDER_UPLOAD_PUBLIC_TTL_MS = parsePositiveInt(
+  process.env.ORDER_UPLOAD_PUBLIC_TTL_MS,
+  DEFAULT_ORDER_UPLOAD_PUBLIC_TTL_MS,
+)
+const ALLOWED_CONTACT_RETURN_PATHS = new Set([
+  '/kontakti/',
+  ...serviceRouteEntries.map((entry) => entry.path),
+  ...serviceRouteEntries.map((entry) => entry.service.path),
+])
+
+function getActiveAttempts(map, key, windowMs) {
+  const now = Date.now()
+  const attempts = (map.get(key) || []).filter((timestamp) => now - timestamp < windowMs)
+
+  if (attempts.length === 0) {
+    map.delete(key)
+  } else {
+    map.set(key, attempts)
+  }
+
+  return attempts
 }
 
 const productCardSelect = {
@@ -84,9 +83,7 @@ const categoryListSelect = {
 }
 
 function getContactRateLimitState(ip) {
-  const now = Date.now()
-  const attempts = (contactAttempts.get(ip) || []).filter(t => now - t < CONTACT_RATE_LIMIT_WINDOW_MS)
-  contactAttempts.set(ip, attempts)
+  const attempts = getActiveAttempts(contactAttempts, ip, CONTACT_RATE_LIMIT_WINDOW_MS)
   return {
     limited: attempts.length >= CONTACT_RATE_LIMIT_MAX,
   }
@@ -94,9 +91,68 @@ function getContactRateLimitState(ip) {
 
 function recordContactAttempt(ip) {
   const now = Date.now()
-  const attempts = (contactAttempts.get(ip) || []).filter(t => now - t < CONTACT_RATE_LIMIT_WINDOW_MS)
+  const attempts = getActiveAttempts(contactAttempts, ip, CONTACT_RATE_LIMIT_WINDOW_MS)
   attempts.push(now)
   contactAttempts.set(ip, attempts)
+}
+
+function normalizeContactReturnTo(value) {
+  const raw = String(value || '').trim()
+  if (!raw) {
+    return '/kontakti/'
+  }
+
+  if (!raw.startsWith('/') || raw.startsWith('//')) {
+    return '/kontakti/'
+  }
+
+  let pathname = raw
+
+  try {
+    pathname = new URL(raw, 'https://www.laiksdrukat.lv').pathname
+  } catch {
+    return '/kontakti/'
+  }
+
+  if (!pathname.endsWith('/')) {
+    pathname = `${pathname}/`
+  }
+
+  return ALLOWED_CONTACT_RETURN_PATHS.has(pathname)
+    ? pathname
+    : '/kontakti/'
+}
+
+function isAdminSession(request) {
+  return Boolean(request.session?.adminId)
+}
+
+function isPublicUploadAccessAllowed(upload, request) {
+  if (!upload?.isPrivate) {
+    return true
+  }
+
+  if (isAdminSession(request)) {
+    return true
+  }
+
+  if (upload.sourceType === 'CONTACT_FORM') {
+    return false
+  }
+
+  if (upload.sourceType === 'STAMP_ORDER') {
+    const createdAt = upload.createdAt instanceof Date
+      ? upload.createdAt
+      : new Date(upload.createdAt)
+
+    if (Number.isNaN(createdAt.getTime())) {
+      return false
+    }
+
+    return (Date.now() - createdAt.getTime()) <= ORDER_UPLOAD_PUBLIC_TTL_MS
+  }
+
+  return false
 }
 
 async function collectContactForm(request) {
@@ -210,7 +266,7 @@ async function storefrontRoutes(fastify, opts = {}) {
       where: { token },
     })
 
-    if (!upload || !upload.isPrivate) {
+    if (!upload || !upload.isPrivate || !isPublicUploadAccessAllowed(upload, request)) {
       return reply.code(404).send('File not found')
     }
 
@@ -609,7 +665,7 @@ async function storefrontRoutes(fastify, opts = {}) {
 
     const { name, email, phone, message, returnTo } = fields
     const normalizedMessage = String(message || '').trim()
-    const redirectPage = returnTo || ui.contact.serviceReturnDefault
+    const redirectPage = normalizeContactReturnTo(returnTo)
 
     // rate limit check
     const rateLimit = getContactRateLimitState(request.ip)

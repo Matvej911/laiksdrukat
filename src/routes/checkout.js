@@ -4,6 +4,7 @@ import {
   sendOwnerOrderNotification,
 } from '../lib/mailer.js'
 import { buildBreadcrumbSchema, resolvePublicBaseUrl } from '../lib/seo.js'
+import { getCheckoutTotals, getOmnivaDeliveryFee, getStoredOrderTotals } from '../lib/shipping.js'
 import { resolveUploadPath } from '../lib/uploads.js'
 import { getOmnivaLockerGroups } from '../lib/omniva-lockers.js'
 
@@ -11,10 +12,21 @@ const CHECKOUT_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000
 const CHECKOUT_RATE_LIMIT_MAX = 5
 const checkoutAttempts = new Map()
 
-function getCheckoutRateLimitState(ip) {
+function getActiveAttempts(map, key, windowMs) {
   const now = Date.now()
-  const attempts = (checkoutAttempts.get(ip) || []).filter((timestamp) => now - timestamp < CHECKOUT_RATE_LIMIT_WINDOW_MS)
-  checkoutAttempts.set(ip, attempts)
+  const attempts = (map.get(key) || []).filter((timestamp) => now - timestamp < windowMs)
+
+  if (attempts.length === 0) {
+    map.delete(key)
+  } else {
+    map.set(key, attempts)
+  }
+
+  return attempts
+}
+
+function getCheckoutRateLimitState(ip) {
+  const attempts = getActiveAttempts(checkoutAttempts, ip, CHECKOUT_RATE_LIMIT_WINDOW_MS)
 
   return {
     attempts,
@@ -25,7 +37,7 @@ function getCheckoutRateLimitState(ip) {
 
 function recordCheckoutAttempt(ip) {
   const now = Date.now()
-  const attempts = (checkoutAttempts.get(ip) || []).filter((timestamp) => now - timestamp < CHECKOUT_RATE_LIMIT_WINDOW_MS)
+  const attempts = getActiveAttempts(checkoutAttempts, ip, CHECKOUT_RATE_LIMIT_WINDOW_MS)
   attempts.push(now)
   checkoutAttempts.set(ip, attempts)
 }
@@ -58,6 +70,13 @@ function notifyOrderEmails(fastify, { order, cart, attachments }) {
   })
 }
 
+function buildCheckoutViewModel(subtotalExVat, deliveryType = 'pickup') {
+  return {
+    total: subtotalExVat,
+    ...getCheckoutTotals(subtotalExVat, deliveryType),
+  }
+}
+
 async function checkoutRoutes(fastify) {
   const omnivaLockerGroups = getOmnivaLockerGroups()
 
@@ -81,6 +100,7 @@ async function checkoutRoutes(fastify) {
       { name: 'Pasūtījums', path: '/pasutijums/' },
     ]
     const total = await fastify.validatedCartTotal(request)
+    const checkoutTotals = buildCheckoutViewModel(total)
 
     fastify.log.info({
       route: '/pasutijums/',
@@ -94,7 +114,7 @@ async function checkoutRoutes(fastify) {
       robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
       breadcrumbs,
       cart,
-      total,
+      ...checkoutTotals,
       omnivaLockerGroups,
       csrf: await reply.generateCsrf(),
       structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),
@@ -126,13 +146,16 @@ async function checkoutRoutes(fastify) {
     } = request.body
     
     const needsAddress = deliveryType === 'omniva'
+    const cartTotal = await fastify.validatedCartTotal(request)
+    const checkoutTotals = buildCheckoutViewModel(cartTotal, deliveryType || 'pickup')
+
     if (!firstName || !lastName || !email || (needsAddress && !address)) {
       return reply.publicView('pages/checkout', {
         title: 'Checkout | Laiks Drukāt',
         robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
         breadcrumbs,
         cart,
-        total: await fastify.validatedCartTotal(request),
+        ...checkoutTotals,
         error: 'Lūdzu aizpildiet visus obligātos laukus.',
         formData: request.body,
         omnivaLockerGroups,
@@ -148,7 +171,7 @@ async function checkoutRoutes(fastify) {
         robots: 'noindex,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
         breadcrumbs,
         cart,
-        total: await fastify.validatedCartTotal(request),
+        ...checkoutTotals,
         error: 'Pārāk daudz pasūtījumu no šīs IP adreses. Lūdzu mēģiniet vēlreiz pēc stundas.',
         formData: request.body,
         omnivaLockerGroups,
@@ -157,9 +180,9 @@ async function checkoutRoutes(fastify) {
       })
     }
 
-    const cartTotal = await fastify.validatedCartTotal(request)
-    const deliveryFee = deliveryType === 'omniva' ? 3.50 : 0
-    const total = cartTotal + deliveryFee
+    const deliveryFee = getOmnivaDeliveryFee(cartTotal)
+    const appliedDeliveryFee = deliveryType === 'omniva' ? deliveryFee : 0
+    const total = cartTotal + appliedDeliveryFee
     const name = `${String(firstName).trim()} ${String(lastName).trim()}`.trim()
     const noteParts = [note]
 
@@ -168,7 +191,8 @@ async function checkoutRoutes(fastify) {
     }
     if (deliveryType === 'omniva') {
       const lockerParts = [address, city, zip].filter(Boolean)
-      noteParts.unshift(`Piegāde: Omniva pakomāts (+3.50 €) — ${lockerParts.join(', ')}`)
+      const deliveryLabel = appliedDeliveryFee === 0 ? '(bezmaksas)' : '(+3,50 €)'
+      noteParts.unshift(`Piegāde: Omniva pakomāts ${deliveryLabel} — ${lockerParts.join(', ')}`)
     } else {
       noteParts.unshift(`Piegāde: Saņem birojā (Asteru iela 16A, Jelgava)`)
     }
@@ -303,6 +327,7 @@ async function checkoutRoutes(fastify) {
       breadcrumbs,
       order,
       cart: fastify.getCart(request),
+      pricing: getStoredOrderTotals(order),
       structuredData: buildBreadcrumbSchema(baseUrl, breadcrumbs),
     })
   })

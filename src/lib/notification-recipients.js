@@ -56,12 +56,12 @@ function normalizeEmail(email) {
 
 async function hasNotificationRecipientTable(db) {
   try {
-    const rows = await db.$queryRawUnsafe(`
+    const rows = await db.$queryRaw`
       SELECT COUNT(*) AS count
       FROM information_schema.tables
       WHERE table_schema = DATABASE()
-        AND table_name = 'NotificationRecipient'
-    `)
+        AND table_name = ${'NotificationRecipient'}
+    `
 
     const count = Array.isArray(rows) && rows[0]
       ? Number(rows[0].count ?? Object.values(rows[0])[0] ?? 0)

@@ -66,15 +66,9 @@
       <% } %>
 
       <!-- TOTAL -->
-      <%
-        const isOmniva = it.order.note && it.order.note.includes('Omniva')
-        const cartSubtotal = Number(it.order.total) - (isOmniva ? 3.5 : 0)
-        const adminTotal = cartSubtotal * 1.21 + (isOmniva ? 3.5 : 0)
-      %>
-
       <div class="admin-total-box">
         <span>Kopā ar PVN</span>
-        <strong><%= adminTotal.toFixed(2) %> €</strong>
+        <strong><%= Number(it.order.pricing.totalWithVat).toFixed(2) %> €</strong>
       </div>
     </div>
 

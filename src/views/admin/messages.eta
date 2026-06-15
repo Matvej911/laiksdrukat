@@ -4,6 +4,13 @@
   <h1>Kontaktu zinas</h1>
 </div>
 
+<% if (it.success) { %>
+  <div class="admin-alert admin-alert-success"><%= it.success %></div>
+<% } %>
+<% if (it.error) { %>
+  <div class="admin-alert admin-alert-error"><%= it.error %></div>
+<% } %>
+
 <div class="admin-table-wrap">
   <table class="admin-table">
     <thead>
@@ -43,7 +50,15 @@
               -
             <% } %>
           </td>
-          <td><a href="/admin/messages/<%= message.id %>" class="btn btn-sm btn-outline">Skatit</a></td>
+          <td>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <a href="/admin/messages/<%= message.id %>" class="btn btn-sm btn-outline">Skatit</a>
+              <form action="/admin/messages/<%= message.id %>/delete" method="POST" onsubmit="return confirm('Dzēst šo ziņu un pievienoto failu?')">
+                <input type="hidden" name="_csrf" value="<%= it.csrf %>">
+                <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#991b1b;">Dzēst</button>
+              </form>
+            </div>
+          </td>
         </tr>
       <% } %>
     </tbody>

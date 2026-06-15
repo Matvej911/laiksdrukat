@@ -1,7 +1,17 @@
 <% layout('../partials/layout', { bodyClass: 'page-checkout' }) %>
 <% const formData = it.formData || {} %>
-<% const totalVat = Number(it.total) * 0.21 %>
-<% const totalWithVat = Number(it.total) + totalVat %>
+<% const selectedDeliveryType = formData.deliveryType || 'pickup' %>
+<% const omnivaDeliveryFee = Number(it.omnivaDeliveryFee || 0) %>
+<% const selectedDeliveryFee = selectedDeliveryType === 'omniva' ? omnivaDeliveryFee : 0 %>
+<% const selectedTotalWithVat = Number(it.subtotalWithVat || 0) + selectedDeliveryFee %>
+<%
+  const formatCheckoutMoney = (value) => {
+    const amount = Number(value || 0)
+    if (amount === 0) return '0 €'
+    return `${amount.toFixed(2).replace('.', ',')} €`
+  }
+%>
+<% const omnivaDeliveryLabel = formatCheckoutMoney(omnivaDeliveryFee) %>
 
 <!-- HERO -->
 <section class="checkout-hero">
@@ -114,8 +124,9 @@
                   <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
                 </div>
                 <div>
-                  <strong>Omniva pakomāts <span class="co-delivery-price">+ 3,50 €</span></strong>
+                  <strong>Omniva pakomāts <span class="co-delivery-price" id="co-delivery-option-price">+ <%= omnivaDeliveryLabel %></span></strong>
                   <span>Piegāde uz jebkuru Omniva pakomātu Latvijā.</span>
+                  <span>Bezmaksas piegāde pasūtījumiem virs 50 € (ar PVN).</span>
                 </div>
                 <div class="co-payment-check">
                   <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -249,7 +260,7 @@
             </div>
           <% } %>
 
-          <div class="co-item" id="co-delivery-item" style="display:none">
+          <div class="co-item" id="co-delivery-item" style="<%= selectedDeliveryType === 'omniva' ? 'display:flex' : 'display:none' %>">
             <div class="co-item-img" style="display:flex;align-items:center;justify-content:center;background:#f4f2fd;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5f4bd8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
             </div>
@@ -257,7 +268,7 @@
               <div class="co-item-name">Piegāde — Omniva pakomāts</div>
               <div class="co-item-qty">Latvija</div>
             </div>
-            <div class="co-item-price">3,50 €</div>
+            <div class="co-item-price" id="co-delivery-item-price"><%= omnivaDeliveryLabel %></div>
           </div>
         </div>
         
@@ -266,19 +277,19 @@
         <div class="co-totals">
           <div class="co-total-row">
             <span>Bez PVN</span>
-            <span id="co-subtotal-display"><%= Number(it.total).toFixed(2) %> €</span>
+            <span id="co-subtotal-display"><%= Number(it.subtotal || 0).toFixed(2) %> €</span>
           </div>
           <div class="co-total-row">
             <span>PVN 21%</span>
-            <span id="co-vat-display"><%= (Number(it.total) * 0.21).toFixed(2) %> €</span>
+            <span id="co-vat-display"><%= Number(it.totalVat || 0).toFixed(2) %> €</span>
           </div>
-          <div class="co-total-row" id="co-delivery-row" style="display:none">
+          <div class="co-total-row" id="co-delivery-row" style="<%= selectedDeliveryType === 'omniva' ? 'display:flex' : 'display:none' %>">
             <span>Piegāde (Omniva)</span>
-            <span>+ 3,50 €</span>
+            <span id="co-delivery-row-price">+ <%= omnivaDeliveryLabel %></span>
           </div>
           <div class="co-total-final">
             <span>Kopā</span>
-            <span id="co-total-display"><%= (Number(it.total) * 1.21).toFixed(2) %> €</span>
+            <span id="co-total-display"><%= selectedTotalWithVat.toFixed(2) %> €</span>
           </div>
         </div>
 
@@ -337,8 +348,8 @@ function toggleDelivery(value) {
     })
   }
 
-  var basePreVat = <%= Number(it.total).toFixed(2) %>;
-  var deliveryFee = 3.50
+  var basePreVat = <%= Number(it.subtotal || 0).toFixed(2) %>;
+  var deliveryFee = <%= omnivaDeliveryFee.toFixed(2) %>;
   var extra = value === 'omniva' ? deliveryFee : 0
   var vat = basePreVat * 0.21
   var newTotal = basePreVat + vat + extra
@@ -348,12 +359,20 @@ function toggleDelivery(value) {
   var totalEl = document.getElementById('co-total-display')
   var deliveryRow = document.getElementById('co-delivery-row')
   var deliveryItem = document.getElementById('co-delivery-item')
+  var deliveryItemPrice = document.getElementById('co-delivery-item-price')
+  var deliveryRowPrice = document.getElementById('co-delivery-row-price')
+  var optionPrice = document.getElementById('co-delivery-option-price')
+  var formattedDelivery = extra === 0 ? '0 €' : extra.toFixed(2).replace('.', ',') + ' €'
+  var omnivaDeliveryDisplay = deliveryFee === 0 ? '0 €' : deliveryFee.toFixed(2).replace('.', ',') + ' €'
 
   if (subtotalEl) subtotalEl.textContent = basePreVat.toFixed(2) + ' €'
   if (vatEl) vatEl.textContent = vat.toFixed(2) + ' €'
   if (totalEl) totalEl.textContent = newTotal.toFixed(2) + ' €'
   if (deliveryRow) deliveryRow.style.display = value === 'omniva' ? 'flex' : 'none'
   if (deliveryItem) deliveryItem.style.display = value === 'omniva' ? 'flex' : 'none'
+  if (deliveryItemPrice) deliveryItemPrice.textContent = formattedDelivery
+  if (deliveryRowPrice) deliveryRowPrice.textContent = '+ ' + formattedDelivery
+  if (optionPrice) optionPrice.textContent = '+ ' + omnivaDeliveryDisplay
 }
 
 document.addEventListener('DOMContentLoaded', function() {

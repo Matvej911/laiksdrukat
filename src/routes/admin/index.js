@@ -7,6 +7,7 @@ import { unlink } from 'fs/promises'
 import { basename } from 'path'
 import { fileURLToPath } from 'url'
 import { readdirSync, readFileSync } from 'fs'
+import { isAbsolute } from 'path'
 
 import {
   addNotificationRecipient,
@@ -21,22 +22,34 @@ import {
   sendStoredFile,
   validateImageUpload,
 } from '../../lib/uploads.js'
+import { getStoredOrderTotals } from '../../lib/shipping.js'
 import {
   removeProductFromCatalogCsv,
   upsertProductInCatalogCsv,
 } from '../../lib/catalog-csv.js'
 import { invalidateSiteContentCache } from '../../content/site.js'
-import { listContactMessages } from '../../lib/contact-messages.js'
+import { deleteContactMessage, listContactMessages } from '../../lib/contact-messages.js'
 
 
 const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const LOGIN_RATE_LIMIT_MAX = 4
 const loginAttempts = new Map()
 
-function getLoginRateLimitState(ip) {
+function getActiveAttempts(map, key, windowMs) {
   const now = Date.now()
-  const attempts = (loginAttempts.get(ip) || []).filter(t => now - t < LOGIN_RATE_LIMIT_WINDOW_MS)
-  loginAttempts.set(ip, attempts)
+  const attempts = (map.get(key) || []).filter((timestamp) => now - timestamp < windowMs)
+
+  if (attempts.length === 0) {
+    map.delete(key)
+  } else {
+    map.set(key, attempts)
+  }
+
+  return attempts
+}
+
+function getLoginRateLimitState(ip) {
+  const attempts = getActiveAttempts(loginAttempts, ip, LOGIN_RATE_LIMIT_WINDOW_MS)
   return {
     limited: attempts.length >= LOGIN_RATE_LIMIT_MAX,
     remaining: Math.max(0, LOGIN_RATE_LIMIT_MAX - attempts.length),
@@ -45,7 +58,7 @@ function getLoginRateLimitState(ip) {
 
 function recordLoginAttempt(ip) {
   const now = Date.now()
-  const attempts = (loginAttempts.get(ip) || []).filter(t => now - t < LOGIN_RATE_LIMIT_WINDOW_MS)
+  const attempts = getActiveAttempts(loginAttempts, ip, LOGIN_RATE_LIMIT_WINDOW_MS)
   attempts.push(now)
   loginAttempts.set(ip, attempts)
 }
@@ -57,6 +70,13 @@ function sanitizeFilename(filename) {
 function normalizeOptionalText(value) {
   const normalized = String(value || '').trim()
   return normalized || null
+}
+
+function withOrderPricing(order) {
+  return {
+    ...order,
+    pricing: getStoredOrderTotals(order),
+  }
 }
 
 async function collectProductForm(request) {
@@ -193,6 +213,49 @@ async function deleteOrderWithRelatedData(fastify, orderId) {
   return { deleted: true }
 }
 
+function extractAttachmentToken(url) {
+  const match = String(url || '').match(/\/fails\/([^/?#]+)/)
+  return match ? match[1] : null
+}
+
+async function deleteContactMessageAttachment(fastify, message) {
+  const attachment = message?.attachment
+  if (!attachment) return
+
+  let upload = null
+  const token = extractAttachmentToken(attachment.url)
+
+  if (token) {
+    upload = await fastify.db.upload.findUnique({
+      where: { token },
+    })
+  }
+
+  const filepath = attachment.path
+    ? (isAbsolute(attachment.path) ? attachment.path : resolveUploadPath(attachment.path))
+    : (upload?.relativePath ? resolveUploadPath(upload.relativePath) : null)
+
+  if (filepath) {
+    try {
+      await unlink(filepath)
+    } catch (error) {
+      if (error?.code !== 'ENOENT') {
+        fastify.log.warn({ error, filepath, messageId: message.id }, 'Failed to remove contact attachment from disk')
+      }
+    }
+  }
+
+  if (upload) {
+    try {
+      await fastify.db.upload.delete({
+        where: { token },
+      })
+    } catch (error) {
+      fastify.log.warn({ error, token, messageId: message.id }, 'Failed to remove contact upload metadata')
+    }
+  }
+}
+
 async function adminRoutes(fastify) {
   // Login page
   fastify.get('/login', async (request, reply) => {
@@ -275,7 +338,7 @@ async function adminRoutes(fastify) {
 
   // Dashboard
   fastify.get('/', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const [productCount, orderCount, pendingOrders, recentOrders, contactMessages] = await Promise.all([
+    const [productCount, orderCount, pendingOrders, recentOrdersRaw, contactMessages] = await Promise.all([
       fastify.db.product.count(),
       fastify.db.order.count(),
       fastify.db.order.count({ where: { status: 'PENDING' } }),
@@ -286,6 +349,7 @@ async function adminRoutes(fastify) {
       }),
       listContactMessages(fastify.db),
     ])
+    const recentOrders = recentOrdersRaw.map(withOrderPricing)
 
     return reply.view('admin/dashboard', {
       title: 'Admin | Dashboard',
@@ -495,10 +559,11 @@ async function adminRoutes(fastify) {
   // --- ORDERS ---
 
   fastify.get('/orders', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const orders = await fastify.db.order.findMany({
+    const ordersRaw = await fastify.db.order.findMany({
       orderBy: { createdAt: 'desc' },
       include: { items: true },
     })
+    const orders = ordersRaw.map(withOrderPricing)
     return reply.view('admin/orders', {
       title: 'Admin | Pasūtījumi',
       orders,
@@ -509,10 +574,11 @@ async function adminRoutes(fastify) {
   })
 
   fastify.get('/orders/:id', { preHandler: fastify.requireAdmin }, async (request, reply) => {
-    const order = await fastify.db.order.findUnique({
+    const orderRaw = await fastify.db.order.findUnique({
       where: { id: Number(request.params.id) },
       include: { items: { include: { product: true } } },
     })
+    const order = withOrderPricing(orderRaw)
     return reply.view('admin/order-detail', { title: `Pasūtījums #${order.id}`, order, csrf: await reply.generateCsrf(), })
   })
 
@@ -543,6 +609,8 @@ async function adminRoutes(fastify) {
     return reply.view('admin/messages', {
       title: 'Admin | Ziņas',
       messages,
+      success: request.query?.success || null,
+      error: request.query?.error || null,
       csrf: await reply.generateCsrf(),
     })
   })
@@ -560,6 +628,18 @@ async function adminRoutes(fastify) {
       message,
       csrf: await reply.generateCsrf(),
     })
+  })
+
+  fastify.post('/messages/:id/delete', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
+    const deletedMessage = await deleteContactMessage(request.params.id, fastify.db)
+
+    if (!deletedMessage) {
+      return reply.redirect('/admin/messages?error=Zi%C5%86a+nav+atrasta')
+    }
+
+    await deleteContactMessageAttachment(fastify, deletedMessage)
+
+    return reply.redirect('/admin/messages?success=Zi%C5%86a+un+pievienotais+fails+veiksm%C4%ABgi+dz%C4%93sti')
   })
 
   // --- NOTIFICATION EMAILS ---

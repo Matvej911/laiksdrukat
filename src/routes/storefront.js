@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto'
 import { basename, join } from 'path'
 import { serviceRouteEntries, getSiteContent } from '../content/site.js'
+import { getBannerPrices } from '../lib/banner-prices.js'
 import { hasValidSessionCsrf } from '../lib/csrf.js'
 import { saveContactMessage } from '../lib/contact-messages.js'
 import { sendContactNotification } from '../lib/mailer.js'
@@ -583,6 +584,7 @@ async function storefrontRoutes(fastify) {
         const breadcrumbSchema = buildBreadcrumbSchema(baseUrl, breadcrumbs)
         const success = request.session.contactFormSent === true
         const error = request.session.contactFormError || null
+        const bannerPrices = await getBannerPrices(fastify.db)
         delete request.session.contactFormSent
         delete request.session.contactFormError
 
@@ -593,6 +595,7 @@ async function storefrontRoutes(fastify) {
           cart: fastify.getCart(request),
           success,
           error,
+          bannerPrices,
           site,
           breadcrumbs,
           seoImage: route.service.heroImage || site.meta.defaultShareImage,

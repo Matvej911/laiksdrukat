@@ -1,0 +1,91 @@
+<% layout('layout') %>
+
+<div class="admin-page-header">
+  <div>
+    <h1>Banneru cenas</h1>
+    <p class="admin-subtle">Šīs cenas tiek rādītas publiskajā lapā /baneri/.</p>
+  </div>
+  <a href="/baneri/" target="_blank" class="btn btn-outline">Atvērt lapu</a>
+</div>
+
+<% if (it.success) { %>
+  <div class="admin-alert admin-alert-success">Banneru cenas veiksmīgi saglabātas.</div>
+<% } %>
+<% if (it.error) { %>
+  <div class="admin-alert admin-alert-error"><%= it.error %></div>
+<% } %>
+
+<form action="/admin/banner-prices" method="POST">
+  <input type="hidden" name="_csrf" value="<%= it.csrf %>">
+
+  <div class="admin-layout">
+    <div class="admin-card">
+      <h3 style="margin-bottom:18px;font-size:16px;font-weight:800;">PVC banneru cenas</h3>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Laukums kv.m.</th>
+              <th>Cena EUR bez PVN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (const row of it.prices.pvc) { %>
+              <tr>
+                <td><strong><%= row.areaLabel %></strong></td>
+                <td>
+                  <input
+                    type="text"
+                    name="<%= row.id %>_price"
+                    value="<%= row.price %>"
+                    class="admin-input"
+                    inputmode="decimal"
+                    required
+                  >
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h3 style="margin-bottom:18px;font-size:16px;font-weight:800;">Roll-Up cenas</h3>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Tips</th>
+              <th>Izmērs (cm)</th>
+              <th>Cena EUR bez PVN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (const row of it.prices.rollup) { %>
+              <tr>
+                <td><strong><%= row.typeLabel %></strong></td>
+                <td><%= row.sizeLabel %></td>
+                <td>
+                  <input
+                    type="text"
+                    name="<%= row.id %>_price"
+                    value="<%= row.price %>"
+                    class="admin-input"
+                    inputmode="decimal"
+                    required
+                  >
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:24px;display:flex;gap:12px;align-items:center;">
+    <button type="submit" class="btn btn-primary">Saglabāt cenas</button>
+    <span class="admin-subtle">Var ievadīt ar komatu vai punktu, piemēram, 68,00 vai 68.00.</span>
+  </div>
+</form>

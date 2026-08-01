@@ -16,6 +16,7 @@ import {
 } from '../../lib/notification-recipients.js'
 import { hasValidSessionCsrf } from '../../lib/csrf.js'
 import { isMailConfigured } from '../../lib/mailer.js'
+import { getBannerPrices, saveBannerPrices } from '../../lib/banner-prices.js'
 import {
   persistUpload,
   resolveUploadPath,
@@ -676,6 +677,35 @@ async function adminRoutes(fastify) {
   fastify.post('/notification-emails/delete', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
     await deleteNotificationRecipient(request.body.email, fastify.db)
     return reply.redirect('/admin/notification-emails?saved=1')
+  })
+
+  // --- SERVICE PRICES ---
+
+  fastify.get('/banner-prices', { preHandler: fastify.requireAdmin }, async (request, reply) => {
+    const prices = await getBannerPrices(fastify.db)
+
+    return reply.view('admin/banner-prices', {
+      title: 'Admin | Banneru cenas',
+      prices,
+      error: request.query?.error || null,
+      success: request.query?.saved === '1',
+      csrf: await reply.generateCsrf(),
+    })
+  })
+
+  fastify.post('/banner-prices', { preHandler: [fastify.requireAdmin, fastify.csrfProtection] }, async (request, reply) => {
+    try {
+      await saveBannerPrices(request.body || {}, fastify.db)
+      return reply.redirect('/admin/banner-prices?saved=1')
+    } catch (error) {
+      return reply.view('admin/banner-prices', {
+        title: 'Admin | Banneru cenas',
+        prices: await getBannerPrices(fastify.db),
+        error: error.message || 'Neizdevās saglabāt banneru cenas.',
+        success: false,
+        csrf: await reply.generateCsrf(),
+      })
+    }
   })
 
   // --- SETTINGS ---

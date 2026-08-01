@@ -70,11 +70,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>1–2</td><td><strong>26,00</strong></td></tr>
-            <tr><td>3–4</td><td><strong>13,00</strong></td></tr>
-            <tr><td>5–10</td><td><strong>12,00</strong></td></tr>
-            <tr><td>11–50</td><td><strong>10,00</strong></td></tr>
-            <tr><td>50+</td><td><strong>8,50</strong></td></tr>
+            <% for (const row of it.bannerPrices.pvc) { %>
+              <tr><td><%= row.areaLabel %></td><td><strong><%= row.price %></strong></td></tr>
+            <% } %>
           </tbody>
         </table>
         <p class="bn-table-note">Visas cenas norādītas EUR bez PVN. Cena norādīta par 1 kv.m.</p>
@@ -134,14 +132,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>Ar mehānismu</td><td>85 × 200</td><td><strong>68,00</strong></td></tr>
-            <tr><td>Ar mehānismu</td><td>100 × 200</td><td><strong>73,00</strong></td></tr>
-            <tr><td>Ar mehānismu</td><td>120 × 200</td><td><strong>98,00</strong></td></tr>
-            <tr><td>Ar mehānismu</td><td>150 × 200</td><td><strong>118,00</strong></td></tr>
-            <tr><td>Bez mehānisma</td><td>85 × 200</td><td><strong>32,00</strong></td></tr>
-            <tr><td>Bez mehānisma</td><td>100 × 200</td><td><strong>35,00</strong></td></tr>
-            <tr><td>Bez mehānisma</td><td>120 × 200</td><td><strong>62,00</strong></td></tr>
-            <tr><td>Bez mehānisma</td><td>150 × 200</td><td><strong>68,00</strong></td></tr>
+            <% for (const row of it.bannerPrices.rollup) { %>
+              <tr><td><%= row.typeLabel %></td><td><%= row.sizeLabel %></td><td><strong><%= row.price %></strong></td></tr>
+            <% } %>
           </tbody>
         </table>
         <div class="bn-table-notes">

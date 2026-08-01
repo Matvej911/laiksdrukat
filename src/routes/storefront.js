@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto'
 import { basename, join } from 'path'
-import { getSiteContent } from '../content/site.js'
+import { getSiteContent, serviceRouteEntries } from '../content/site.js'
 import { hasValidSessionCsrf } from '../lib/csrf.js'
 import { saveContactMessage } from '../lib/contact-messages.js'
 import { sendContactNotification } from '../lib/mailer.js'

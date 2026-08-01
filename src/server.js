@@ -17,6 +17,12 @@ import dbPlugin from './plugins/db.js'
 import cartPlugin from './plugins/cart.js'
 import authPlugin from './plugins/auth.js'
 import { siteContent, getSiteContent } from './content/site.js'
+import {
+  buildLanguageSwitcher,
+  getLocaleMeta,
+  getUiCopy,
+  localizePath,
+} from './lib/marketing-locale.js'
 import { PrismaSessionStore, getSessionStoreOptionsFromEnv } from './lib/prisma-session-store.js'
 import {
   getOrphanStampUploadCleanupOptionsFromEnv,
